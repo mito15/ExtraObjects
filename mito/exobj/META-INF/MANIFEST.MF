@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+FMLCorePlugin: com.mito.exobj.asm.BraceCore
+FMLCorePluginContainsFMLMod: true
