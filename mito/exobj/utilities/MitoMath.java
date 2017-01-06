@@ -8,7 +8,7 @@ import net.minecraft.util.Vec3;
 public final class MitoMath {
 
 	public static Vec3 vectorRatio(Vec3 set, Vec3 end, double r) {
-		Vec3 ret = vectorPul(vectorMul(end, r), vectorMul(set, 1 - r));
+		Vec3 ret = vectorSum(vectorMul(end, r), vectorMul(set, 1 - r));
 		return ret;
 	}
 
@@ -52,7 +52,7 @@ public final class MitoMath {
 		return ret;
 	}
 
-	public static Vec3 vectorPul(Vec3... d){
+	public static Vec3 vectorSum(Vec3... d){
 		double x = 0;
 		double y = 0;
 		double z = 0;
@@ -76,17 +76,17 @@ public final class MitoMath {
 	}
 
 	public static Vec3 vectorBezier(Vec3 d1, Vec3 d2, Vec3 d3, Vec3 d4, double r) {
-		Vec3 ret = vectorPul(vectorMul(d1, Math.pow(r, 3)), vectorMul(d2, 3 * Math.pow(r, 2) * (1 - r)), vectorMul(d3, 3 * Math.pow((1 - r), 2) * r), vectorMul(d4, Math.pow((1 - r), 3)));
+		Vec3 ret = vectorSum(vectorMul(d1, Math.pow(r, 3)), vectorMul(d2, 3 * Math.pow(r, 2) * (1 - r)), vectorMul(d3, 3 * Math.pow((1 - r), 2) * r), vectorMul(d4, Math.pow((1 - r), 3)));
 		return ret;
 	}
 
 	public static Vec3 normalBezier(Vec3 d1, Vec3 d2, Vec3 d3, Vec3 d4, double r) {
-		Vec3 ret = vectorPul(vectorMul(d1, 3 * Math.pow(r, 2)), vectorMul(d2, 3 * r * (2 - 3 * r)), vectorMul(d3, 3 * (3 * r - 1) * (r - 1)), vectorMul(d4, -3 * Math.pow((1 - r), 2)));
+		Vec3 ret = vectorSum(vectorMul(d1, 3 * Math.pow(r, 2)), vectorMul(d2, 3 * r * (2 - 3 * r)), vectorMul(d3, 3 * (3 * r - 1) * (r - 1)), vectorMul(d4, -3 * Math.pow((1 - r), 2)));
 		return ret.normalize();
 	}
 
 	public static Vec3 normalBezier(Vec3 d1, Vec3 d2, Vec3 d3, double r) {
-		Vec3 ret = vectorPul(vectorMul(d1, 2 * r), vectorMul(d2, -(4 * r) + 2), vectorMul(d3, 2 * r - 2));
+		Vec3 ret = vectorSum(vectorMul(d1, 2 * r), vectorMul(d2, -(4 * r) + 2), vectorMul(d3, 2 * r - 2));
 		return ret.normalize();
 	}
 
@@ -149,7 +149,7 @@ public final class MitoMath {
 
 		double k = (d1 - d2 + l) / (2 * l);
 		k = k >= 1 ? 1 : (k <= 0 ? 0 : k);
-		ret = vectorPul(vectorMul(vectorSub(e, s), k), s);
+		ret = vectorSum(vectorMul(vectorSub(e, s), k), s);
 
 		return ret;
 	}
@@ -163,7 +163,7 @@ public final class MitoMath {
 
 		double k = (d1 - d2 + l) / (2 * l);
 		k = k >= 1 ? 1 : (k <= 0 ? 0 : k);
-		ret = vectorPul(vectorMul(vectorSub(e, s), k), s);
+		ret = vectorSum(vectorMul(vectorSub(e, s), k), s);
 
 		return new Line(ret, p);
 	}
@@ -185,7 +185,7 @@ public final class MitoMath {
 		k1 = k1 < 0 ? 0 : (k1 > l1 ? l1 : k1);
 		k2 = k2 < 0 ? 0 : (k2 > l2 ? l2 : k2);
 
-		return new Line(vectorPul(s1, vectorMul(u1, k1)), vectorPul(s2, vectorMul(u2, k2)));
+		return new Line(vectorSum(s1, vectorMul(u1, k1)), vectorSum(s2, vectorMul(u2, k2)));
 	}
 
 	public static double distancePointPlane(Vec3 plane, Vec3 normal, Vec3 p) {
@@ -204,7 +204,7 @@ public final class MitoMath {
 			return null;
 		}
 		Vec3 l = vectorSub(e, s);
-		Vec3 ret = vectorPul(vectorMul(l, r), s);
+		Vec3 ret = vectorSum(vectorMul(l, r), s);
 
 		return ret;
 	}
@@ -223,6 +223,10 @@ public final class MitoMath {
 
 	public static Vec3 crossZ(Vec3 side1) {
 		return Vec3.createVectorHelper(side1.yCoord, -side1.xCoord, 0);
+	}
+	
+	public static Vec3 rot(Vec3 v1, Vec3 v2, double r, double p, double y) {
+		return vectorSum(rotY(rotX(rotZ(vectorSub(v2, v1), r), p), y), v1);
 	}
 
 	public static Vec3 rot(Vec3 v1, double r, double p, double y) {

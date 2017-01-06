@@ -2,8 +2,10 @@ package com.mito.exobj.common;
 
 import com.mito.exobj.client.BB_Key;
 import com.mito.exobj.client.BB_SelectedGroup;
+import com.mito.exobj.common.block.TileObjects;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -41,6 +43,7 @@ public class mitoCommonProxy {
 	}
 
 	public void init() {
+		GameRegistry.registerTileEntity(TileObjects.class, "TileObjects");
 	}
 
 	public void preInit() {

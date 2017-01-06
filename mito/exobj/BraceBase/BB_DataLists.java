@@ -16,6 +16,9 @@ public class BB_DataLists {
 	public static Map<WorldServer, BB_DataWorld> worldDataMap = new HashMap<WorldServer, BB_DataWorld>();
 
 	public static BB_DataWorld getWorldData(World world) {
+		if(world == null){
+			return null;
+		}
 		if (world.isRemote) {
 			return LoadClientWorldHandler.INSTANCE.data;
 		} else {
@@ -24,10 +27,16 @@ public class BB_DataLists {
 	}
 
 	public static boolean existChunkData(Chunk chunk) {
+		if(chunk == null){
+			return false;
+		}
 		return getWorldData(chunk.worldObj).coordToDataMapping.containsItem(ChunkCoordIntPair.chunkXZ2Int(chunk.xPosition, chunk.zPosition));
 	}
 
 	public static BB_DataChunk getChunkData(Chunk chunk) {
+		if(chunk == null){
+			return null;
+		}
 		return BB_DataLists.getChunkData(chunk.worldObj, chunk.xPosition, chunk.zPosition);
 	}
 
@@ -42,10 +51,16 @@ public class BB_DataLists {
 	}
 
 	public static ExtraObject getFixedObj(World world, int id) {
+		if(world == null){
+			return null;
+		}
 		return getWorldData(world).getBraceBaseByID(id);
 	}
 
 	public static BB_DataChunk newDataChunk(Chunk chunk) {
+		if(chunk == null){
+			return null;
+		}
 		return newDataChunk(chunk.worldObj, chunk.xPosition, chunk.zPosition);
 	}
 

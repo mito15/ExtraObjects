@@ -6,7 +6,7 @@ import com.mito.exobj.BraceBase.Brace.Scale;
 import com.mito.exobj.client.BB_Key;
 import com.mito.exobj.client.RenderHighLight;
 import com.mito.exobj.utilities.MitoMath;
-import com.mito.exobj.utilities.MitoUtil;
+import com.mito.exobj.utilities.MyUtil;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -79,7 +79,7 @@ public class ItemRuler extends ItemSet {
 	public void snapDegree(MovingObjectPosition mop, ItemStack itemstack, World world, EntityPlayer player, BB_Key key, NBTTagCompound nbt){
 		if (nbt.getBoolean("activated")) {
 			Vec3 set = Vec3.createVectorHelper(nbt.getDouble("setX"), nbt.getDouble("setY"), nbt.getDouble("setZ"));
-			MitoUtil.snapByShiftKey(mop, set);
+			MyUtil.snapByShiftKey(mop, set);
 		}
 	}
 

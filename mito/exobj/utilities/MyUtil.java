@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.client.BB_Key;
+import com.mito.exobj.client.render.model.Mat4;
 import com.mito.exobj.client.render.model.Triangle;
 import com.mito.exobj.client.render.model.Vertex;
 import com.mito.exobj.common.Direction26;
@@ -24,26 +25,61 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public class MitoUtil {
+public class MyUtil {
+
+	public static Mat4 getRotationMatrix(Vec3 dir) {
+		return getRotationMatrix(dir, Vec3.createVectorHelper(0, 1, 0));
+	}
+
+	public static Mat4 getRotationMatrix(Vec3 dir, Vec3 v) {
+		Vec3 v1, v2;
+		Vec3 norm = dir.normalize();
+
+		if (dir.crossProduct(v).lengthVector() < 0.01) {
+			v1 = norm.crossProduct(v);
+			v2 = norm.crossProduct(v1);
+		} else {
+			v1 = norm.crossProduct(Vec3.createVectorHelper(1, 0, 0));
+			v2 = norm.crossProduct(v1);
+		}
+
+		Mat4 ret = Mat4.createMat4(v1, v2, norm);
+		return ret;
+	}
 
 	public static List<Triangle> decomposeTexture(Triangle tri) {
 		Vertex v1 = tri.vertexs[0];
 		Vertex v2 = tri.vertexs[1];
 		Vertex v3 = tri.vertexs[2];
 		List<Triangle> list = new ArrayList<Triangle>();
+		list.add(tri);
 		double maxU = Math.max(Math.max(v1.textureU, v2.textureU), v3.textureU);
 		double minU = Math.min(Math.min(v1.textureU, v2.textureU), v3.textureU);
-		int lineU = (int) Math.floor(minU) + 1;
-		int numU = (int) Math.floor(maxU) - lineU + 1;
-		for(int n = 0; n < numU; n++){
-			Triangle[] tris = decomposeLine(tri, lineU);
-			lineU++;
+		double maxV = Math.max(Math.max(v1.textureV, v2.textureV), v3.textureV);
+		double minV = Math.min(Math.min(v1.textureV, v2.textureV), v3.textureV);
+		for (int lineU = (int) Math.floor(minU) + 1; lineU <= maxU; lineU++) {
+			decomposeLineU(list, lineU);
 		}
 
 		return list;
 	}
 
-	public static Triangle[] decomposeLine(Triangle tri, double d) {
+	private static void decomposeLineU(List<Triangle> list, int lineU) {
+		
+		for (int n = 0; n < list.size(); n++) {
+			Triangle tri = list.get(n);
+			Vertex v1 = tri.vertexs[0];
+			Vertex v2 = tri.vertexs[1];
+			Vertex v3 = tri.vertexs[2];
+			double maxU = Math.max(Math.max(v1.textureU, v2.textureU), v3.textureU);
+			double minU = Math.min(Math.min(v1.textureU, v2.textureU), v3.textureU);
+			if(lineU < maxU && lineU > minU){
+				
+			}
+		}
+	}
+
+	public static Triangle[] decomposeLine(Triangle tri, int d) {
 		return null;
 	}
 
@@ -174,11 +210,11 @@ public class MitoUtil {
 	}
 
 	/*public static BB_MovingObjectPosition rayTraceBrace(EntityLivingBase player, Vec3 set, Vec3 end, double partialticks) {
-
+	
 		World world = player.worldObj;
 		BB_MovingObjectPosition m = null;
 		List list = BB_DataLists.getWorldData(world).getBraceBaseWithAABB(MitoUtil.createAABBByVec3(set, end));
-
+	
 		double l = 999.0D;
 		for (int n = 0; n < list.size(); n++) {
 			if (list.get(n) instanceof BraceBase) {
@@ -193,22 +229,22 @@ public class MitoUtil {
 				}
 			}
 		}
-
+	
 		return m;
 	}
-
+	
 	public static MovingObjectPosition rayTraceIncl(EntityLivingBase player, double distance, double partialticks) {
-
+	
 		Vec3 start = MitoUtil.getPlayerEyePosition(player, partialticks);
 		Vec3 vec31 = player.getLook((float) partialticks);
 		Vec3 end = start.addVector(vec31.xCoord * distance, vec31.yCoord * distance, vec31.zCoord * distance);
-
+	
 		MovingObjectPosition pre = player.worldObj.func_147447_a(MitoMath.copyVec3(start), end, false, false, true);
 		MovingObjectPosition m1 = pre == null ? null : new BB_MovingObjectPosition(pre);
 		MovingObjectPosition m2 = MitoUtil.rayTraceBrace(player, start, end, (float) partialticks);
-
+	
 		MovingObjectPosition mop;
-
+	
 		if (m1 == null && m2 == null) {
 			return null;
 		} else if (m1 == null) {
@@ -222,7 +258,7 @@ public class MitoUtil {
 				mop = m2;
 			}
 		}
-
+	
 		return mop;
 	}*/
 
@@ -486,8 +522,8 @@ public class MitoUtil {
 	}
 
 	public static ExtraObject getBrace(MovingObjectPosition target) {
-		if(target.entityHit != null && target.entityHit instanceof EntityWrapperBB)
-		return((EntityWrapperBB)target.entityHit).base;
+		if (target.entityHit != null && target.entityHit instanceof EntityWrapperBB)
+			return ((EntityWrapperBB) target.entityHit).base;
 		return null;
 	}
 
@@ -504,6 +540,17 @@ public class MitoUtil {
 				mop.hitVec = Vec3.createVectorHelper(mop.hitVec.xCoord, mop.hitVec.yCoord, 0.5 + (double) mop.blockZ + (double) z);
 			}
 		}
+	}
+
+	public static List<ExtraObject> copyList(List<ExtraObject> list, Vec3 pos) {
+		List<ExtraObject> ret = new ArrayList<ExtraObject>();
+		Vec3 pos1 = MitoMath.vectorMul(pos, -1);
+		for (int n = 0; n < list.size(); n++) {
+			ExtraObject eo = list.get(n).copy();
+			eo.addCoordinate(pos1);
+			ret.add(eo);
+		}
+		return ret;
 	}
 
 }

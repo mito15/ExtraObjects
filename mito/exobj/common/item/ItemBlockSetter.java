@@ -6,8 +6,9 @@ import com.mito.exobj.client.BB_Key;
 import com.mito.exobj.client.RenderHighLight;
 import com.mito.exobj.common.Main;
 import com.mito.exobj.common.entity.EntityWrapperBB;
+import com.mito.exobj.common.main.ResisterItem;
 import com.mito.exobj.utilities.MitoMath;
-import com.mito.exobj.utilities.MitoUtil;
+import com.mito.exobj.utilities.MyUtil;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -46,8 +47,8 @@ public class ItemBlockSetter extends ItemSet {
 	public MovingObjectPosition getMovingOPWithKey(ItemStack itemstack, World world, EntityPlayer player, BB_Key key, MovingObjectPosition mop, double partialticks) {
 		NBTTagCompound nbt = this.getNBT(itemstack);
 
-		if (mop != null && MitoUtil.canClick(world, key, mop)) {
-			MitoUtil.snapBlockOffset(mop);
+		if (mop != null && MyUtil.canClick(world, key, mop)) {
+			MyUtil.snapBlockOffset(mop);
 			if (!key.isControlPressed()) {
 				mop = this.snap(mop, itemstack, world, player, key, nbt);
 			}
@@ -73,7 +74,7 @@ public class ItemBlockSetter extends ItemSet {
 	public void snapDegree(MovingObjectPosition mop, ItemStack itemstack, World world, EntityPlayer player, BB_Key key, NBTTagCompound nbt) {
 		if (nbt.getBoolean("activated")) {
 			Vec3 set = Vec3.createVectorHelper(nbt.getDouble("setX"), nbt.getDouble("setY"), nbt.getDouble("setZ"));
-			MitoUtil.snapByShiftKey(mop, set);
+			MyUtil.snapByShiftKey(mop, set);
 		}
 	}
 
@@ -95,15 +96,15 @@ public class ItemBlockSetter extends ItemSet {
 			int slot = 0;
 
 			if (MitoMath.subAbs(set, end) < 100) {
-				if (items[slot] != null && items[slot].getItem() == Main.ItemBar) {
-					List<int[]> list = MitoUtil.getBlocksOnLine(world, set, end, null, 1.0, true);
+				if (items[slot] != null && items[slot].getItem() == ResisterItem.ItemBar) {
+					List<int[]> list = MyUtil.getBlocksOnLine(world, set, end, null, 1.0, true);
 					for (int n = 0; n < list.size(); n++) {
 						int[] aint = list.get(n);
 						world.setBlock(aint[0], aint[1], aint[2], Blocks.air);
 					}
 					return;
 				}
-				List<int[]> list = MitoUtil.getBlocksOnLine(world, set, end, null, 0.98);
+				List<int[]> list = MyUtil.getBlocksOnLine(world, set, end, null, 0.98);
 				for (int n = 0; n < list.size(); n++) {
 					int[] aint = list.get(n);
 					boolean flag = true;
@@ -152,14 +153,14 @@ public class ItemBlockSetter extends ItemSet {
 	@Override
 	public boolean drawHighLightBox(ItemStack itemstack, EntityPlayer player, float partialTicks, MovingObjectPosition mop) {
 		NBTTagCompound nbt = getTagCompound(itemstack);
-		if (mop == null || !MitoUtil.canClick(player.worldObj, Main.proxy.getKey(), mop))
+		if (mop == null || !MyUtil.canClick(player.worldObj, Main.proxy.getKey(), mop))
 			return false;
 		Vec3 set = mop.hitVec;
 
 		RenderHighLight rh = RenderHighLight.INSTANCE;
 		if (nbt.getBoolean("activated")) {
 			Vec3 end = Vec3.createVectorHelper(nbt.getDouble("setX"), nbt.getDouble("setY"), nbt.getDouble("setZ"));
-			List<int[]> list = MitoUtil.getBlocksOnLine(player.worldObj, end, set, null, 0.98);
+			List<int[]> list = MyUtil.getBlocksOnLine(player.worldObj, end, set, null, 0.98);
 			for (int n = 0; n < list.size(); n++) {
 				int[] aint = list.get(n);
 				Vec3 v = Vec3.createVectorHelper(0.5 + aint[0], 0.5 + aint[1], 0.5 + aint[2]);

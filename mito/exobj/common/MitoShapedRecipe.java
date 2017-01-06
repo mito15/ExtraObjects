@@ -1,5 +1,7 @@
 package com.mito.exobj.common;
 
+import com.mito.exobj.common.main.ResisterItem;
+
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
@@ -41,7 +43,7 @@ public class MitoShapedRecipe implements IRecipe {
 			}
 		}
 		if(outNum >= 5){outNum = 4;}
-		return new ItemStack(Main.ItemBrace);
+		return new ItemStack(ResisterItem.ItemBrace);
 	}
 
 	@Override

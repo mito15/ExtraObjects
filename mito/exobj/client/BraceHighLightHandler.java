@@ -6,7 +6,7 @@ import com.mito.exobj.BraceBase.BB_Render;
 import com.mito.exobj.BraceBase.BB_ResisteredList;
 import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.common.item.ItemBraceBase;
-import com.mito.exobj.utilities.MitoUtil;
+import com.mito.exobj.utilities.MyUtil;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,9 +34,9 @@ public class BraceHighLightHandler {
 				}
 			}
 		} else if (e.player.capabilities.isCreativeMode) {
-			if (MitoUtil.isBrace(e.target)) {
+			if (MyUtil.isBrace(e.target)) {
 				GL11.glPushMatrix();
-				drawHighLightBrace(e.player, MitoUtil.getBrace(e.target), e.partialTicks);
+				drawHighLightBrace(e.player, MyUtil.getBrace(e.target), e.partialTicks);
 				GL11.glPopMatrix();
 				if (e.isCancelable()) {
 					e.setCanceled(true);

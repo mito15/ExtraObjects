@@ -2,7 +2,7 @@ package com.mito.exobj.common.item;
 
 import com.mito.exobj.client.BB_Key;
 import com.mito.exobj.utilities.MitoMath;
-import com.mito.exobj.utilities.MitoUtil;
+import com.mito.exobj.utilities.MyUtil;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -46,7 +46,7 @@ public class ItemWall extends ItemSet {
 			this.nbtInit(nbt, itemstack);
 		}
 		if (!world.isRemote) {
-			if (mop != null && (MitoUtil.canClick(world, key, mop1))) {
+			if (mop != null && (MyUtil.canClick(world, key, mop1))) {
 				if (nbt.getBoolean("activated")) {
 					Vec3 end = MitoMath.copyVec3(mop.hitVec);
 					Vec3 set = Vec3.createVectorHelper(nbt.getDouble("setX"), nbt.getDouble("setY"), nbt.getDouble("setZ"));

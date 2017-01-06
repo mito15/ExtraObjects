@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.mito.exobj.common.entity.EntityWall;
 import com.mito.exobj.utilities.MitoMath;
-import com.mito.exobj.utilities.MitoUtil;
+import com.mito.exobj.utilities.MyUtil;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
@@ -165,16 +165,16 @@ public class RenderWall extends Render {
 			}
 
 			tessellator.setNormal((float) norm.xCoord, (float) norm.yCoord, (float) norm.zCoord);
-			MitoUtil.addVertexWithUV(ent.v1, 0, 0, tessellator);
-			MitoUtil.addVertexWithUV(ent.v2, v2u, v2v, tessellator);
-			MitoUtil.addVertexWithUV(ent.v3, v3u, v3v, tessellator);
-			MitoUtil.addVertexWithUV(ent.v4, v4u, v4v, tessellator);
+			MyUtil.addVertexWithUV(ent.v1, 0, 0, tessellator);
+			MyUtil.addVertexWithUV(ent.v2, v2u, v2v, tessellator);
+			MyUtil.addVertexWithUV(ent.v3, v3u, v3v, tessellator);
+			MyUtil.addVertexWithUV(ent.v4, v4u, v4v, tessellator);
 
 			tessellator.setNormal((float) -norm.xCoord, (float) -norm.yCoord, (float) -norm.zCoord);
-			MitoUtil.addVertexWithUV(ent.v1, 0, 0, tessellator);
-			MitoUtil.addVertexWithUV(ent.v4, v4u, v4v, tessellator);
-			MitoUtil.addVertexWithUV(ent.v3, v3u, v3v, tessellator);
-			MitoUtil.addVertexWithUV(ent.v2, v2u, v2v, tessellator);
+			MyUtil.addVertexWithUV(ent.v1, 0, 0, tessellator);
+			MyUtil.addVertexWithUV(ent.v4, v4u, v4v, tessellator);
+			MyUtil.addVertexWithUV(ent.v3, v3u, v3v, tessellator);
+			MyUtil.addVertexWithUV(ent.v2, v2u, v2v, tessellator);
 		}
 
 		tessellator.draw();
@@ -294,18 +294,18 @@ public class RenderWall extends Render {
 				norm134 = MitoMath.unitVector(v3co.crossProduct(v4co));
 
 				tessellator.setNormal((float) norm123.xCoord, (float) norm123.yCoord, (float) norm123.zCoord);
-				MitoUtil.addVertexWithUV(v1, v1u, v1v, tessellator);
-				MitoUtil.addVertexWithUV(v2, v2u, v2v, tessellator);
+				MyUtil.addVertexWithUV(v1, v1u, v1v, tessellator);
+				MyUtil.addVertexWithUV(v2, v2u, v2v, tessellator);
 				tessellator.setNormal((float) norm134.xCoord, (float) norm134.yCoord, (float) norm134.zCoord);
-				MitoUtil.addVertexWithUV(v3, v3u, v3v, tessellator);
-				MitoUtil.addVertexWithUV(v4, v4u, v4v, tessellator);
+				MyUtil.addVertexWithUV(v3, v3u, v3v, tessellator);
+				MyUtil.addVertexWithUV(v4, v4u, v4v, tessellator);
 
 				tessellator.setNormal((float) -norm123.xCoord, (float) -norm123.yCoord, (float) -norm123.zCoord);
-				MitoUtil.addVertexWithUV(v1, v1u, v1v, tessellator);
-				MitoUtil.addVertexWithUV(v4, v4u, v4v, tessellator);
+				MyUtil.addVertexWithUV(v1, v1u, v1v, tessellator);
+				MyUtil.addVertexWithUV(v4, v4u, v4v, tessellator);
 				tessellator.setNormal((float) -norm134.xCoord, (float) -norm134.yCoord, (float) -norm134.zCoord);
-				MitoUtil.addVertexWithUV(v3, v3u, v3v, tessellator);
-				MitoUtil.addVertexWithUV(v2, v2u, v2v, tessellator);
+				MyUtil.addVertexWithUV(v3, v3u, v3v, tessellator);
+				MyUtil.addVertexWithUV(v2, v2u, v2v, tessellator);
 			}
 		}
 

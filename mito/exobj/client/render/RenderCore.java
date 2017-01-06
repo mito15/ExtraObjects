@@ -637,10 +637,10 @@ public final class RenderCore {
 			c = MitoMath.unitVector(Vec3.createVectorHelper(-x1 * y1, x1 * x1 + z1 * z1, -z1 * y1));
 			c= MitoMath.vectorMul(c, size1);
 			
-			a[0] = MitoMath.vectorPul(b, c);
-			a[3] = MitoMath.vectorPul(MitoMath.vectorMul(b, -1), c);
-			a[2] = MitoMath.vectorPul(MitoMath.vectorMul(b, -1), MitoMath.vectorMul(c, -1));
-			a[1] = MitoMath.vectorPul(b, MitoMath.vectorMul(c, -1));
+			a[0] = MitoMath.vectorSum(b, c);
+			a[3] = MitoMath.vectorSum(MitoMath.vectorMul(b, -1), c);
+			a[2] = MitoMath.vectorSum(MitoMath.vectorMul(b, -1), MitoMath.vectorMul(c, -1));
+			a[1] = MitoMath.vectorSum(b, MitoMath.vectorMul(c, -1));
 
 		}
 
@@ -686,7 +686,7 @@ public final class RenderCore {
 			for (int n = 0; n < accuracy; n++) {
 				ang = Math.toRadians(n * 360 / accuracy);
 
-				a0 = MitoMath.vectorPul(MitoMath.vectorMul(c, Math.cos(ang) * r),
+				a0 = MitoMath.vectorSum(MitoMath.vectorMul(c, Math.cos(ang) * r),
 						MitoMath.vectorMul(b, Math.sin(ang) * r));
 
 				a[n] = a0;

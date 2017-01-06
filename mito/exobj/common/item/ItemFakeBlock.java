@@ -9,7 +9,7 @@ import com.mito.exobj.common.Main;
 import com.mito.exobj.common.MyLogger;
 import com.mito.exobj.common.entity.EntityWrapperBB;
 import com.mito.exobj.utilities.MitoMath;
-import com.mito.exobj.utilities.MitoUtil;
+import com.mito.exobj.utilities.MyUtil;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -126,8 +126,8 @@ public class ItemFakeBlock extends ItemBraceBase {
 	}
 
 	public void snapBlock(MovingObjectPosition mop, ItemStack itemstack, World world, EntityPlayer player, BB_Key key) {
-		MitoUtil.snapBlock(mop);
-		MitoUtil.snapBlockOffset(mop);
+		MyUtil.snapBlock(mop);
+		MyUtil.snapBlockOffset(mop);
 	}
 
 	public void snapBraceBase(MovingObjectPosition mop, ItemStack itemstack, World world, EntityPlayer player, BB_Key key) {
@@ -144,7 +144,7 @@ public class ItemFakeBlock extends ItemBraceBase {
 	@Override
 	public boolean drawHighLightBox(ItemStack itemstack, EntityPlayer player, float partialTicks, MovingObjectPosition mop) {
 		NBTTagCompound nbt = getTagCompound(itemstack);
-		if (mop == null || !MitoUtil.canClick(player.worldObj, Main.proxy.getKey(), mop))
+		if (mop == null || !MyUtil.canClick(player.worldObj, Main.proxy.getKey(), mop))
 			return false;
 		Vec3 set = mop.hitVec;
 		RenderHighLight rh = RenderHighLight.INSTANCE;

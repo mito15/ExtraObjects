@@ -1,6 +1,6 @@
 package com.mito.exobj.client.gui;
 
-import com.mito.exobj.common.Main;
+import com.mito.exobj.common.main.ResisterItem;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -50,7 +50,7 @@ public class ContainerItemFakeBlock extends Container {
 				if (!this.mergeItemStack(itemstack1, this.inventory.getSizeInventory(), this.inventorySlots.size(), true)) {
 					return null;
 				}
-			} else if (slot.getStack() != null && slot.getStack().getItem() == Main.INSTANCE.ItemFakeBlock) {
+			} else if (slot.getStack() != null && slot.getStack().getItem() == ResisterItem.ItemFakeBlock) {
 				return null;
 			} else if (!this.mergeItemStack(itemstack1, 0, this.inventory.getSizeInventory(), false)) {
 				return null;

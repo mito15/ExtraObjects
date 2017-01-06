@@ -5,10 +5,13 @@ import java.util.List;
 import com.mito.exobj.BraceBase.BB_EnumTexture;
 import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.BraceBase.Brace.Render.BB_TypeResister;
+import com.mito.exobj.BraceBase.Brace.Render.IJoint;
 import com.mito.exobj.client.render.model.IDrawBrace;
+import com.mito.exobj.client.render.model.ILineBrace;
 import com.mito.exobj.common.Main;
 import com.mito.exobj.common.item.ItemBar;
 import com.mito.exobj.common.item.ItemBrace;
+import com.mito.exobj.common.main.ResisterItem;
 import com.mito.exobj.utilities.Line;
 import com.mito.exobj.utilities.MitoMath;
 
@@ -35,6 +38,7 @@ public class Brace extends ExtraObject {
 	public int color = 0;
 	public BB_EnumTexture texture = BB_EnumTexture.IRON;
 	public IDrawBrace shape;
+	public IJoint joint;
 	public double size;
 	private int debug = 0;
 	public Vec3 unitVector = null;
@@ -66,7 +70,7 @@ public class Brace extends ExtraObject {
 			int i = MathHelper.floor_double(this.pos.xCoord / 16.0D);
 			int j = MathHelper.floor_double(this.pos.zCoord / 16.0D);
 			//if (!this.worldObj.isRemote) {
-
+		
 			BB_DataChunk ret = (BB_DataChunk) BB_DataLists.getWorldData(worldObj).coordToDataMapping.getValueByKey(ChunkCoordIntPair.chunkXZ2Int(i, j));
 			//mitoLogger.info("Im here(ID:" + this.BBID + ")  " + "chunk data: " + this.group.list.size() + "  : " + this.group.datachunk.xPosition + ", " + this.group.datachunk.zPosition + "  "
 			//		+ BB_DataLists.getWorldData(worldObj).braceBaseList.size() + "  " + this.isDead);
@@ -81,7 +85,7 @@ public class Brace extends ExtraObject {
 			return;
 		}
 		this.currentCommand = command;
-		this.pos = MitoMath.vectorPul(this.pos, motion);
+		this.pos = MitoMath.vectorSum(this.pos, motion);
 		this.line.move(motion, command);
 		for (int n = 0; n < this.bindBraces.size(); n++) {
 			ExtraObject base = this.bindBraces.get(n);
@@ -98,6 +102,7 @@ public class Brace extends ExtraObject {
 		Vec3 end = getVec3(nbt, "end");
 		line = new Line(start, end);
 		this.shape = BB_TypeResister.getFigure(nbt.getString("shape"));
+		this.joint = BB_TypeResister.getJoint(nbt.getString("joint"));
 		this.size = nbt.getDouble("size");
 		this.texture = BB_EnumTexture.values()[nbt.getInteger("texture")];
 		this.color = nbt.getInteger("color");
@@ -118,6 +123,7 @@ public class Brace extends ExtraObject {
 		if (line != null && shape != null) {
 			line.writeNBT(nbt);
 			nbt.setString("shape", BB_TypeResister.getName(this.shape));
+			nbt.setString("joint", BB_TypeResister.getJointName(this.joint));
 			nbt.setDouble("size", this.size);
 			nbt.setInteger("texture", this.texture.ordinal());
 			nbt.setInteger("color", this.color);
@@ -181,7 +187,7 @@ public class Brace extends ExtraObject {
 			Vec3 center = MitoMath.vectorRatio(this.end, this.pos, 0.5);
 			int div = (int) (MitoMath.subAbs(this.pos, this.end) * 4) + 1;
 			Vec3 vec = MitoMath.vectorSub(this.end, this.pos);
-
+			
 			for (int i1 = 0; i1 < b0; ++i1) {
 				for (int j1 = 0; j1 < b0; ++j1) {
 					for (int k1 = 0; k1 < div; ++k1) {
@@ -224,8 +230,8 @@ public class Brace extends ExtraObject {
 		float f1 = this.random.nextFloat() * 0.2F + 0.1F;
 		float f2 = this.random.nextFloat() * 0.2F + 0.1F;
 
-		ItemBrace brace = (ItemBrace) Main.ItemBrace;
-		ItemStack itemstack1 = new ItemStack(Main.ItemBrace, 1, this.color);
+		ItemBrace brace = (ItemBrace) ResisterItem.ItemBrace;
+		ItemStack itemstack1 = new ItemStack(ResisterItem.ItemBrace, 1, this.color);
 		brace.setSize(itemstack1, (int) (this.size * 20));
 		brace.setType(itemstack1, BB_TypeResister.getName(this.shape));
 
@@ -249,7 +255,7 @@ public class Brace extends ExtraObject {
 		int i = MathHelper.floor_double((this.pos.xCoord + this.end.xCoord) / 2);
 		int k = MathHelper.floor_double((this.pos.yCoord + this.end.yCoord) / 2);
 		int j = MathHelper.floor_double((this.pos.zCoord + this.end.zCoord) / 2);
-
+	
 		if (this.worldObj.blockExists(i, 0, j)) {
 			return this.worldObj.getLightBrightnessForSkyBlocks(i, k, j, 0);
 		} else {
@@ -276,7 +282,7 @@ public class Brace extends ExtraObject {
 	}
 
 	public AxisAlignedBB getBoundingBox() {
-		if(line == null){
+		if (line == null) {
 			return null;
 		}
 		return line.getBoundingBox(size);
@@ -306,6 +312,7 @@ public class Brace extends ExtraObject {
 
 	public void addCoordinate(double x, double y, double z) {
 		this.pos = this.pos.addVector(x, y, z);
+		this.prevPos = this.prevPos.addVector(x, y, z);
 		if (line != null)
 			line.addCoordinate(x, y, z);//this.end = this.end.addVector(x, y, z);
 	}
@@ -328,7 +335,7 @@ public class Brace extends ExtraObject {
 	}
 
 	public void rotation(Vec3 cent, double yaw) {
-		Vec3 p = MitoMath.vectorPul(MitoMath.rotY(MitoMath.vectorSub(this.pos, cent), yaw), cent);
+		Vec3 p = MitoMath.vectorSum(MitoMath.rotY(MitoMath.vectorSub(this.pos, cent), yaw), cent);
 		/*end = MitoMath.vectorPul(MitoMath.rotY(MitoMath.vectorSub(this.end, cent), yaw), cent);
 		offCurvePoints1 = MitoMath.rotY(offCurvePoints1, yaw);
 		offCurvePoints2 = MitoMath.rotY(offCurvePoints2, yaw);*/
@@ -340,7 +347,7 @@ public class Brace extends ExtraObject {
 	}
 
 	public void resize(Vec3 cent, double i) {
-		Vec3 p = MitoMath.vectorPul(MitoMath.vectorMul(MitoMath.vectorSub(this.pos, cent), i), cent);
+		Vec3 p = MitoMath.vectorSum(MitoMath.vectorMul(MitoMath.vectorSub(this.pos, cent), i), cent);
 		//end = MitoMath.vectorPul(MitoMath.vectorMul(MitoMath.vectorSub(this.end, cent), i), cent);
 		if (line != null)
 			line.resize(cent, i);

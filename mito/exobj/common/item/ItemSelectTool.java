@@ -7,13 +7,15 @@ import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.client.BB_Key;
 import com.mito.exobj.client.BB_SelectedGroup;
 import com.mito.exobj.client.RenderHighLight;
+import com.mito.exobj.common.Direction26;
 import com.mito.exobj.common.Main;
+import com.mito.exobj.common.MyLogger;
 import com.mito.exobj.common.entity.EntityWrapperBB;
 import com.mito.exobj.network.GroupPacketProcessor;
 import com.mito.exobj.network.GroupPacketProcessor.EnumGroupMode;
 import com.mito.exobj.network.PacketHandler;
 import com.mito.exobj.utilities.MitoMath;
-import com.mito.exobj.utilities.MitoUtil;
+import com.mito.exobj.utilities.MyUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,7 +40,7 @@ public class ItemSelectTool extends ItemBraceBase {
 		if (world.isRemote) {
 			NBTTagCompound nbt = getTagCompound(itemstack);
 			MovingObjectPosition movingOP = Minecraft.getMinecraft().objectMouseOver;
-			boolean flag = MitoUtil.isBrace(movingOP);
+			boolean flag = MyUtil.isBrace(movingOP);
 			BB_SelectedGroup sel = Main.proxy.sg;
 			MovingObjectPosition mop = this.getMovingOPWithKey(itemstack, world, player, Main.proxy.getKey(), Minecraft.getMinecraft().objectMouseOver, 1.0);
 
@@ -68,11 +70,20 @@ public class ItemSelectTool extends ItemBraceBase {
 				}
 				sel.setcopy(false);
 				sel.activated = false;
+			} else if (sel.modeBlock) {
+				MyLogger.info();
+				int x = Direction26.offsetsXForSide[mop.sideHit];
+				int y = Direction26.offsetsYForSide[mop.sideHit];
+				int z = Direction26.offsetsZForSide[mop.sideHit];
+				Vec3 v = Vec3.createVectorHelper(mop.blockX + x, mop.blockY + y, mop.blockZ + z);
+				PacketHandler.INSTANCE.sendToServer(new GroupPacketProcessor(EnumGroupMode.SETBLOCK, sel.getList(), v));
+				sel.setblock(false);
+				sel.activated = false;
 			} else {
 				if (sel.activated) {
 					Vec3 set = mop.hitVec;
 					if (MitoMath.subAbs(sel.set, set) < 5000) {
-						AxisAlignedBB aabb = MitoUtil.createAABBByVec3(sel.set, set);
+						AxisAlignedBB aabb = MyUtil.createAABBByVec3(sel.set, set);
 						List<ExtraObject> list = BB_DataLists.getWorldData(world).getExtraObjectWithAABB(aabb);
 						if (player.isSneaking()) {
 							sel.addShift(list);
@@ -132,12 +143,18 @@ public class ItemSelectTool extends ItemBraceBase {
 			if (mop == null)
 				return false;
 			Vec3 set = mop.hitVec;
+			RenderHighLight rh = RenderHighLight.INSTANCE;
 			if (sel.modeCopy() || sel.modeMove) {
 				sel.drawHighLightCopy(player, partialticks, mop);
+			} else if (sel.modeBlock) {
+				int x = Direction26.offsetsXForSide[mop.sideHit];
+				int y = Direction26.offsetsYForSide[mop.sideHit];
+				int z = Direction26.offsetsZForSide[mop.sideHit];
+				Vec3 v = Vec3.createVectorHelper(0.5 + mop.blockX + x, 0.5 + mop.blockY + y, 0.5 + mop.blockZ + z);
+				rh.drawBox(player, v, 0.95, partialticks);
 			}
 			sel.drawHighLightGroup(player, partialticks);
-			RenderHighLight rh = RenderHighLight.INSTANCE;
-			if (sel.activated && MitoUtil.canClick(player.worldObj, Main.proxy.getKey(), mop)) {
+			if (sel.activated && MyUtil.canClick(player.worldObj, Main.proxy.getKey(), mop)) {
 				Vec3 end = sel.set;
 				rh.drawBox(player, set, end, partialticks);
 				return true;

@@ -9,7 +9,7 @@ import com.mito.exobj.common.Main;
 import com.mito.exobj.common.MyLogger;
 import com.mito.exobj.common.entity.EntityWrapperBB;
 import com.mito.exobj.utilities.MitoMath;
-import com.mito.exobj.utilities.MitoUtil;
+import com.mito.exobj.utilities.MyUtil;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -43,7 +43,7 @@ public class ItemBender extends ItemSet {
 	public void snapDegree(MovingObjectPosition mop, ItemStack itemstack, World world, EntityPlayer player, BB_Key key, NBTTagCompound nbt){
 		if (nbt.getBoolean("activated")) {
 			Vec3 set = Vec3.createVectorHelper(nbt.getDouble("setX"), nbt.getDouble("setY"), nbt.getDouble("setZ"));
-			MitoUtil.snapByShiftKey(mop, set);
+			MyUtil.snapByShiftKey(mop, set);
 		}
 	}
 
@@ -93,7 +93,7 @@ public class ItemBender extends ItemSet {
 	@Override
 	public boolean drawHighLightBox(ItemStack itemstack, EntityPlayer player, float partialTicks, MovingObjectPosition mop) {
 		NBTTagCompound nbt = getTagCompound(itemstack);
-		if (mop == null || !MitoUtil.canClick(player.worldObj, Main.proxy.getKey(), mop))
+		if (mop == null || !MyUtil.canClick(player.worldObj, Main.proxy.getKey(), mop))
 			return false;
 		Vec3 set = mop.hitVec;
 

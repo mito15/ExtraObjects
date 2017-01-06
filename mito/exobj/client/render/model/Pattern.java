@@ -43,6 +43,11 @@ public class Pattern implements IDrawBrace {
 
 	}
 
+	@Override
+	public boolean hasNull() {
+		return false;
+	}
+
 	/*public void renderBraceAt(Brace brace, float partialTickTime) {
 		if (brace.size == 0 || this.length == 0) {
 			return;

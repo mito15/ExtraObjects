@@ -41,6 +41,7 @@ public class GuiItemSelectTool extends GuiScreen {
 		buttonList.add(new GuiButton(202, this.width / 2 - 40, this.height / 2 + 82, 30, 20, "transform"));
 
 		buttonList.add(new GuiButton(301, this.width / 2, this.height / 2 + 60, 30, 20, "group"));
+		buttonList.add(new GuiButton(302, this.width / 2, this.height / 2 + 82, 30, 20, "blockize"));
 
 		//		this.buttonList.add(new GuiButton(100, this.width / 2 - 120, this.height / 2 + 10, 20, 20, "<"));
 		//		this.buttonList.add(new GuiButton(101, this.width / 2 - 60, this.height / 2 + 10, 20, 20, ">"));
@@ -81,6 +82,12 @@ public class GuiItemSelectTool extends GuiScreen {
 			this.mc.displayGuiScreen(new GuiGroupTransform());
 			break;
 		case 301:
+			//sel.grouping();
+			this.mc.thePlayer.closeScreen();
+			break;
+		case 302:
+			sel.setblock(true);
+			this.mc.thePlayer.closeScreen();
 			break;
 		}
 		//Packet code here

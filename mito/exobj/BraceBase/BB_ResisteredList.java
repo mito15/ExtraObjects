@@ -55,7 +55,7 @@ public class BB_ResisteredList {
 	/**
 	 * Create a new instance of an entity in the world by using the entity name.
 	 */
-	public static ExtraObject createFixedObjByName(String p_75620_0_, World p_75620_1_) {
+	public static ExtraObject createExObjByName(String p_75620_0_, World p_75620_1_) {
 		ExtraObject iobj = null;
 
 		try {
@@ -75,12 +75,12 @@ public class BB_ResisteredList {
 	 * create a new instance of an entity from NBT store
 	 */
 
-	public static ExtraObject createBraceBaseFromNBT(NBTTagCompound nbt, World world) {
-		return createBraceBaseFromNBT(nbt, world, -1);
+	public static ExtraObject createExObjFromNBT(NBTTagCompound nbt, World world) {
+		return createExObjFromNBT(nbt, world, -1);
 	}
 
-	public static ExtraObject createBraceBaseFromNBT(NBTTagCompound nbt, World world, int id) {
-		ExtraObject iobj = null;
+	public static ExtraObject createExObjFromNBT(NBTTagCompound nbt, World world, int id) {
+		ExtraObject exObj = null;
 
 		Class oclass = null;
 		try {
@@ -92,32 +92,32 @@ public class BB_ResisteredList {
 			oclass = (Class) stringToClassMapping.get(nbt.getString("id"));
 
 			if (oclass == null) {
-				//mitoLogger.info("class is null");
+				MyLogger.info("class is null " + nbt.getString("id"));
 			}
 			if (oclass != null) {
-				iobj = (ExtraObject) oclass.getConstructor(new Class[] { World.class }).newInstance(new Object[] { world });
+				exObj = (ExtraObject) oclass.getConstructor(new Class[] { World.class }).newInstance(new Object[] { world });
 				if (id != -1) {
-					iobj.BBID = id;
+					exObj.BBID = id;
 				}
 			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
 
-		if (iobj != null) {
+		if (exObj != null) {
 			try {
-				iobj.readFromNBT(nbt);
+				exObj.readFromNBT(nbt);
 			} catch (Exception e) {
 				FMLLog.log(Level.ERROR, e,
 						"An Entity %s(%s) has thrown an exception during loading, its state cannot be restored. Report this to the mod author",
 						nbt.getString("id"), oclass.getName());
-				iobj = null;
+				exObj = null;
 			}
 		} else {
-			MyLogger.warn("Skipping Entity with id " + nbt.getString("id"));
+			MyLogger.warn("Skipping Extra Object with id " + nbt.getString("id"));
 		}
 
-		return iobj;
+		return exObj;
 	}
 
 	/**

@@ -10,7 +10,7 @@ import com.mito.exobj.BraceBase.Brace.Brace;
 import com.mito.exobj.BraceBase.Brace.Render.BezierCurve;
 import com.mito.exobj.utilities.Line;
 import com.mito.exobj.utilities.MitoMath;
-import com.mito.exobj.utilities.MitoUtil;
+import com.mito.exobj.utilities.MyUtil;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Vec3;
@@ -105,57 +105,15 @@ public class D_Face extends Polygon2D implements IDrawBrace {
 					double uOffset = MitoMath.subAbs(v1, v2);
 					double vOffset2 = v1.zCoord - v2.zCoord;
 					c.setNormal(norm1);
-					c.registVertexWithUV(MitoMath.vectorPul(new Vec3[] { vs1, s }), uvOffset + v, uvOffset + usum);
-					c.registVertexWithUV(MitoMath.vectorPul(new Vec3[] { vs2, s }), uvOffset + v + vOffset2, uvOffset + uOffset + usum);
+					c.registVertexWithUV(MitoMath.vectorSum(new Vec3[] { vs1, s }), uvOffset + v, uvOffset + usum);
+					c.registVertexWithUV(MitoMath.vectorSum(new Vec3[] { vs2, s }), uvOffset + v + vOffset2, uvOffset + uOffset + usum);
 					c.setNormal(norm2);
-					c.registVertexWithUV(MitoMath.vectorPul(new Vec3[] { ve2, e }), uvOffset + v + vOffset + vOffset2, uvOffset + uOffset + usum);
-					c.registVertexWithUV(MitoMath.vectorPul(new Vec3[] { ve1, e }), uvOffset + v + vOffset, uvOffset + usum);
+					c.registVertexWithUV(MitoMath.vectorSum(new Vec3[] { ve2, e }), uvOffset + v + vOffset + vOffset2, uvOffset + uOffset + usum);
+					c.registVertexWithUV(MitoMath.vectorSum(new Vec3[] { ve1, e }), uvOffset + v + vOffset, uvOffset + usum);
 					usum += uOffset;
 				}
 				v += vOffset;
 			}
-
-			/*double size = brace.size;
-			int acc = 20;
-			BezierCurve bc = brace.getBezierCurve();
-			double roll = brace.getRoll();
-			double v = 0.0D;
-			Vec3 unit = Vec3.createVectorHelper(0, 0, 1);
-			for (int n = 0; n < acc; n++) {
-				double t = (double)n / (double)acc;
-				double t1 = (double)(n + 1) / (double)acc;
-				Vec3 s = MitoMath.vectorSub(bc.getPoint(t), brace.pos);
-				Vec3 e = MitoMath.vectorSub(bc.getPoint(t1), brace.pos);
-				Vec3 sn = bc.getNormal(t);
-				Vec3 en = bc.getNormal(t1);
-				double usum = 0.0D;
-				double vOffset = MitoMath.subAbs(s, e);
-				double rollOffset1 = -Math.acos(sn.dotProduct(unit));
-				double rollOffset2 = -Math.acos(en.dotProduct(unit));
-				Vec3 offsetAxis1 = sn.crossProduct(unit).normalize();
-				Vec3 offsetAxis2 = en.crossProduct(unit).normalize();
-				for (int n1 = 0; n1 < getSize(size); n1++) {
-					Vec3 v1 = MitoMath.rotZ(getVec3(n1 - 1, size), roll);
-					Vec3 v2 = MitoMath.rotZ(getVec3(n1, size), roll);
-					Vec3 vs1 = MitoMath.rot(v1, rollOffset1, offsetAxis1);
-					Vec3 vs2 = MitoMath.rot(v2, rollOffset1, offsetAxis1);
-					Vec3 ve1 = MitoMath.rot(v1, rollOffset2, offsetAxis2);
-					Vec3 ve2 = MitoMath.rot(v2, rollOffset2, offsetAxis2);
-					Vec3 norm = MitoMath.rotZ(MitoMath.unitVector(Vec3.createVectorHelper(v2.yCoord - v1.yCoord, v1.xCoord - v2.xCoord, 0.0D)), roll);
-					Vec3 norm1 = MitoMath.rot(norm, rollOffset1, offsetAxis1);
-					Vec3 norm2 = MitoMath.rot(norm, rollOffset2, offsetAxis2);
-					double uOffset = MitoMath.subAbs(v1, v2);
-					double vOffset2 = v1.zCoord - v2.zCoord;
-					c.setNormal(norm1);
-					c.registVertexWithUV(MitoMath.vectorPul(vs1, s), uvOffset + v, uvOffset + usum);
-					c.registVertexWithUV(MitoMath.vectorPul(vs2, s), uvOffset + v + vOffset2, uvOffset + uOffset + usum);
-					c.setNormal(norm2);
-					c.registVertexWithUV(MitoMath.vectorPul(ve2, e), uvOffset + v + vOffset + vOffset2, uvOffset + uOffset + usum);
-					c.registVertexWithUV(MitoMath.vectorPul(ve1, e), uvOffset + v + vOffset, uvOffset + usum);
-					usum += uOffset;
-				}
-				v += vOffset;
-			}*/
 		} else if (brace.line instanceof Line) {
 			Line line = (Line) brace.line;
 			double size = brace.size;
@@ -208,7 +166,7 @@ public class D_Face extends Polygon2D implements IDrawBrace {
 			for (int n1 = 0; n1 < getSize(size); n1++) {
 				vers.add(getVertex(n1, size));
 			}
-			Triangle[] ts = MitoUtil.decomposePolygon(vers);
+			Triangle[] ts = MyUtil.decomposePolygon(vers);
 			for (int n1 = 0; n1 < ts.length; n1++) {
 				ts[n1].drawReverse(c, Vec3.createVectorHelper(0.0D, 0.0D, 0.0D), roll, pitch1, yaw1);
 				ts[n1].draw(c, offset, roll, pitch2, yaw2);
@@ -229,7 +187,7 @@ public class D_Face extends Polygon2D implements IDrawBrace {
 			for (int n1 = 0; n1 < getSize(size); n1++) {
 				vers.add(getVertex(n1, size));
 			}
-			Triangle[] ts = MitoUtil.decomposePolygon(vers);
+			Triangle[] ts = MyUtil.decomposePolygon(vers);
 			for (int n1 = 0; n1 < ts.length; n1++) {
 				ts[n1].draw(c, l);
 				ts[n1].drawReverse(c, 0.0D);
@@ -245,6 +203,15 @@ public class D_Face extends Polygon2D implements IDrawBrace {
 			Tessellator t = Tessellator.instance;
 			Line line = (Line) brace.line;
 			double size = brace.size;
+			
+			
+			
+			for (int n1 = 0; n1 < getSize(size); n1++) {
+				
+			}
+			
+			
+			
 			double l = MitoMath.subAbs(line.start, line.end);
 			double roll = brace.getRoll();
 			double yaw = MitoMath.getYaw(line.start, line.end);
@@ -280,7 +247,7 @@ public class D_Face extends Polygon2D implements IDrawBrace {
 				vers.add(getVertex(n1, size));
 			}
 			t.startDrawing(4);
-			Triangle[] ts = MitoUtil.decomposePolygon(vers);
+			Triangle[] ts = MyUtil.decomposePolygon(vers);
 			for (int n1 = 0; n1 < ts.length; n1++) {
 				ts[n1].draw(t, l);
 				ts[n1].drawReverse(t, 0.0D);
@@ -309,13 +276,6 @@ public class D_Face extends Polygon2D implements IDrawBrace {
 		double yaw = MitoMath.getYaw(norm);
 		double pitch = MitoMath.getPitch(norm);
 		drawPlane(c, offset, norm, roll, pitch, yaw, size);
-	}
-
-	public D_Face[] decomposePolygon(double size) {
-		D_Face[] ret = new D_Face[getSize(size)];
-		for (int n = 0; n < getSize(size) - 2; n++) {
-		}
-		return ret;
 	}
 
 	public static D_Face createStar(int size) {

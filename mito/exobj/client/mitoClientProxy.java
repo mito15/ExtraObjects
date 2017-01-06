@@ -9,11 +9,14 @@ import com.mito.exobj.client.render.RenderItemBrace;
 import com.mito.exobj.client.render.RenderWall;
 import com.mito.exobj.common.Main;
 import com.mito.exobj.common.mitoCommonProxy;
+import com.mito.exobj.common.block.TileObjects;
 import com.mito.exobj.common.entity.EntityBrace;
 import com.mito.exobj.common.entity.EntityFake;
 import com.mito.exobj.common.entity.EntityWall;
+import com.mito.exobj.common.main.ResisterItem;
 
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.block.Block;
@@ -73,11 +76,11 @@ public class mitoClientProxy extends mitoCommonProxy {
 
 	@Override
 	public void preInit() {
-		super.preInit();
-		//mitoLogger.info("on pre initializing");
-
+		resisterEvent();
 		this.sg = new BB_SelectedGroup(this);
+	}
 
+	public void resisterEvent() {
 		this.bh = new BraceHighLightHandler(this);
 		MinecraftForge.EVENT_BUS.register(bh);
 		FMLCommonHandler.instance().bus().register(bh);
@@ -89,24 +92,23 @@ public class mitoClientProxy extends mitoCommonProxy {
 		this.rh = new BB_RenderHandler();
 		MinecraftForge.EVENT_BUS.register(rh);
 		FMLCommonHandler.instance().bus().register(rh);
-
-		Main.OscillatorRenderType = RenderingRegistry.getNextAvailableRenderId();
-		Main.PipeRenderType = RenderingRegistry.getNextAvailableRenderId();
 	}
 
 	@Override
 	public void init() {
-		super.init();
-
 		//entity render resist
 
 		RenderingRegistry.registerEntityRenderingHandler(EntityBrace.class, new RenderEntityBrace());
 		RenderingRegistry.registerEntityRenderingHandler(EntityFake.class, new RenderEntityBrace());
 		RenderingRegistry.registerEntityRenderingHandler(EntityWall.class, new RenderWall());
 
+		Main.RenderType_Objects = RenderingRegistry.getNextAvailableRenderId();
+		RenderingRegistry.registerBlockHandler(new RenderBlockObjects());
+		ClientRegistry.registerTileEntity(TileObjects.class, "TileObjects", new TileObjectsRenderer());
+
 		//item renderer
 
-		MinecraftForgeClient.registerItemRenderer(Main.ItemBrace, new RenderItemBrace());
+		MinecraftForgeClient.registerItemRenderer(ResisterItem.ItemBrace, new RenderItemBrace());
 
 		//key
 

@@ -4,8 +4,8 @@ import org.lwjgl.opengl.GL11;
 
 import com.mito.exobj.BraceBase.BB_Render;
 import com.mito.exobj.BraceBase.BB_RenderHandler;
-import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.BraceBase.CreateVertexBufferObject;
+import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.BraceBase.VBOHandler;
 import com.mito.exobj.BraceBase.VBOList;
 import com.mito.exobj.BraceBase.Brace.Brace;
@@ -27,6 +27,7 @@ public class RenderBrace extends BB_Render {
 			return;
 
 		brace.shape.renderBraceAt(brace, 0);
+		
 
 	}
 

@@ -319,7 +319,7 @@ public class LinearMotor extends ExtraObject {
 				break;
 			}
 			Vec3 v2 = MitoMath.rot(v1, this.getRoll(), this.getPitch(), this.getYaw());
-			ret = MitoMath.vectorPul(v2, this.pos);
+			ret = MitoMath.vectorSum(v2, this.pos);
 		}
 		return ret;
 	}

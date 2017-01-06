@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.mito.exobj.client.render.model.BB_LoadModel;
-import com.mito.exobj.client.render.model.BraceShapes;
 import com.mito.exobj.client.render.model.D_Ellipse;
 import com.mito.exobj.client.render.model.D_Face;
 import com.mito.exobj.client.render.model.IDrawBrace;
@@ -14,6 +13,7 @@ import com.mito.exobj.client.render.model.Pattern;
 import com.mito.exobj.client.render.model.Polygon3D;
 import com.mito.exobj.client.render.model.T_OrdinaryModel;
 import com.mito.exobj.client.render.model.Vertex;
+import com.mito.exobj.common.MyLogger;
 
 import cpw.mods.fml.common.Loader;
 import net.minecraft.util.Vec3;
@@ -22,17 +22,20 @@ public class BB_TypeResister {
 
 	public static Map<String, IDrawBrace> stringToFigureMapping = new HashMap<String, IDrawBrace>();
 	public static Map<IDrawBrace, String> figureToStringMapping = new HashMap<IDrawBrace, String>();
+	public static Map<String, IJoint> stringToJointMapping = new HashMap<String, IJoint>();
+	public static Map<IJoint, String> jointToStringMapping = new HashMap<IJoint, String>();
 	public static List<String> shapeList = new ArrayList<String>();
 	public static List<String> patternList = new ArrayList<String>();
 	public static List<IDrawBrace> typeList = new ArrayList<IDrawBrace>();
+	public static List<IJoint> jointList = new ArrayList<IJoint>();
 
 	public static void addMapping(IDrawBrace figure, String name) {
-		addMapping(figure, name, false);
+		addMapping(figure, name, true);
 	}
 
 	public static void addMapping(IDrawBrace figure, String name, boolean init) {
 		if (stringToFigureMapping.containsKey(name)) {
-			throw new IllegalArgumentException("ID is already registered: " + name);
+			MyLogger.warn("ID is already registered: " + name);
 		} else {
 			stringToFigureMapping.put(name, figure);
 			figureToStringMapping.put(figure, name);
@@ -55,20 +58,18 @@ public class BB_TypeResister {
 	}
 
 	public static void loadModels() {
-		addMapping(createSquare(1, 1, 0, 0), "square", true);
+		/*addMapping(createSquare(1, 1, 0, 0), "square", true);
 		addMapping(createElipse(1, 1, 0, 0), "round", true);
 		addMapping(createSquare(0.2, 1, 0, 0), "vertical", true);
-		addMapping(createSquare(1, 0.2, 0, 0), "horizontal", true);
-		addMapping(create2d(0.5, 0.55, -0.5, 0.55, -0.5, 0.45, -0.05, 0.45, -0.05, -0.45, -0.5, -0.45, -0.5, -0.55, +0.5, -0.55, 0.5, -0.45, 0.05, -0.45, 0.05, 0.45, 0.5, 0.45), "H-section", true);
-		addMapping(new BraceShapes(createSquare(0.1, 1.0, -0.45, 0), createSquare(1, 0.1, 0, -0.45)), "Equal-Angle", true);
-		addMapping(new BraceShapes(createSquare(1, 0.1, 0, 0.45), createSquare(1, 0.1, 0, -0.45), createSquare(0.1, 0.8, -0.45, 0)), "U-section", true);
+		addMapping(createSquare(1, 0.2, 0, 0), "horizontal", true);*/
+		//addMapping(create2d(0.5, 0.55, -0.5, 0.55, -0.5, 0.45, -0.05, 0.45, -0.05, -0.45, -0.5, -0.45, -0.5, -0.55, +0.5, -0.55, 0.5, -0.45, 0.05, -0.45, 0.05, 0.45, 0.5, 0.45), "H-section", true);
+		//addMapping(new BraceShapes(createSquare(0.1, 1.0, -0.45, 0), createSquare(1, 0.1, 0, -0.45)), "Equal-Angle", true);
 		addMapping(new Pattern(0.6, createRectangle(0, 0, 0.15, 0.9, 0.9, 0.3), createRectangle(0, 0, 0.3, 0.3, 0.3, 0.6)), "pattern", true);
-		addMapping(create2d(-0.1123, 0.1545, -0.4756, 0.1545, -0.1817, -0.0590, -0.2939, -0.4045, 0.0000, -0.1910, 0.2939, -0.4045, 0.1817, -0.0590, 0.4756, 0.1545, 0.1123, 0.1545, 0.0000, 0.5000), "star", true);
+		//addMapping(create2d(-0.1123, 0.1545, -0.4756, 0.1545, -0.1817, -0.0590, -0.2939, -0.4045, 0.0000, -0.1910, 0.2939, -0.4045, 0.1817, -0.0590, 0.4756, 0.1545, 0.1123, 0.1545, 0.0000, 0.5000), "star", true);
 		if (Loader.isModLoaded("NGTLib")) {
 			//addMapping(new Pattern(0.6, new NGTOWrapper("chino.ngto")), "ngto");
 		}
 		BB_LoadModel.load();
-		//ここにロードする
 	}
 
 	public static String getName(IDrawBrace shape) {
@@ -112,8 +113,22 @@ public class BB_TypeResister {
 				new D_Face(new Vertex(minX, maxY, maxZ, minY, maxZ), new Vertex(minX, maxY, minZ, minY, minZ), new Vertex(minX, minY, minZ, maxY, minZ), new Vertex(minX, minY, maxZ, maxY, maxZ)));
 	}
 
-	public static D_Ellipse createElipse(double i, double j, int k, int l) {
+	public static D_Ellipse createElipse(double i, double j, double k, double l) {
 		return new D_Ellipse(Vec3.createVectorHelper(k, l, 0), Vec3.createVectorHelper(0, 0, 1), i, j);
+	}
+
+	public static IJoint getJoint(String name) {
+		if (!stringToJointMapping.containsKey(name)) {
+			return null;
+		}
+		return stringToJointMapping.get(name);
+	}
+
+	public static String getJointName(IJoint joint) {
+		if(joint == null){
+			return "";
+		}
+		return jointToStringMapping.get(joint);
 	}
 
 }

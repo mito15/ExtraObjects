@@ -9,7 +9,7 @@ import com.mito.exobj.network.BB_PacketProcessor;
 import com.mito.exobj.network.BB_PacketProcessor.Mode;
 import com.mito.exobj.network.PacketHandler;
 import com.mito.exobj.utilities.MitoMath;
-import com.mito.exobj.utilities.MitoUtil;
+import com.mito.exobj.utilities.MyUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -142,7 +142,7 @@ public class ItemBar extends ItemBraceBase {
 		if (key.isShiftPressed()) {
 			MovingObjectPosition m2 = this.getMovingOPWithKey(stack, player.worldObj, player, key, Minecraft.getMinecraft().objectMouseOver, 1.0);
 			if (m2 != null) {
-				if (MitoUtil.isBrace(m2) && ((EntityWrapperBB)m2.entityHit).base instanceof Brace) {
+				if (MyUtil.isBrace(m2) && ((EntityWrapperBB)m2.entityHit).base instanceof Brace) {
 					Brace brace = (Brace) ((EntityWrapperBB)m2.entityHit).base;
 					int w = dwheel / 120;
 					double div = brace.getRoll() + (double)w * 15;

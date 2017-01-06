@@ -2,7 +2,7 @@ package com.mito.exobj.common.item;
 
 import com.mito.exobj.client.BB_Key;
 import com.mito.exobj.utilities.MitoMath;
-import com.mito.exobj.utilities.MitoUtil;
+import com.mito.exobj.utilities.MyUtil;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,7 +41,7 @@ public class ItemSet extends ItemBraceBase {
 			this.nbtInit(nbt, itemstack);
 		}
 		if (!world.isRemote) {
-			if (mop != null && (MitoUtil.canClick(world, key, mop))) {
+			if (mop != null && (MyUtil.canClick(world, key, mop))) {
 				if (nbt.getBoolean("activated")) {
 					Vec3 end = MitoMath.copyVec3(mop.hitVec);
 					Vec3 set = Vec3.createVectorHelper(nbt.getDouble("setX"), nbt.getDouble("setY"), nbt.getDouble("setZ"));
@@ -56,7 +56,7 @@ public class ItemSet extends ItemBraceBase {
 				}
 			}
 		} else {
-			if (mop != null && (MitoUtil.canClick(world, key, mop))) {
+			if (mop != null && (MyUtil.canClick(world, key, mop))) {
 				clientProcess(mop, itemstack);
 			}
 		}

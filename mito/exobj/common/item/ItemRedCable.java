@@ -10,7 +10,7 @@ import com.mito.exobj.client.RenderHighLight;
 import com.mito.exobj.common.Main;
 import com.mito.exobj.common.entity.EntityWrapperBB;
 import com.mito.exobj.utilities.MitoMath;
-import com.mito.exobj.utilities.MitoUtil;
+import com.mito.exobj.utilities.MyUtil;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -43,7 +43,7 @@ public class ItemRedCable extends ItemSet {
 	public void snapDegree(MovingObjectPosition mop, ItemStack itemstack, World world, EntityPlayer player, BB_Key key, NBTTagCompound nbt) {
 		if (nbt.getBoolean("activated")) {
 			Vec3 set = Vec3.createVectorHelper(nbt.getDouble("setX"), nbt.getDouble("setY"), nbt.getDouble("setZ"));
-			MitoUtil.snapByShiftKey(mop, set);
+			MyUtil.snapByShiftKey(mop, set);
 		}
 	}
 
@@ -66,7 +66,7 @@ public class ItemRedCable extends ItemSet {
 	public boolean drawHighLightBox(ItemStack itemstack, EntityPlayer player, float partialTicks, MovingObjectPosition mop) {
 		NBTTagCompound nbt = getTagCompound(itemstack);
 		double size = this.size ;
-		if (mop == null || !MitoUtil.canClick(player.worldObj, Main.proxy.getKey(), mop))
+		if (mop == null || !MyUtil.canClick(player.worldObj, Main.proxy.getKey(), mop))
 			return false;
 		Vec3 set = mop.hitVec;
 
@@ -96,8 +96,8 @@ public class ItemRedCable extends ItemSet {
 			brace.addToWorld();
 			//EntityBrace brace = new EntityBrace(world, set, end, this.getSize(itemstack), color, (byte)1);
 			//world.spawnEntityInWorld(brace);
-			if (MitoUtil.isBrace(movingOP) && MitoUtil.getBrace(movingOP).isStatic) {
-				ExtraObject base = MitoUtil.getBrace(movingOP);
+			if (MyUtil.isBrace(movingOP) && MyUtil.getBrace(movingOP).isStatic) {
+				ExtraObject base = MyUtil.getBrace(movingOP);
 				brace.connectBrace(base);
 			}
 			ExtraObject base = BB_DataLists.getWorldData(world).getBraceBaseByID(nbt.getInteger("brace"));

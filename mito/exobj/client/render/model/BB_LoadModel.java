@@ -63,7 +63,7 @@ public class BB_LoadModel {
 			list.add(name);
 		}
 		reader.endArray();
-		for(int n = 0; n < list.size(); n++){
+		for (int n = 0; n < list.size(); n++) {
 			list.add(list.get(n));
 		}
 	}
@@ -102,7 +102,14 @@ public class BB_LoadModel {
 					loadUrl(reader);
 				} else if (name.equals("class")) {
 					if (load_type != null && typename != null) {
-						loadClass(reader, typename, author, load_type);
+						IDrawBrace add = loadClass(reader);
+						if (add != null && !add.hasNull()) {
+							if (author == null || author.equals("")) {
+								BB_TypeResister.addMapping(add, typename);
+							} else {
+								BB_TypeResister.addMapping(add, author + ":" + typename);
+							}
+						}
 					} else {
 						reader.skipValue();
 					}
@@ -120,28 +127,79 @@ public class BB_LoadModel {
 		}
 	}
 
-	public static void loadClass(JsonReader reader, String typename, String author, String load_type) throws IOException {
+	public static IDrawBrace loadClass(JsonReader reader) throws IOException {
 		reader.beginObject();
+		IDrawBrace ret = null;
 		while (reader.hasNext()) {
 			String name1 = reader.nextName();
 			MyLogger.info("loadClass " + name1);
 			if (name1.equals("class_name")) {
 				String classname = reader.nextString();
 				if (classname.equals("D_Face")) {
-					D_Face face = loadFace(reader);
-					if (face != null && !face.hasNull()) {
-						if (author == null || author.equals("")) {
-							BB_TypeResister.addMapping(face, typename);
-						} else {
-							BB_TypeResister.addMapping(face, author + ":" + typename);
-						}
-					}
+					ret = loadFace(reader);
+				} else if (classname.equals("D_Ellipse")) {
+					ret = loadEllipse(reader);
+				} else if (classname.equals("BraceShapes")) {
+					ret = loadBraceShapes(reader);
 				}
 			} else {
 				reader.skipValue();
 			}
 		}
 		reader.endObject();
+		return ret;
+	}
+
+	private static IDrawBrace loadBraceShapes(JsonReader reader) throws IOException {
+		IDrawBrace[] shapes = null;
+		double size = 1.0;
+		while (reader.hasNext()) {
+			String name1 = reader.nextName();
+			if (name1.equals("shape_number")) {
+				shapes = new IDrawBrace[reader.nextInt()];
+			} else if (name1.equals("size_ratio")) {
+				size = reader.nextDouble();
+			} else if (name1.equals("shapes")) {
+				int n = 0;
+				reader.beginArray();
+				while (reader.hasNext()) {
+					shapes[n] = loadClass(reader);
+					n++;
+				}
+				reader.endArray();
+			} else {
+				reader.skipValue();
+			}
+		}
+
+		return new BraceShapes(shapes);
+	}
+
+	private static D_Ellipse loadEllipse(JsonReader reader) throws IOException {
+		Vertex[] vertexs = null;
+		double size = 1.0;
+		D_Ellipse ret = null;
+		while (reader.hasNext()) {
+			String name1 = reader.nextName();
+			if (name1.equals("size_ratio")) {
+				size = reader.nextDouble();
+			} else if (name1.equals("arguments")) {
+				reader.beginArray();
+				double[] a = new double[4];
+				int n = 0;
+				while (reader.hasNext()) {
+					if (n < 4) {
+						a[n] = reader.nextDouble();
+					}
+					n++;
+				}
+				reader.endArray();
+				ret = BB_TypeResister.createElipse(a[0] * size, a[1] * size, a[2], a[3]);
+			} else {
+				reader.skipValue();
+			}
+		}
+		return ret;
 	}
 
 	public static D_Face loadFace(JsonReader reader) throws IOException {

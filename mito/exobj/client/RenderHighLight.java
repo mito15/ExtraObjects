@@ -12,7 +12,7 @@ import com.mito.exobj.common.entity.EntityBrace;
 import com.mito.exobj.common.entity.EntityFake;
 import com.mito.exobj.common.item.ItemBar;
 import com.mito.exobj.utilities.MitoMath;
-import com.mito.exobj.utilities.MitoUtil;
+import com.mito.exobj.utilities.MyUtil;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -46,7 +46,7 @@ public class RenderHighLight {
 	}
 
 	public void highlightWithBar(EntityPlayer player, double s, Vec3 c, byte f, boolean b) {
-		List list = player.worldObj.getEntitiesWithinAABBExcludingEntity((Entity) null, MitoUtil.createAabbBySize(c, s));
+		List list = player.worldObj.getEntitiesWithinAABBExcludingEntity((Entity) null, MyUtil.createAabbBySize(c, s));
 		List<EntityBrace> list1 = new ArrayList<EntityBrace>();
 
 		for (int n = 0; n < list.size(); n++) {

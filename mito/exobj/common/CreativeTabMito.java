@@ -1,5 +1,7 @@
 package com.mito.exobj.common;
 
+import com.mito.exobj.common.main.ResisterItem;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.creativetab.CreativeTabs;
@@ -13,7 +15,7 @@ public class CreativeTabMito extends CreativeTabs {
 
 	@Override
 	public Item getTabIconItem() {
-		return Main.ItemBar;
+		return ResisterItem.ItemBar;
 	}
 
 	@Override

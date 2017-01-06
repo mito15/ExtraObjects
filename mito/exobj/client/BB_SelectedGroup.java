@@ -1,17 +1,16 @@
 package com.mito.exobj.client;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
 import com.mito.exobj.BraceBase.BB_EnumTexture;
+import com.mito.exobj.BraceBase.BB_GroupBase;
 import com.mito.exobj.BraceBase.BB_Render;
 import com.mito.exobj.BraceBase.BB_ResisteredList;
 import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.BraceBase.Brace.Brace;
 import com.mito.exobj.client.render.model.IDrawBrace;
-import com.mito.exobj.common.Main;
 import com.mito.exobj.network.BB_PacketProcessor;
 import com.mito.exobj.network.BB_PacketProcessor.Mode;
 import com.mito.exobj.network.GroupPacketProcessor;
@@ -22,9 +21,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
-public class BB_SelectedGroup {
+public class BB_SelectedGroup extends BB_GroupBase {
 
-	private List<ExtraObject> bases = new ArrayList<ExtraObject>();
 	public mitoClientProxy proxy;
 	public Vec3 set = Vec3.createVectorHelper(0, 0, 0);
 	public boolean activated = false;
@@ -33,6 +31,7 @@ public class BB_SelectedGroup {
 	public int size = 100;
 	public int rot = 0;
 	public boolean modeMove = false;
+	public boolean modeBlock = false;
 
 	public BB_SelectedGroup(mitoClientProxy px) {
 		this.proxy = px;
@@ -46,10 +45,10 @@ public class BB_SelectedGroup {
 	public void addShift(ExtraObject... bases) {
 		initNum();
 		for (int n = 0; n < bases.length; n++) {
-			if (this.bases.contains(bases[n])) {
-				this.bases.remove(bases[n]);
+			if (this.list.contains(bases[n])) {
+				this.list.remove(bases[n]);
 			} else {
-				this.bases.add(bases[n]);
+				this.list.add(bases[n]);
 			}
 		}
 	}
@@ -57,63 +56,63 @@ public class BB_SelectedGroup {
 	public void addShift(List<ExtraObject> bases) {
 		initNum();
 		for (int n = 0; n < bases.size(); n++) {
-			if (this.bases.contains(bases.get(n))) {
-				this.bases.remove(bases.get(n));
+			if (this.list.contains(bases.get(n))) {
+				this.list.remove(bases.get(n));
 			} else {
-				this.bases.add(bases.get(n));
+				this.list.add(bases.get(n));
 			}
 		}
 	}
 
 	public void replace(List<ExtraObject> bases) {
 		initNum();
-		this.bases = bases;
+		this.list = bases;
 	}
 
 	public void replace(ExtraObject base) {
 		initNum();
-		this.bases.clear();
-		this.bases.add(base);
+		this.list.clear();
+		this.list.add(base);
 	}
 
 	public void remove(ExtraObject... bases) {
 		initNum();
 		for (int n = 0; n < bases.length; n++) {
-			this.bases.remove(bases[n]);
+			this.list.remove(bases[n]);
 		}
 	}
 
 	public void delete() {
 		initNum();
-		this.bases.clear();
+		this.list.clear();
 	}
 
 	public List<ExtraObject> getList() {
-		return this.bases;
+		return this.list;
 	}
 
 	public boolean drawHighLightGroup(EntityPlayer player, float partialticks) {
-		if (this.bases.isEmpty()) {
+		if (this.list.isEmpty()) {
 			return false;
 		}
-		for (int n = 0; n < this.bases.size(); n++) {
+		for (int n = 0; n < this.list.size(); n++) {
 			GL11.glMatrixMode(GL11.GL_MODELVIEW);
 			GL11.glPushMatrix();
 			GL11.glTranslated(-(player.lastTickPosX + (player.posX - player.lastTickPosX) * partialticks),
 					-(player.lastTickPosY + (player.posY - player.lastTickPosY) * partialticks),
 					-(player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialticks));
-			BB_Render render = BB_ResisteredList.getBraceBaseRender(this.bases.get(n));
-			render.drawHighLight(this.bases.get(n), partialticks);//4.0F
+			BB_Render render = BB_ResisteredList.getBraceBaseRender(this.list.get(n));
+			render.drawHighLight(this.list.get(n), partialticks);//4.0F
 			GL11.glPopMatrix();
 		}
 		return true;
 	}
 
 	public boolean drawHighLightCopy(EntityPlayer player, float partialticks, MovingObjectPosition mop) {
-		if (this.bases.isEmpty()) {
+		if (this.list.isEmpty()) {
 			return false;
 		}
-		for (int n = 0; n < this.bases.size(); n++) {
+		for (int n = 0; n < this.list.size(); n++) {
 			GL11.glMatrixMode(GL11.GL_MODELVIEW);
 			GL11.glPushMatrix();
 			GL11.glTranslated(-(player.lastTickPosX + (player.posX - player.lastTickPosX) * partialticks),
@@ -121,8 +120,8 @@ public class BB_SelectedGroup {
 					-(player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialticks));
 			Vec3 pos = this.getDistance(mop);
 			GL11.glTranslated(pos.xCoord, pos.yCoord, pos.zCoord);
-			BB_Render render = BB_ResisteredList.getBraceBaseRender(this.bases.get(n));
-			render.drawHighLight(this.bases.get(n), partialticks);//4.0F
+			BB_Render render = BB_ResisteredList.getBraceBaseRender(this.list.get(n));
+			render.drawHighLight(this.list.get(n), partialticks);//4.0F
 			GL11.glPopMatrix();
 		}
 		return true;
@@ -130,8 +129,8 @@ public class BB_SelectedGroup {
 
 	public double getMaxY() {
 		double ret = 0;
-		for (int n = 0; n < this.bases.size(); n++) {
-			double m = this.bases.get(n).getMaxY();
+		for (int n = 0; n < this.list.size(); n++) {
+			double m = this.list.get(n).getMaxY();
 			if (ret < m) {
 				ret = m;
 			}
@@ -141,8 +140,8 @@ public class BB_SelectedGroup {
 
 	public double getMinY() {
 		double ret = 128;
-		for (int n = 0; n < this.bases.size(); n++) {
-			double m = this.bases.get(n).getMinY();
+		for (int n = 0; n < this.list.size(); n++) {
+			double m = this.list.get(n).getMinY();
 			if (ret > m) {
 				ret = m;
 			}
@@ -159,7 +158,7 @@ public class BB_SelectedGroup {
 	}
 
 	public Vec3 getDistance(MovingObjectPosition mop) {
-		if (bases.isEmpty()) {
+		if (list.isEmpty()) {
 			return null;
 		}
 		Vec3 c = getCenter();
@@ -167,9 +166,9 @@ public class BB_SelectedGroup {
 	}
 
 	public void applyProperty(BB_EnumTexture tex, int color, IDrawBrace shape) {
-		for (int n = 0; n < this.bases.size(); n++) {
-			if (this.bases.get(n) instanceof Brace) {
-				Brace brace = ((Brace) this.bases.get(n));
+		for (int n = 0; n < this.list.size(); n++) {
+			if (this.list.get(n) instanceof Brace) {
+				Brace brace = ((Brace) this.list.get(n));
 				if (tex != null) {
 					brace.texture = tex;
 				}
@@ -187,15 +186,15 @@ public class BB_SelectedGroup {
 				} else {
 					brace.color = 0;
 				}
-				PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, this.bases.get(n)));
+				PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, this.list.get(n)));
 			}
 		}
 	}
 
 	public void applyColor(int color) {
-		for (int n = 0; n < this.bases.size(); n++) {
-			if (this.bases.get(n) instanceof Brace) {
-				Brace brace = ((Brace) this.bases.get(n));
+		for (int n = 0; n < this.list.size(); n++) {
+			if (this.list.get(n) instanceof Brace) {
+				Brace brace = ((Brace) this.list.get(n));
 				if (brace.texture.hasColor) {
 					if (color >= 0 && color < 16) {
 						brace.color = color;
@@ -206,7 +205,7 @@ public class BB_SelectedGroup {
 				} else {
 					brace.color = 0;
 				}
-				PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, this.bases.get(n)));
+				PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, this.list.get(n)));
 			}
 		}
 	}
@@ -219,26 +218,26 @@ public class BB_SelectedGroup {
 	}
 
 	public void applySize(int isize) {
-		for (int n = 0; n < this.bases.size(); n++) {
-			if (this.bases.get(n) instanceof Brace) {
-				Brace brace = ((Brace) this.bases.get(n));
+		for (int n = 0; n < this.list.size(); n++) {
+			if (this.list.get(n) instanceof Brace) {
+				Brace brace = ((Brace) this.list.get(n));
 				brace.size = (double) isize * 0.05;
 				brace.shouldUpdateRender = true;
-				PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, this.bases.get(n)));
+				PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, this.list.get(n)));
 			}
 		}
 	}
 
 	public int getSize() {
-		if (this.bases.isEmpty()) {
+		if (this.list.isEmpty()) {
 			return -1;
-		} else if (this.bases.size() == 1 && bases.get(0) instanceof Brace) {
-			return (int) (((Brace) bases.get(0)).size * 20);
+		} else if (this.list.size() == 1 && list.get(0) instanceof Brace) {
+			return (int) (((Brace) list.get(0)).size * 20);
 		} else {
-			int is = (int) (((Brace) bases.get(0)).size * 20);
-			for (int n = 0; n < this.bases.size(); n++) {
-				if (this.bases.get(n) instanceof Brace) {
-					Brace brace = ((Brace) this.bases.get(n));
+			int is = (int) (((Brace) list.get(0)).size * 20);
+			for (int n = 0; n < this.list.size(); n++) {
+				if (this.list.get(n) instanceof Brace) {
+					Brace brace = ((Brace) this.list.get(n));
 					if (is != (int) (brace.size * 20)) {
 						return -1;
 					}
@@ -249,23 +248,23 @@ public class BB_SelectedGroup {
 	}
 
 	public void applyRoll(int iroll) {
-		for (int n = 0; n < this.bases.size(); n++) {
-			if (this.bases.get(n) instanceof Brace) {
-				Brace brace = ((Brace) this.bases.get(n));
+		for (int n = 0; n < this.list.size(); n++) {
+			if (this.list.get(n) instanceof Brace) {
+				Brace brace = ((Brace) this.list.get(n));
 				brace.setRoll(iroll);
 				brace.shouldUpdateRender = true;
-				PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, this.bases.get(n)));
+				PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, this.list.get(n)));
 			}
 		}
 	}
 
 	public void applyGroupSize(int isize) {
 		Vec3 c = getCenter();
-		for (int n = 0; n < this.bases.size(); n++) {
-			ExtraObject brace = this.bases.get(n);
+		for (int n = 0; n < this.list.size(); n++) {
+			ExtraObject brace = this.list.get(n);
 			brace.resize(c, (double) isize / this.size);
 			brace.shouldUpdateRender = true;
-			PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, this.bases.get(n)));
+			PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, this.list.get(n)));
 
 		}
 		this.size = isize;
@@ -273,11 +272,11 @@ public class BB_SelectedGroup {
 
 	public void applyGroupRot(int irot) {
 		Vec3 c = getCenter();
-		for (int n = 0; n < this.bases.size(); n++) {
-			ExtraObject brace = this.bases.get(n);
+		for (int n = 0; n < this.list.size(); n++) {
+			ExtraObject brace = this.list.get(n);
 			brace.rotation(c, -this.rot + irot);
 			brace.shouldUpdateRender = true;
-			PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, this.bases.get(n)));
+			PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, this.list.get(n)));
 
 		}
 		this.rot = irot;
@@ -293,11 +292,20 @@ public class BB_SelectedGroup {
 	}
 
 	public void breakGroup() {
-		for (int n = 0; n < getList().size(); n++) {
+		/*for (int n = 0; n < getList().size(); n++) {
 			ExtraObject base = getList().get(n);
 			base.breakBrace(Main.proxy.getClientPlayer());
-		}
+		}*/
 		PacketHandler.INSTANCE.sendToServer(new GroupPacketProcessor(EnumGroupMode.DELETE, getList()));
+	}
+
+	public void grouping() {
+		PacketHandler.INSTANCE.sendToServer(new GroupPacketProcessor(EnumGroupMode.GROUPING, getList()));
+		this.delete();
+	}
+
+	public void setblock(boolean b) {
+		this.modeBlock = b;
 	}
 
 }

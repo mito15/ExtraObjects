@@ -1,6 +1,6 @@
 package com.mito.exobj.client.gui;
 
-import com.mito.exobj.common.Main;
+import com.mito.exobj.common.main.ResisterItem;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -14,6 +14,6 @@ public class SlotInventoryItem extends Slot {
 
 	@Override
 	public boolean canTakeStack(EntityPlayer p_82869_1_) {
-		return !(getHasStack() && (getStack().getItem() == Main.INSTANCE.ItemBlockSetter || getStack().getItem() == Main.INSTANCE.ItemFakeBlock));
+		return !(getHasStack() && (getStack().getItem() == ResisterItem.ItemBlockSetter || getStack().getItem() == ResisterItem.ItemFakeBlock));
 	}
 }

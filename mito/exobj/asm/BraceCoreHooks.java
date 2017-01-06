@@ -6,7 +6,7 @@ import com.mito.exobj.BraceBase.BB_DataLists;
 import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.utilities.Line;
 import com.mito.exobj.utilities.MitoMath;
-import com.mito.exobj.utilities.MitoUtil;
+import com.mito.exobj.utilities.MyUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -49,7 +49,7 @@ public class BraceCoreHooks {
 	public static MovingObjectPosition rayTraceBrace(EntityLivingBase player, Vec3 set, Vec3 end, double partialticks) {
 		World world = player.worldObj;
 		MovingObjectPosition m = null;
-		List list = BB_DataLists.getWorldData(world).getExtraObjectWithAABB(MitoUtil.createAABBByVec3(set, end));
+		List list = BB_DataLists.getWorldData(world).getExtraObjectWithAABB(MyUtil.createAABBByVec3(set, end));
 		double l = 999.0D;
 		for (int n = 0; n < list.size(); n++) {
 			if (list.get(n) instanceof ExtraObject) {

@@ -9,7 +9,7 @@ public class BraceShapes implements IDrawBrace {
 	public IDrawBrace[] planes;
 
 
-	public BraceShapes(Polygon2D... list) {
+	public BraceShapes(IDrawBrace... list) {
 		planes = list;
 	}
 
@@ -44,6 +44,11 @@ public class BraceShapes implements IDrawBrace {
 			if (plane != null)
 				plane.renderBraceAt(brace, partialTickTime);;
 		}
+	}
+
+	@Override
+	public boolean hasNull() {
+		return false;
 	}
 
 }

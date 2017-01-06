@@ -7,7 +7,11 @@ import com.mito.exobj.BraceBase.BB_DataLists;
 import com.mito.exobj.BraceBase.BB_DataWorld;
 import com.mito.exobj.BraceBase.BB_ResisteredList;
 import com.mito.exobj.BraceBase.ExtraObject;
+import com.mito.exobj.BraceBase.Brace.GroupObject;
 import com.mito.exobj.common.Main;
+import com.mito.exobj.common.block.TileObjects;
+import com.mito.exobj.common.main.ResisterItem;
+import com.mito.exobj.utilities.MyUtil;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -15,6 +19,8 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -45,10 +51,15 @@ public class GroupPacketProcessor implements IMessage, IMessageHandler<GroupPack
 		this.mode = mode;
 	}
 
-	public GroupPacketProcessor(EnumGroupMode copy, List<ExtraObject> list, Vec3 pos, double yaw) {
-		this(copy, list);
+	public GroupPacketProcessor(EnumGroupMode mode, List<ExtraObject> list, Vec3 pos, double yaw) {
+		this(mode, list);
 		this.pos = pos;
 		this.yaw = yaw;
+	}
+
+	public GroupPacketProcessor(EnumGroupMode mode, List<ExtraObject> list, Vec3 pos) {
+		this(mode, list);
+		this.pos = pos;
 	}
 
 	@Override
@@ -69,7 +80,7 @@ public class GroupPacketProcessor implements IMessage, IMessageHandler<GroupPack
 				ExtraObject base = list.get(n);
 				NBTTagCompound nbt = new NBTTagCompound();
 				base.writeToNBTOptional(nbt);
-				ExtraObject base1 = BB_ResisteredList.createBraceBaseFromNBT(nbt, world);
+				ExtraObject base1 = BB_ResisteredList.createExObjFromNBT(nbt, world);
 				base1.addCoordinate(message.pos);
 				base1.addToWorld();
 			}
@@ -83,6 +94,26 @@ public class GroupPacketProcessor implements IMessage, IMessageHandler<GroupPack
 				base.breakBrace(player);
 			}
 			break;
+		case GROUPING:
+			/*GroupObject group = new GroupObject(world, list.get(0).pos, list);
+			group.addToWorld();
+			for (int n = 0; n < list.size(); n++) {
+				ExtraObject base = list.get(n);
+				base.breakBrace(player);
+			}*/
+			break;
+		case SETBLOCK:
+			GroupObject group1 = new GroupObject(world, message.pos, MyUtil.copyList(list, message.pos));
+			int ix = MathHelper.ceiling_double_int(message.pos.xCoord);
+			int iy = MathHelper.ceiling_double_int(message.pos.yCoord);
+			int iz = MathHelper.ceiling_double_int(message.pos.zCoord);
+			world.setBlock(ix, iy, iz, ResisterItem.BlockObjects);
+			TileEntity tile = world.getTileEntity(ix, iy, iz);
+			if (tile != null && tile instanceof TileObjects) {
+				TileObjects to = (TileObjects) tile;
+				to.name = group1;
+				to.markDirty();
+			}
 		default:
 			break;
 		}
@@ -98,6 +129,11 @@ public class GroupPacketProcessor implements IMessage, IMessageHandler<GroupPack
 			double z = buf.readDouble();
 			pos = Vec3.createVectorHelper(x, y, z);
 			yaw = buf.readDouble();
+		} else if (mode == EnumGroupMode.SETBLOCK) {
+			double x = buf.readDouble();
+			double y = buf.readDouble();
+			double z = buf.readDouble();
+			pos = Vec3.createVectorHelper(x, y, z);
 		}
 		this.ids = new int[buf.readInt()];
 		for (int n = 0; n < ids.length; n++) {
@@ -113,6 +149,10 @@ public class GroupPacketProcessor implements IMessage, IMessageHandler<GroupPack
 			buf.writeDouble(pos.yCoord);
 			buf.writeDouble(pos.zCoord);
 			buf.writeDouble(yaw);
+		} else if (mode == EnumGroupMode.SETBLOCK) {
+			buf.writeDouble(pos.xCoord);
+			buf.writeDouble(pos.yCoord);
+			buf.writeDouble(pos.zCoord);
 		}
 		buf.writeInt(ids.length);
 		for (int n = 0; n < ids.length; n++) {
@@ -121,7 +161,7 @@ public class GroupPacketProcessor implements IMessage, IMessageHandler<GroupPack
 	}
 
 	public enum EnumGroupMode {
-		GUI, COPY, DELETE;
+		GUI, COPY, DELETE, GROUPING, SETBLOCK;
 	}
 
 }

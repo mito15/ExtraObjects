@@ -49,4 +49,13 @@ public class D_Ellipse extends D_Face {
 		Vec3 vec3 = this.getVec3(n, size);
 		return new Vertex(vec3, vec3.xCoord, vec3.yCoord);
 	}
+	
+	public boolean hasNull() {
+		for (int n = 0; n < this.line.size(); n++) {
+			if (this.line.get(n) == null) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

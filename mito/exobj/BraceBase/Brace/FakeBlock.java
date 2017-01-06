@@ -6,15 +6,15 @@ import java.util.List;
 import com.mito.exobj.BraceBase.BB_BlockAccess;
 import com.mito.exobj.BraceBase.BB_GUIHandler;
 import com.mito.exobj.BraceBase.ExtraObject;
-import com.mito.exobj.common.Main;
 import com.mito.exobj.common.item.ItemBar;
 import com.mito.exobj.common.item.ItemBraceBase;
+import com.mito.exobj.common.main.ResisterItem;
 import com.mito.exobj.network.BB_PacketProcessor;
 import com.mito.exobj.network.BB_PacketProcessor.Mode;
 import com.mito.exobj.network.PacketHandler;
 import com.mito.exobj.utilities.Line;
 import com.mito.exobj.utilities.MitoMath;
-import com.mito.exobj.utilities.MitoUtil;
+import com.mito.exobj.utilities.MyUtil;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -119,7 +119,7 @@ public class FakeBlock extends ExtraObject {
 		float f1 = this.random.nextFloat() * 0.2F + 0.1F;
 		float f2 = this.random.nextFloat() * 0.2F + 0.1F;
 
-		ItemStack itemstack1 = new ItemStack(Main.ItemBrace, 1, this.meta);
+		ItemStack itemstack1 = new ItemStack(ResisterItem.ItemBrace, 1, this.meta);
 
 		NBTTagCompound nbt = itemstack1.getTagCompound();
 		itemstack1.setTagCompound(nbt);
@@ -140,7 +140,7 @@ public class FakeBlock extends ExtraObject {
 	@Override
 	public boolean interactWithAABB(AxisAlignedBB boundingBox) {
 		boolean ret = false;
-		if (MitoUtil.createAabbBySize(pos, 1.0).addCoord(0, 1.0, 0).intersectsWith(boundingBox)) {
+		if (MyUtil.createAabbBySize(pos, 1.0).addCoord(0, 1.0, 0).intersectsWith(boundingBox)) {
 			ret = true;
 		}
 		return ret;

@@ -12,7 +12,7 @@ import com.mito.exobj.network.BB_PacketProcessor.Mode;
 import com.mito.exobj.network.PacketHandler;
 import com.mito.exobj.utilities.Line;
 import com.mito.exobj.utilities.MitoMath;
-import com.mito.exobj.utilities.MitoUtil;
+import com.mito.exobj.utilities.MyUtil;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -88,7 +88,7 @@ public abstract class ExtraObject {
 		this.BBID = nextID++;
 		this.dataworld = BB_DataLists.getWorldData(worldObj);
 		if (dataworld == null) {
-			MyLogger.warn("bracebase data world is null !!!!!!!!!!!!!!\n\n\n\n\n\n\n\n\n\n\n\n\n");
+			MyLogger.warn("bracebase data world is null");
 		}
 		this.frequency = 100;
 		this.isStatic = true;
@@ -191,7 +191,7 @@ public abstract class ExtraObject {
 		}
 		this.currentCommand = command;
 
-		this.pos = MitoMath.vectorPul(this.pos, motion);
+		this.pos = MitoMath.vectorSum(this.pos, motion);
 		for (int n = 0; n < this.bindBraces.size(); n++) {
 			ExtraObject base = this.bindBraces.get(n);
 			base.move(motion, command);
@@ -298,8 +298,8 @@ public abstract class ExtraObject {
 			this.writeExtraObjectToNBT(nbt);
 
 		} catch (Throwable throwable) {
-			CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Saving fixed object NBT");
-			CrashReportCategory crashreportcategory = crashreport.makeCategory("Fixed object being saved");
+			CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Saving extra object NBT");
+			CrashReportCategory crashreportcategory = crashreport.makeCategory("Extra object being saved");
 			//this.addEntityCrashInfo(crashreportcategory);
 			throw new ReportedException(crashreport);
 		}
@@ -505,7 +505,7 @@ public abstract class ExtraObject {
 	}
 
 	public AxisAlignedBB getBoundingBox() {
-		return MitoUtil.createAabbBySize(pos, 1.0);
+		return MyUtil.createAabbBySize(pos, 1.0);
 	}
 
 	public void addCoordinate(Vec3 v) {
@@ -514,6 +514,7 @@ public abstract class ExtraObject {
 
 	public void addCoordinate(double x, double y, double z) {
 		this.pos = this.pos.addVector(x, y, z);
+		this.prevPos = this.prevPos.addVector(x, y, z);
 	}
 
 	public double getMinY() {
@@ -551,6 +552,12 @@ public abstract class ExtraObject {
 					PacketHandler.INSTANCE.sendToAll(new BB_PacketProcessor(Mode.BIND, this.BBID, bindBraces.get(i).BBID, 0));
 			}
 		}
+	}
+
+	public ExtraObject copy() {
+		NBTTagCompound nbt = new NBTTagCompound();
+		this.writeToNBTOptional(nbt);
+		return BB_ResisteredList.createExObjFromNBT(nbt, null);
 	}
 
 }

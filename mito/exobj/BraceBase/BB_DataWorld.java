@@ -42,23 +42,19 @@ public class BB_DataWorld {
 	public boolean addBraceBase(ExtraObject base, boolean b) {
 		this.BBIDMap.addKey(base.BBID, base);
 		if (b) {
-
 			int i = MathHelper.floor_double(base.pos.xCoord / 16.0D);
 			int j = MathHelper.floor_double(base.pos.zCoord / 16.0D);
-
+			
 			BB_DataChunk datachunk = BB_DataLists.getChunkData(world, i, j);
 
 			if (!this.braceBaseList.add(base)) {
-
 				MyLogger.info("can not add worldlist");
 				return false;
 			}
-
 			if (!datachunk.addBraceBase(base)) {
 				this.braceBaseList.remove(base);
 				return false;
 			}
-
 			return true;
 		} else {
 			return this.braceBaseList.add(base);

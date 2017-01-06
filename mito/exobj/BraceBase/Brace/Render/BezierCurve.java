@@ -2,7 +2,7 @@ package com.mito.exobj.BraceBase.Brace.Render;
 
 import java.util.List;
 
-import com.mito.exobj.BraceBase.Brace.ILineBrace;
+import com.mito.exobj.client.render.model.ILineBrace;
 import com.mito.exobj.utilities.Line;
 import com.mito.exobj.utilities.MitoMath;
 
@@ -17,11 +17,11 @@ public class BezierCurve implements ILineBrace {
 
 	Vec3[] points;
 
-	public BezierCurve(Vec3... points){
-	this.points = points;
-}
+	public BezierCurve(Vec3... points) {
+		this.points = points;
+	}
 
-public Vec3 getPoint(double t) {
+	public Vec3 getPoint(double t) {
 		Vec3 ret = processBezier(points, t);
 		return ret;
 	}
@@ -112,8 +112,9 @@ public Vec3 getPoint(double t) {
 
 	@Override
 	public void addCoordinate(double x, double y, double z) {
-		// TODO 自動生成されたメソッド・スタブ
-
+		for (int n = 0; n < points.length; n++) {
+			points[n].addVector(x, y, z);
+		}
 	}
 
 	@Override

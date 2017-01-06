@@ -11,7 +11,7 @@ import com.mito.exobj.common.Main;
 import com.mito.exobj.common.entity.EntityWrapperBB;
 import com.mito.exobj.network.ItemUsePacketProcessor;
 import com.mito.exobj.network.PacketHandler;
-import com.mito.exobj.utilities.MitoUtil;
+import com.mito.exobj.utilities.MyUtil;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -70,7 +70,7 @@ public class ItemBraceBase extends Item {
 	public MovingObjectPosition getMovingOPWithKey(ItemStack itemstack, World world, EntityPlayer player, BB_Key key, MovingObjectPosition mop, double partialticks) {
 		NBTTagCompound nbt = this.getNBT(itemstack);
 
-		if (mop != null && MitoUtil.canClick(world, key, mop)) {
+		if (mop != null && MyUtil.canClick(world, key, mop)) {
 			if (!key.isControlPressed()) {
 				mop = this.snap(mop, itemstack, world, player, key, nbt);
 			}
@@ -96,7 +96,7 @@ public class ItemBraceBase extends Item {
 	}
 
 	public void snapBlock(MovingObjectPosition mop, ItemStack itemstack, World world, EntityPlayer player, BB_Key key) {
-		MitoUtil.snapBlock(mop);
+		MyUtil.snapBlock(mop);
 	}
 
 	public void snapBraceBase(MovingObjectPosition mop, ItemStack itemstack, World world, EntityPlayer player, BB_Key key) {
@@ -135,7 +135,7 @@ public class ItemBraceBase extends Item {
 
 	public boolean drawHighLightBrace(EntityPlayer player, float partialticks, MovingObjectPosition mop) {
 		if (mop != null) {
-			if (MitoUtil.isBrace(mop)) {
+			if (MyUtil.isBrace(mop)) {
 				ExtraObject base = ((EntityWrapperBB)mop.entityHit).base;
 				GL11.glMatrixMode(GL11.GL_MODELVIEW);
 				GL11.glPushMatrix();

@@ -1,5 +1,6 @@
 package com.mito.exobj.common.entity;
 
+import com.mito.exobj.BraceBase.BB_ResisteredList;
 import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.network.BB_ClickPacketProcessor;
 import com.mito.exobj.network.PacketHandler;
@@ -8,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 public class EntityWrapperBB extends Entity {
@@ -39,6 +41,18 @@ public class EntityWrapperBB extends Entity {
 	protected void writeEntityToNBT(NBTTagCompound p_70014_1_) {
 		// TODO 自動生成されたメソッド・スタブ
 
+	}
+
+	public String getCommandSenderName() {
+		String s = null;
+		if(this.base != null)
+		s = BB_ResisteredList.getBraceBaseString(this.base);
+
+		if (s == null) {
+			s = "generic";
+		}
+
+		return StatCollector.translateToLocal("extra_object." + s + ".name");
 	}
 
 	public EntityWrapperBB wrap(ExtraObject base) {

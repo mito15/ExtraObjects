@@ -5,6 +5,7 @@ import com.mito.exobj.BraceBase.Brace.Render.BB_TypeResister;
 import com.mito.exobj.common.Main;
 import com.mito.exobj.common.item.ItemBar;
 import com.mito.exobj.common.item.ItemBrace;
+import com.mito.exobj.common.main.ResisterItem;
 import com.mito.exobj.utilities.Line;
 
 import cpw.mods.fml.relauncher.Side;
@@ -38,7 +39,7 @@ public class RedSignalCable extends Brace {
 		this.size = 0.1;
 		this.color = 0;
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	public int getBrightnessForRender(float partialticks) {
 		if(this.light){
@@ -61,6 +62,9 @@ public class RedSignalCable extends Brace {
 				this.light = false;
 				this.shouldUpdateRender = true;
 			}
+
+			//(MathHelper.floor_double(v.xCoord), MathHelper.floor_double(v.yCoord), MathHelper.floor_double(v.zCoord))
+
 		}
 		/*if(!this.equals(this.dataworld.getBraceBaseByID(this.BBID))){
 			mitoLogger.info("delete phase mmm");
@@ -70,7 +74,7 @@ public class RedSignalCable extends Brace {
 			int i = MathHelper.floor_double(this.pos.xCoord / 16.0D);
 			int j = MathHelper.floor_double(this.pos.zCoord / 16.0D);
 			//if (!this.worldObj.isRemote) {
-		
+
 			BB_DataChunk ret = (BB_DataChunk) BB_DataLists.getWorldData(worldObj).coordToDataMapping.getValueByKey(ChunkCoordIntPair.chunkXZ2Int(i, j));
 			//mitoLogger.info("Im here(ID:" + this.BBID + ")  " + "chunk data: " + this.group.list.size() + "  : " + this.group.datachunk.xPosition + ", " + this.group.datachunk.zPosition + "  "
 			//		+ BB_DataLists.getWorldData(worldObj).braceBaseList.size() + "  " + this.isDead);
@@ -108,7 +112,7 @@ public class RedSignalCable extends Brace {
 			Vec3 center = MitoMath.vectorRatio(this.end, this.pos, 0.5);
 			int div = (int) (MitoMath.subAbs(this.pos, this.end) * 4) + 1;
 			Vec3 vec = MitoMath.vectorSub(this.end, this.pos);
-			
+
 			for (int i1 = 0; i1 < b0; ++i1) {
 				for (int j1 = 0; j1 < b0; ++j1) {
 					for (int k1 = 0; k1 < div; ++k1) {
@@ -151,8 +155,8 @@ public class RedSignalCable extends Brace {
 		float f1 = this.random.nextFloat() * 0.2F + 0.1F;
 		float f2 = this.random.nextFloat() * 0.2F + 0.1F;
 
-		ItemBrace brace = (ItemBrace) Main.ItemBrace;
-		ItemStack itemstack1 = new ItemStack(Main.ItemBrace, 1, this.color);
+		ItemBrace brace = (ItemBrace) ResisterItem.ItemBrace;
+		ItemStack itemstack1 = new ItemStack(ResisterItem.ItemBrace, 1, this.color);
 		brace.setSize(itemstack1, (int) (this.size * 20));
 		brace.setType(itemstack1, BB_TypeResister.getName(this.shape));
 

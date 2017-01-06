@@ -1,8 +1,6 @@
 package com.mito.exobj.BraceBase;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import com.mito.exobj.BraceBase.Brace.Scale;
 
@@ -10,9 +8,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
-public class BB_DataGroup {
+public class BB_DataGroup extends BB_GroupBase {
 
-	public List<ExtraObject> list = new ArrayList<ExtraObject>();
 	public World world;
 	public BB_DataChunk datachunk;
 	public boolean single = false;

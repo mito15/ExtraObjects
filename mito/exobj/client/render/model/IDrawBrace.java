@@ -14,4 +14,6 @@ public interface IDrawBrace {
 
 	public void drawBraceTriangle(CreateVertexBufferObject buffer, Brace brace);
 
+	public boolean hasNull();
+
 }

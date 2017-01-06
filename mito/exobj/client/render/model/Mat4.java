@@ -19,6 +19,10 @@ public class Mat4 {
 		this.val = val;
 	}
 
+	public Mat4(Vec3 v1, Vec3 v2, Vec3 norm) {
+		// TODO Auto-generated constructor stub
+	}
+
 	public static Mat4 createMat4(double... da) {
 		if (da.length == 16) {
 			return new Mat4(da);
@@ -56,11 +60,6 @@ public class Mat4 {
 				a1[8] * a2[2] + a1[9] * a2[6] + a1[10] * a2[10] + a1[11] * a2[14],
 				a1[8] * a2[3] + a1[9] * a2[7] + a1[10] * a2[11] + a1[11] * a2[15],
 				0, 0, 0, 1);
-		/*a1[12] * a2[0] + a1[13] * a2[4] + a1[14] * a2[8] + a1[15] * a2[12],
-		a1[12] * a2[1] + a1[13] * a2[5] + a1[14] * a2[9] + a1[15] * a2[13],
-		a1[12] * a2[2] + a1[13] * a2[6] + a1[14] * a2[10] + a1[15] * a2[14],
-		a1[12] * a2[3] + a1[13] * a2[7] + a1[14] * a2[11] + a1[15] * a2[15]
-		);*/
 	}
 
 	public Vec3 transformVec3(Vec3 vec) {
@@ -69,6 +68,10 @@ public class Mat4 {
 				a1[0] * vec.xCoord + a1[1] * vec.yCoord + a1[2] * vec.zCoord + a1[3],
 				a1[4] * vec.xCoord + a1[5] * vec.yCoord + a1[6] * vec.zCoord + a1[7],
 				a1[8] * vec.xCoord + a1[9] * vec.yCoord + a1[10] * vec.zCoord + a1[11]);
+	}
+	
+	public Mat4 transposition(){
+		return createMat4(val[0], val[4], val[8], val[12], val[1], val[5], val[9], val[13], val[2], val[6], val[10], val[14], val[3], val[7], val[11], val[15]);
 	}
 
 	public Mat4 addCoord(Vec3 vec) {
@@ -106,6 +109,10 @@ public class Mat4 {
 	
 	public Mat4 copy() {
 		return createMat4(val.clone());
+	}
+
+	public static Mat4 createMat4(Vec3 v1, Vec3 v2, Vec3 v3) {
+		return createMat4(v1.xCoord, v2.xCoord, v3.xCoord, v1.yCoord, v2.yCoord, v3.yCoord, v1.zCoord, v2.zCoord, v3.zCoord);
 	}
 
 }

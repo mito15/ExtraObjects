@@ -1,4 +1,4 @@
-package com.mito.exobj.BraceBase.Brace;
+package com.mito.exobj.client.render.model;
 
 import java.util.List;
 
@@ -12,6 +12,8 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 public interface ILineBrace {
+	
+	public Vec3 getPoint(double d);
 
 	public void move(Vec3 motion, int command);
 

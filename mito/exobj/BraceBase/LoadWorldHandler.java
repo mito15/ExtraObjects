@@ -55,7 +55,6 @@ public class LoadWorldHandler {
 		}
 
 		NBTTagCompound nbt1;
-		NBTTagList taglistBraces = new NBTTagList();
 		Iterator iterator1;
 		Iterator iterator2;
 
@@ -76,7 +75,7 @@ public class LoadWorldHandler {
 					for (int n = 0; n < group.list.size(); n++) {
 						ExtraObject exObj = group.list.get(n);
 						BraceBaseToIntMapping.put(exObj, new Integer(n));
-						MyLogger.info("nbt associate(save) " + n + " : " + BB_ResisteredList.classToStringMapping.get(exObj.getClass()));
+						//MyLogger.info("nbt associate(save) " + n + " : " + BB_ResisteredList.classToStringMapping.get(exObj.getClass()));
 					}
 
 					for (int n = 0; n < group.list.size(); n++) {
@@ -138,20 +137,20 @@ public class LoadWorldHandler {
 
 					for (int n = 0; n < taglistGroup.tagCount(); ++n) {
 						NBTTagCompound nbttagcompound4 = taglistGroup.getCompoundTagAt(n);
-						ExtraObject base = BB_ResisteredList.createBraceBaseFromNBT(nbttagcompound4, world);
+						ExtraObject base = BB_ResisteredList.createExObjFromNBT(nbttagcompound4, world);
 						int n1 = nbttagcompound4.getInteger("exObjNumber") - 1;
 						if (base != null) {
 							IntToBraceBaseMapping.put(new Integer(n1), base);
 							BraceBaseToIntMapping.put(base, new Integer(n1));
 							base.addToWorld();
 							group.add(base);
-							MyLogger.info("nbt associate(load) " + n1 + " : " + BB_ResisteredList.classToStringMapping.get(base.getClass()));
+							//MyLogger.info("nbt associate(load) " + n1 + " : " + BB_ResisteredList.classToStringMapping.get(base.getClass()));
 						}
 					}
 					//bugが
 					for (int n = 0; n < group.list.size(); ++n) {
 						ExtraObject base = group.list.get(n);
-						NBTTagCompound nbttagcompound4 = taglistGroup.getCompoundTagAt(BraceBaseToIntMapping.get(base));
+						NBTTagCompound nbttagcompound4 = taglistGroup.getCompoundTagAt(n);
 						if (base != null) {
 							base.readNBTAssociate(nbttagcompound4, IntToBraceBaseMapping);
 						}
@@ -175,7 +174,7 @@ public class LoadWorldHandler {
 		//BB_DataWorld data = DataLists.getWorldData(e.world);
 		//data.chunkToDataMapping.put(e.getChunk(), new FOChunkData(e.world, e.getChunk()));
 	}
-	
+
 	public void onChunkUnload(ChunkEvent.Unload e) {
 		//BB_DataChunk datachunk = BB_DataLists.getChunkData(e.getChunk());
 		//datachunk.setDead();

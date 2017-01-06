@@ -124,6 +124,11 @@ public class BB_PacketProcessor implements IMessage, IMessageHandler<BB_PacketPr
 					if (flag) {
 						base1.addToWorld();
 						dataworld.bindhelper.call(base1);
+						int k1 = MathHelper.floor_double(base1.pos.xCoord);
+						int k2 = MathHelper.floor_double(base1.pos.yCoord);
+						int k3 = MathHelper.floor_double(base1.pos.zCoord);
+						world.func_147451_t(k1, k2, k3);
+						world.markBlockForUpdate(k1, k2, k3);
 					}
 				}
 				break;
@@ -243,7 +248,7 @@ public class BB_PacketProcessor implements IMessage, IMessageHandler<BB_PacketPr
 				MyLogger.info("brace sync error");
 			}
 			if (this.nbt != null) {
-				this.base = BB_ResisteredList.createBraceBaseFromNBT(nbt, Main.proxy.getClientWorld(), this.id);
+				this.base = BB_ResisteredList.createExObjFromNBT(nbt, Main.proxy.getClientWorld(), this.id);
 				if (this.base == null)
 					MyLogger.info("brace sync null");
 			} else {

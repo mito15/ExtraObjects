@@ -3,7 +3,7 @@ package com.mito.exobj.utilities;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mito.exobj.BraceBase.Brace.ILineBrace;
+import com.mito.exobj.client.render.model.ILineBrace;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,8 +28,8 @@ public class Line implements ILineBrace {
 
 	@Override
 	public void move(Vec3 motion, int command) {
-		this.start = MitoMath.vectorPul(this.start, motion);
-		this.end = MitoMath.vectorPul(this.end, motion);
+		this.start = MitoMath.vectorSum(this.start, motion);
+		this.end = MitoMath.vectorSum(this.end, motion);
 	}
 
 	@Override
@@ -55,13 +55,21 @@ public class Line implements ILineBrace {
 	}
 
 	@Override
-	public boolean interactWithAABB(AxisAlignedBB boundingBox, double size) {
+	public boolean interactWithAABB(AxisAlignedBB aabb, double size) {
 		boolean ret = false;
-		if (boundingBox.expand(size, size, size).calculateIntercept(start, this.end) != null
-				|| (boundingBox.expand(size, size, size).isVecInside(start) && boundingBox.expand(size, size, size).isVecInside(this.end))) {
+		if (aabb.expand(size, size, size).calculateIntercept(start, this.end) != null
+				|| (aabb.expand(size, size, size).isVecInside(start) && aabb.expand(size, size, size).isVecInside(this.end))) {
 			ret = true;
 		}
 		return ret;
+		/*Vec3 v1 = start.subtract(end);
+		Vec3 v2 = MitoMath.vectorMul(v1.crossProduct(Vec3.createVectorHelper(0, 1, 0)).normalize(), size);
+		Vec3 v3 = MitoMath.vectorMul(v1.crossProduct(v2).normalize(), size);
+		AxisAlignedBB aabb1 = OrientedBoundingBox.getBoundingBox(MitoMath.vectorMul(MitoMath.vectorSum(end, start), 0.5), v1, v2, v3);
+		if (aabb1 != null && aabb1.intersectsWith(aabb)) {
+			return true;
+		}
+		return false;*/
 	}
 
 	@Override
@@ -72,15 +80,15 @@ public class Line implements ILineBrace {
 
 	@Override
 	public void rotation(Vec3 cent, double yaw) {
-		start = MitoMath.vectorPul(MitoMath.rotY(MitoMath.vectorSub(start, cent), yaw), cent);
-		end = MitoMath.vectorPul(MitoMath.rotY(MitoMath.vectorSub(end, cent), yaw), cent);
+		start = MitoMath.vectorSum(MitoMath.rotY(MitoMath.vectorSub(start, cent), yaw), cent);
+		end = MitoMath.vectorSum(MitoMath.rotY(MitoMath.vectorSub(end, cent), yaw), cent);
 
 	}
 
 	@Override
 	public void resize(Vec3 cent, double i) {
-		start = MitoMath.vectorPul(MitoMath.vectorMul(MitoMath.vectorSub(start, cent), i), cent);
-		end = MitoMath.vectorPul(MitoMath.vectorMul(MitoMath.vectorSub(end, cent), i), cent);
+		start = MitoMath.vectorSum(MitoMath.vectorMul(MitoMath.vectorSub(start, cent), i), cent);
+		end = MitoMath.vectorSum(MitoMath.vectorMul(MitoMath.vectorSub(end, cent), i), cent);
 
 	}
 
@@ -93,7 +101,7 @@ public class Line implements ILineBrace {
 			}
 		}
 		Line line = MitoMath.getDistanceLine(set, end, this.start, this.end);
-		if (line.getAbs() < size / 1.5 && !(MitoUtil.isVecEqual(line.end, this.start) || MitoUtil.isVecEqual(line.end, this.end))) {
+		if (line.getAbs() < size / 1.5 && !(MyUtil.isVecEqual(line.end, this.start) || MyUtil.isVecEqual(line.end, this.end))) {
 			return line;
 		}
 		return null;
@@ -146,13 +154,20 @@ public class Line implements ILineBrace {
 		Vec3 offset = MitoMath.vectorMul(v3.normalize(), size / 2);
 		List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>();
 		for (int n = 0; n <= div; n++) {
-			Vec3 v = MitoMath.vectorPul(this.start, offset, MitoMath.vectorMul(part, (double) n));
-			AxisAlignedBB aabb1 = MitoUtil.createAabbBySize(v, size);
+			Vec3 v = MitoMath.vectorSum(this.start, offset, MitoMath.vectorMul(part, (double) n));
+			AxisAlignedBB aabb1 = MyUtil.createAabbBySize(v, size);
 			if (aabb1 != null && aabb1.intersectsWith(aabb)) {
 				//list.add(aabb1);
 				collidingBoundingBoxes.add(aabb1);
 			}
 		}
+		/*Vec3 v1 = start.subtract(end);
+		Vec3 v2 = MitoMath.vectorMul(v1.crossProduct(Vec3.createVectorHelper(0, 1, 0)).normalize(), size);
+		Vec3 v3 = MitoMath.vectorMul(v1.crossProduct(v2).normalize(), size);
+		AxisAlignedBB aabb1 = OrientedBoundingBox.getBoundingBox(MitoMath.vectorMul(MitoMath.vectorSum(end, start), 0.5), v1, v2, v3);
+		if (aabb1 != null && aabb1.intersectsWith(aabb)) {
+			collidingBoundingBoxes.add(aabb1);
+		}*/
 	}
 
 	@Override
@@ -216,11 +231,17 @@ public class Line implements ILineBrace {
 		}
 		v1 = MitoMath.getNearPoint(start, end, pos);
 		Vec3 unit = MitoMath.vectorSub(v2, v3).normalize();
-		Vec3 moved = MitoMath.vectorPul(v1, MitoMath.vectorMul(unit, speed));
+		Vec3 moved = MitoMath.vectorSum(v1, MitoMath.vectorMul(unit, speed));
 		if(MitoMath.subAbs2(v1, moved) > MitoMath.subAbs2(v1, v2)){
 			moved = v2;
 		}
 		return MitoMath.vectorSub(moved, pos);
+	}
+
+	@Override
+	public Vec3 getPoint(double d) {
+		Vec3 ret = MitoMath.vectorSum(this.start, MitoMath.vectorMul(MitoMath.vectorSub(end, start), d));
+		return ret;
 	}
 
 }

@@ -11,8 +11,8 @@ import com.mito.exobj.client.BB_Key;
 import com.mito.exobj.client.RenderHighLight;
 import com.mito.exobj.common.Main;
 import com.mito.exobj.common.entity.EntityWrapperBB;
-import com.mito.exobj.utilities.MitoMath;
-import com.mito.exobj.utilities.MitoUtil;
+import com.mito.exobj.common.main.ResisterItem;
+import com.mito.exobj.utilities.MyUtil;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -174,7 +174,7 @@ public class ItemBrace extends ItemSet {
 	public void snapDegree(MovingObjectPosition mop, ItemStack itemstack, World world, EntityPlayer player, BB_Key key, NBTTagCompound nbt) {
 		if (nbt.getBoolean("activated")) {
 			Vec3 set = Vec3.createVectorHelper(nbt.getDouble("setX"), nbt.getDouble("setY"), nbt.getDouble("setZ"));
-			MitoUtil.snapByShiftKey(mop, set);
+			MyUtil.snapByShiftKey(mop, set);
 		}
 	}
 
@@ -186,19 +186,16 @@ public class ItemBrace extends ItemSet {
 
 	public void onActiveClick(World world, EntityPlayer player, ItemStack itemstack, MovingObjectPosition movingOP, Vec3 set, Vec3 end, NBTTagCompound nbt) {
 		int color = this.getColor(itemstack);
-		if (MitoMath.subAbs(set, end) < 100) {
-			Brace brace = new Brace(world, set, end, BB_TypeResister.getFigure(this.getType(itemstack)), this.getMaterial(itemstack), this.getColor(itemstack), this.getRealSize(itemstack));
-			brace.addToWorld();
-			//EntityBrace brace = new EntityBrace(world, set, end, this.getSize(itemstack), color, (byte)1);
-			//world.spawnEntityInWorld(brace);
-			if (MitoUtil.isBrace(movingOP) && MitoUtil.getBrace(movingOP).isStatic) {
-				ExtraObject base = MitoUtil.getBrace(movingOP);
-				brace.connectBrace(base);
-			}
-			ExtraObject base = BB_DataLists.getWorldData(world).getBraceBaseByID(nbt.getInteger("brace"));
-			if (base != null && base.isStatic) {
-				brace.connectBrace(base);
-			}
+		Brace brace = new Brace(world, set, end, BB_TypeResister.getFigure(this.getType(itemstack)), this.getMaterial(itemstack), this.getColor(itemstack), this.getRealSize(itemstack));
+		brace.addToWorld();
+		
+		if (MyUtil.isBrace(movingOP) && MyUtil.getBrace(movingOP).isStatic) {
+			ExtraObject base = MyUtil.getBrace(movingOP);
+			brace.connectBrace(base);
+		}
+		ExtraObject base = BB_DataLists.getWorldData(world).getBraceBaseByID(nbt.getInteger("brace"));
+		if (base != null && base.isStatic) {
+			brace.connectBrace(base);
 		}
 		if (!player.capabilities.isCreativeMode) {
 			itemstack.stackSize--;
@@ -222,7 +219,7 @@ public class ItemBrace extends ItemSet {
 	public boolean drawHighLightBox(ItemStack itemstack, EntityPlayer player, float partialTicks, MovingObjectPosition mop) {
 		NBTTagCompound nbt = getTagCompound(itemstack);
 		double size = this.getRealSize(itemstack);
-		if (mop == null || !MitoUtil.canClick(player.worldObj, Main.proxy.getKey(), mop))
+		if (mop == null || !MyUtil.canClick(player.worldObj, Main.proxy.getKey(), mop))
 			return false;
 		Vec3 set = mop.hitVec;
 
@@ -252,7 +249,7 @@ public class ItemBrace extends ItemSet {
 
 	public boolean wheelEvent(EntityPlayer player, ItemStack stack, BB_Key key, int dwheel) {
 		if (key.isShiftPressed()) {
-			ItemBrace brace = (ItemBrace) Main.ItemBrace;
+			ItemBrace brace = (ItemBrace) ResisterItem.ItemBrace;
 			int w = dwheel / 120;
 			int size = brace.getSize(stack) + w;
 			if (size > brace.sizeMax) {
