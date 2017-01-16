@@ -240,8 +240,13 @@ public class Line implements ILineBrace {
 
 	@Override
 	public Vec3 getPoint(double d) {
-		Vec3 ret = MitoMath.vectorSum(this.start, MitoMath.vectorMul(MitoMath.vectorSub(end, start), d));
+		Vec3 ret = MitoMath.vectorRatio(start, end, d);
 		return ret;
+	}
+
+	@Override
+	public Vec3 getTangent(double t) {
+		return start.subtract(end).normalize();
 	}
 
 }

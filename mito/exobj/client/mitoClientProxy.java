@@ -4,15 +4,12 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import com.mito.exobj.BraceBase.BB_RenderHandler;
-import com.mito.exobj.client.render.RenderEntityBrace;
+import com.mito.exobj.client.render.RenderBlockObjects;
 import com.mito.exobj.client.render.RenderItemBrace;
-import com.mito.exobj.client.render.RenderWall;
+import com.mito.exobj.client.render.TileObjectsRenderer;
 import com.mito.exobj.common.Main;
 import com.mito.exobj.common.mitoCommonProxy;
 import com.mito.exobj.common.block.TileObjects;
-import com.mito.exobj.common.entity.EntityBrace;
-import com.mito.exobj.common.entity.EntityFake;
-import com.mito.exobj.common.entity.EntityWall;
 import com.mito.exobj.common.main.ResisterItem;
 
 import cpw.mods.fml.client.FMLClientHandler;
@@ -98,9 +95,6 @@ public class mitoClientProxy extends mitoCommonProxy {
 	public void init() {
 		//entity render resist
 
-		RenderingRegistry.registerEntityRenderingHandler(EntityBrace.class, new RenderEntityBrace());
-		RenderingRegistry.registerEntityRenderingHandler(EntityFake.class, new RenderEntityBrace());
-		RenderingRegistry.registerEntityRenderingHandler(EntityWall.class, new RenderWall());
 
 		Main.RenderType_Objects = RenderingRegistry.getNextAvailableRenderId();
 		RenderingRegistry.registerBlockHandler(new RenderBlockObjects());

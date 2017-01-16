@@ -7,11 +7,8 @@ public abstract class BB_Render {
 
 	public void doRender(ExtraObject base, float pt){
 		}
+	
+	public void updateRender(CreateVertexBufferObject c, ExtraObject base, float partialticks) {}
 
-	public void updateRender(ExtraObject base, float pt){
-		base.shouldUpdateRender = false;
-		}
 
-	public void staticRender(ExtraObject base) {
-	}
 }

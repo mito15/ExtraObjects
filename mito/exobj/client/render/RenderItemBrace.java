@@ -7,7 +7,9 @@ import com.mito.exobj.common.item.ItemBrace;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
 
 public class RenderItemBrace implements IItemRenderer {
@@ -32,8 +34,9 @@ public class RenderItemBrace implements IItemRenderer {
 		int color = item.getColor(itemstack);
 
 		Tessellator tess = Tessellator.instance;
+		Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 
-		Minecraft.getMinecraft().renderEngine.bindTexture(item.getResourceLocation(itemstack));
+		IIcon iicon = item.getMaterial(itemstack).getIcon(0, item.getColor(itemstack));
 
 		double size = 0.25 * (double) isize + 0.25;
 		size = size >= 5.0 ? 5.0 : size;
@@ -44,10 +47,10 @@ public class RenderItemBrace implements IItemRenderer {
 		tess.startDrawingQuads();
 
 		tess.setNormal(0, 0, 1);
-		tess.addVertex(6, size, 0);
-		tess.addVertex(6, -size, 0);
-		tess.addVertex(-6, -size, 0);
-		tess.addVertex(-6, size, 0);
+		tess.addVertexWithUV(6, size, 0, iicon.getMaxU(), iicon.getMaxV());
+		tess.addVertexWithUV(6, -size, 0, iicon.getMaxU(), iicon.getMinV());
+		tess.addVertexWithUV(-6, -size, 0, iicon.getMinU(), iicon.getMinV());
+		tess.addVertexWithUV(-6, size, 0, iicon.getMinU(), iicon.getMaxV());
 
 		tess.draw();
 

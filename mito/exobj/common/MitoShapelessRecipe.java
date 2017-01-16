@@ -1,15 +1,14 @@
 package com.mito.exobj.common;
 
-import com.mito.exobj.BraceBase.BB_EnumTexture;
-import com.mito.exobj.BraceBase.Brace.Render.BB_TypeResister;
+import com.mito.exobj.client.render.exorender.BB_TypeResister;
 import com.mito.exobj.common.item.ItemBrace;
 import com.mito.exobj.common.main.ResisterItem;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockColored;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
@@ -18,7 +17,6 @@ public class MitoShapelessRecipe implements IRecipe {
 
 	//private ItemStack recipeItem = new ItemStack(mitomain.ArrayItemBrace);
 	private ItemStack outItem = new ItemStack(ResisterItem.ItemBrace);
-	private final Block[] materials = new Block[] { Blocks.stone, Blocks.cobblestone, Blocks.wool, Blocks.stained_hardened_clay, Blocks.planks, };
 
 	@Override
 	public boolean matches(InventoryCrafting inv, World world) {
@@ -26,7 +24,7 @@ public class MitoShapelessRecipe implements IRecipe {
 		int dyeNum = 0;
 		int braceNum = 0;
 		boolean ism = false;
-		BB_EnumTexture material = null;
+		Block material = null;
 		for (int h = 0; h < 3; h++) {
 			for (int w = 0; w < 3; w++) {
 				ItemStack current = inv.getStackInRowAndColumn(h, w);
@@ -50,7 +48,7 @@ public class MitoShapelessRecipe implements IRecipe {
 						return false;
 					}
 					dyeNum++;
-				} else if (this.isMaterial(current)) {
+				} else if (Block.getBlockFromItem(current.getItem()) != Blocks.air) {
 					if (dyeNum != 0) {
 						return false;
 					}
@@ -61,22 +59,11 @@ public class MitoShapelessRecipe implements IRecipe {
 				}
 			}
 		}
-		if(!ism && dyeNum == 1 && material != null && !material.hasColor){
+		if(!ism && dyeNum == 1 && material != null && !(material instanceof BlockColored)){
 			return false;
 		}
 		boolean flag1 = (dyeNum == 1 && braceNum == 0);
 		return (!allEmpty && !flag1);
-	}
-
-	private boolean isMaterial(ItemStack stack) {
-		Item item = stack.getItem();
-		for (int i = 0; i < this.materials.length; i++) {
-			if (item == Item.getItemFromBlock(this.materials[i])) {
-				return true;
-			}
-		}
-		return false;
-
 	}
 
 	@Override
@@ -85,9 +72,9 @@ public class MitoShapelessRecipe implements IRecipe {
 		int isize = 0;
 		String mode = "";
 		int dye = -1;
-		BB_EnumTexture material = null;
+		Block material = null;
 		int materialColor = 0;
-		BB_EnumTexture braceMaterial = null;
+		Block braceMaterial = null;
 		int braceColor = -1;
 		int totalSize = 0;
 		int place = 1;
@@ -108,8 +95,8 @@ public class MitoShapelessRecipe implements IRecipe {
 						place = h * 3 + w;
 					} else if (inv.getStackInRowAndColumn(h, w).getItem() == Items.dye) {
 						dye = brace.getColor(itemstack);
-					} else if (this.isMaterial(inv.getStackInRowAndColumn(h, w))) {
-						material = BB_EnumTexture.getTexture(itemstack);
+					} else if (Block.getBlockFromItem(itemstack.getItem()) != Blocks.air) {
+						material = Block.getBlockFromItem(itemstack.getItem());
 						materialColor = itemstack.getItemDamage();
 					}
 				}

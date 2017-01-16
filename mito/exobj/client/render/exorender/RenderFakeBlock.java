@@ -1,4 +1,4 @@
-package com.mito.exobj.BraceBase.Brace.Render;
+package com.mito.exobj.client.render.exorender;
 
 import org.lwjgl.opengl.GL11;
 
@@ -6,7 +6,7 @@ import com.mito.exobj.BraceBase.BB_Render;
 import com.mito.exobj.BraceBase.BB_RenderHandler;
 import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.BraceBase.Brace.FakeBlock;
-import com.mito.exobj.client.RenderHighLight;
+import com.mito.exobj.client.render.RenderHighLight;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;

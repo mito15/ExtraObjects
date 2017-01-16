@@ -3,8 +3,8 @@ package com.mito.exobj.common;
 import java.io.File;
 
 import com.mito.exobj.BraceBase.BB_EventHandler;
-import com.mito.exobj.BraceBase.Brace.Render.BB_TypeResister;
 import com.mito.exobj.client.gui.GuiHandler;
+import com.mito.exobj.client.render.exorender.BB_TypeResister;
 import com.mito.exobj.common.entity.EntityWrapperBB;
 import com.mito.exobj.common.main.ResisterItem;
 import com.mito.exobj.network.PacketHandler;

@@ -116,7 +116,6 @@ public class BB_PacketProcessor implements IMessage, IMessageHandler<BB_PacketPr
 					while (iterator.hasNext()) {
 						ExtraObject fobj = (ExtraObject) iterator.next();
 						if (fobj.BBID == message.id) {
-							MyLogger.info("on sync chohuku");
 							flag = false;
 							break;
 						}
@@ -167,6 +166,7 @@ public class BB_PacketProcessor implements IMessage, IMessageHandler<BB_PacketPr
 				} else {
 					MyLogger.info("brace sync skipped");
 				}
+				dataworld.shouldUpdateRender = true;
 				break;
 			case ADJUST:
 				ExtraObject base4 = dataworld.getBraceBaseByID(message.id);
@@ -210,6 +210,7 @@ public class BB_PacketProcessor implements IMessage, IMessageHandler<BB_PacketPr
 			case SYNC:
 				if (message.nbt != null) {
 					message.base = BB_ResisteredList.syncBraceBaseFromNBT(message.nbt, world, message.id);
+					
 					if (message.base == null)
 						MyLogger.info("brace sync null");
 				} else {

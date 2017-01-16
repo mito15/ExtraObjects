@@ -1,4 +1,4 @@
-package com.mito.exobj.BraceBase.Brace.Render;
+package com.mito.exobj.client.render.exorender;
 
 import org.lwjgl.opengl.GL11;
 
@@ -36,11 +36,6 @@ public class RenderLinearMotor extends BB_Render {
 		GL11.glRotatef(pitch, 1.0F, 0.0F, 0.0F);
 		GL11.glRotatef(yaw, 0.0F, 1.0F, 0.0F);
 		renderBox(0.5, 0.5, 0.7, GL11.GL_LINE_STRIP);
-	}
-
-	@Override
-	public void updateRender(ExtraObject base, float partialTickTime) {
-
 	}
 	
 	private void renderBox(double x, double y, double z) {

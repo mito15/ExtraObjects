@@ -10,6 +10,8 @@ import com.mito.exobj.network.BB_PacketProcessor.Mode;
 import com.mito.exobj.network.PacketHandler;
 import com.mito.exobj.utilities.MitoMath;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IntHashMap;
 import net.minecraft.util.LongHashMap;
@@ -28,6 +30,9 @@ public class BB_DataWorld {
 	private double MAX_ENTITY_RADIUS = 100;
 	public BB_BindHelper bindhelper = new BB_BindHelper(this);
 	private int debug;
+	public boolean shouldUpdateRender = false;
+	@SideOnly(Side.CLIENT)
+	public VBOList buffer = new VBOList();
 
 	/*public BB_DataWorld() {
 	}*/
@@ -55,6 +60,8 @@ public class BB_DataWorld {
 				this.braceBaseList.remove(base);
 				return false;
 			}
+			if(world.isRemote)
+			this.shouldUpdateRender = true;
 			return true;
 		} else {
 			return this.braceBaseList.add(base);
@@ -75,6 +82,8 @@ public class BB_DataWorld {
 		if (!this.world.isRemote) {
 			PacketHandler.INSTANCE.sendToAll(new BB_PacketProcessor(Mode.DELETE, base));
 		}
+		if(world.isRemote)
+			this.shouldUpdateRender = true;
 
 		return ret;
 	}

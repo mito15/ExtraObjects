@@ -1,15 +1,47 @@
 package com.mito.exobj.client.gui;
 
-import java.util.ArrayList;
-
-import com.mito.exobj.BraceBase.BB_EnumTexture;
-
 import cpw.mods.fml.client.GuiScrollingList;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 
 public class BB_GuiScrollingList extends GuiScrollingList {
 
-	private GuiBraceProperty parent;
+	public BB_GuiScrollingList(Minecraft client, int width, int height, int top, int bottom, int left, int entryHeight) {
+		super(client, width, height, top, bottom, left, entryHeight);
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	protected int getSize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	protected void elementClicked(int index, boolean doubleClick) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected boolean isSelected(int index) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	protected void drawBackground() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void drawSlot(int var1, int var2, int var3, int var4, Tessellator var5) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/*private GuiBraceProperty parent;
 	private ArrayList<BB_EnumTexture> texs;
 
 	public BB_GuiScrollingList(GuiBraceProperty parent, BB_EnumTexture[] texs, int listWidth) {
@@ -57,9 +89,9 @@ public class BB_GuiScrollingList extends GuiScrollingList {
 			this.parent.getFontRenderer().drawString(this.parent.getFontRenderer().trimStringToWidth("none", listWidth - 10), this.left + 3, var3 + 2, 0xFFFFFF);
 			this.parent.getFontRenderer().drawString(this.parent.getFontRenderer().trimStringToWidth("", listWidth - 10), this.left + 3, var3 + 12, 0xCCCCCC);
 		}
-		/*this.parent.getFontRenderer().drawString(this.parent.getFontRenderer().trimStringToWidth(tex.getMetadata() != null ? tex.getMetadata().getChildModCountString() : "Metadata not found", listWidth - 10), this.left + 3, var3 + 22,
-				0xCCCCCC);*/
+		this.parent.getFontRenderer().drawString(this.parent.getFontRenderer().trimStringToWidth(tex.getMetadata() != null ? tex.getMetadata().getChildModCountString() : "Metadata not found", listWidth - 10), this.left + 3, var3 + 22,
+				0xCCCCCC);
 
-	}
+	}*/
 
 }

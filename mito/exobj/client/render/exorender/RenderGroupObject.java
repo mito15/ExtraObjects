@@ -1,4 +1,4 @@
-package com.mito.exobj.BraceBase.Brace.Render;
+package com.mito.exobj.client.render.exorender;
 
 import com.mito.exobj.BraceBase.BB_Render;
 import com.mito.exobj.BraceBase.ExtraObject;
@@ -88,7 +88,7 @@ public class RenderGroupObject extends BB_Render {
 
 	public void updateRender(ExtraObject base, float partialticks) {
 
-		base.shouldUpdateRender = false;
+		//base.shouldUpdateRender = false;
 
 		/*int i = base.getBrightnessForRender(partialticks);
 		int j = i % 65536;

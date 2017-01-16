@@ -2,13 +2,11 @@ package com.mito.exobj.client.gui;
 
 import java.util.List;
 
-import com.mito.exobj.BraceBase.Brace.Render.BB_TypeResister;
+import com.mito.exobj.client.render.exorender.BB_TypeResister;
 import com.mito.exobj.client.render.model.IDrawBrace;
-import com.mito.exobj.client.render.model.IDrawable;
 
 import cpw.mods.fml.client.GuiScrollingList;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.Vec3;
 
 public class BB_GuiScrollingList2 extends GuiScrollingList {
 
@@ -51,7 +49,7 @@ public class BB_GuiScrollingList2 extends GuiScrollingList {
 	protected void drawSlot(int listIndex, int var2, int var3, int var4, Tessellator var5) {
 		IDrawBrace tex = shapes.get(listIndex);
 		if (tex != null) {
-			if (tex instanceof IDrawable) {
+			/*if (tex instanceof IDrawable) {
 				parent.mc.getTextureManager().bindTexture(this.parent.texture);
 				int dx = 20;
 				int dy = 20;
@@ -66,7 +64,7 @@ public class BB_GuiScrollingList2 extends GuiScrollingList {
 				tessellator.addVertexWithUV((double) (this.left + 0), (double) (var3 + 0), dz, (double) ((float) (this.left + 0) * f), (double) ((float) (var3 + 0) * f1));
 				tessellator.draw();
 				((IDrawable)tex).renderAt(Vec3.createVectorHelper(this.left, var3, 0), 0.0, 0.0, 30, 1.0, 1.0F);
-			}
+			}*/
 			String name = BB_TypeResister.getName(tex);
 			String[] names = name.split(":");
 			if (names.length == 1) {

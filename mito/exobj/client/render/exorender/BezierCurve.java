@@ -1,4 +1,4 @@
-package com.mito.exobj.BraceBase.Brace.Render;
+package com.mito.exobj.client.render.exorender;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ public class BezierCurve implements ILineBrace {
 		return ret;
 	}
 
-	public Vec3 getNormal(double t) {
+	public Vec3 getTangent(double t) {
 		if (points.length == 3) {
 			return MitoMath.normalBezier(points[2], points[1], points[0], t);
 		} else if (points.length == 4) {

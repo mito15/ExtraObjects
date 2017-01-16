@@ -3,7 +3,7 @@ package com.mito.exobj.common.item;
 import java.util.List;
 
 import com.mito.exobj.client.BB_Key;
-import com.mito.exobj.client.RenderHighLight;
+import com.mito.exobj.client.render.RenderHighLight;
 import com.mito.exobj.common.Main;
 import com.mito.exobj.common.entity.EntityWrapperBB;
 import com.mito.exobj.common.main.ResisterItem;

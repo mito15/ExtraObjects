@@ -3,60 +3,22 @@ package com.mito.exobj.BraceBase;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL15;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import com.mito.exobj.common.MyLogger;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.culling.ICamera;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.client.event.RenderWorldEvent;
 
 public class BB_RenderHandler {
 
 	BB_Render renderer;
 	LoadClientWorldHandler lcw;
-	static boolean usevbos = false;
 
 	public BB_RenderHandler() {
-	}
-
-	@SubscribeEvent
-	public void onRenderWorld(RenderWorldEvent.Post e) {
-		if (!usevbos) {
-			int i = e.renderer.posX;
-			int j = e.renderer.posY;
-			int k = e.renderer.posZ;
-			BB_DataChunk chunk = (BB_DataChunk) BB_DataLists.getWorldData(e.renderer.worldObj).coordToDataMapping.getValueByKey(ChunkCoordIntPair.chunkXZ2Int(i / 16, k / 16));
-			if (chunk != null) {
-				List<ExtraObject> list = chunk.braceList;
-				for (int n = 0; n < list.size(); n++) {
-					//if(list.get(n).renderOnWorldRender()){
-					ExtraObject base = list.get(n);
-					//if (base.buffer != null) {
-					//	base.buffer.updateBrightness(base, 1.0F);
-
-					GL11.glMatrixMode(GL11.GL_MODELVIEW);
-					GL11.glPopMatrix();
-					GL11.glPushMatrix();
-					GL11.glTranslated(base.pos.xCoord, base.pos.yCoord, base.pos.zCoord);
-					//GL11.glTranslated(i, j, k);
-					BB_Render render = BB_ResisteredList.getBraceBaseRender(base);
-
-					Tessellator.instance.setTranslation(0.0D, 0.0D, 0.0D);
-					render.staticRender(base);
-					GL11.glPopMatrix();
-					GL11.glPushMatrix();
-
-					//}
-				}
-			}
-			Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
-		}
 	}
 
 	public static void enableClient() {
@@ -73,24 +35,26 @@ public class BB_RenderHandler {
 		GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
 	}
 
-	public static void onRenderEntities(EntityLivingBase entity, ICamera camera, float partialticks) {
-
-		if (MinecraftForgeClient.getRenderPass() == 0 && usevbos) {
-
+	/*public static void onRenderEntities(EntityLivingBase entity, ICamera camera, float partialticks) {
+	
+		if (MinecraftForgeClient.getRenderPass() == 0) {
+	
 			Minecraft.getMinecraft().entityRenderer.enableLightmap((double) partialticks);
+			Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 			//GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
-			enableClient();
+			//enableClient();
+			//GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 			double d0 = entity.prevPosX + (entity.posX - entity.prevPosX) * (double) partialticks;
 			double d1 = entity.prevPosY + (entity.posY - entity.prevPosY) * (double) partialticks;
 			double d2 = entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double) partialticks;
 			GL11.glTranslated(-d0, -d1, -d2);
 			List<ExtraObject> list = LoadClientWorldHandler.INSTANCE.data.braceBaseList;
-
+	
 			//Minecraft.getMinecraft().entityRenderer.enableLightmap((double) partialticks);
 			//camera.isBoundingBoxInFrustum(null);
-
+	
 			for (int n = 0; n < list.size(); n++) {
-
+	
 				ExtraObject base = list.get(n);
 				AxisAlignedBB aabb = base.getBoundingBox();
 				if (aabb != null && !camera.isBoundingBoxInFrustum(aabb)) {
@@ -100,6 +64,10 @@ public class BB_RenderHandler {
 				GL11.glPushMatrix();
 				if (base.isStatic) {
 					GL11.glTranslated(base.pos.xCoord, base.pos.yCoord, base.pos.zCoord);
+					int i = base.getBrightnessForRender(partialticks);
+					int j = i % 65536;
+					int k = i / 65536;
+					OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j / 1.0F, (float) k / 1.0F);
 				} else {
 					double x = base.prevPos.xCoord + (base.pos.xCoord - base.prevPos.xCoord) * (double) partialticks;
 					double y = base.prevPos.yCoord + (base.pos.yCoord - base.prevPos.yCoord) * (double) partialticks;
@@ -110,19 +78,70 @@ public class BB_RenderHandler {
 					int k = i / 65536;
 					OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j / 1.0F, (float) k / 1.0F);
 				}
-
+	
 				BB_Render render = BB_ResisteredList.getBraceBaseRender(base);
-				if (base.shouldUpdateRender) {
-					render.updateRender(base, partialticks);
-				}
-
+	
 				render.doRender(base, partialticks);
-
+	
 				GL11.glMatrixMode(GL11.GL_MODELVIEW);
 				GL11.glPopMatrix();
 			}
-			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
+			//GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
+			//disableClient();
+			Minecraft.getMinecraft().entityRenderer.disableLightmap((double) partialticks);
+		}
+	}*/
+
+	public static void onRenderEntities(EntityLivingBase entity, ICamera camera, float partialticks) {
+
+		if (MinecraftForgeClient.getRenderPass() == 0) {
+
+			Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+			//GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
+			enableClient();
+			//GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+			double d0 = entity.prevPosX + (entity.posX - entity.prevPosX) * (double) partialticks;
+			double d1 = entity.prevPosY + (entity.posY - entity.prevPosY) * (double) partialticks;
+			double d2 = entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double) partialticks;
+			GL11.glTranslated(-d0, -d1, -d2);
+			BB_DataWorld data = LoadClientWorldHandler.INSTANCE.data;
+			List<ExtraObject> list = data.braceBaseList;
+
+			Minecraft.getMinecraft().entityRenderer.enableLightmap((double) partialticks);
+			//camera.isBoundingBoxInFrustum(null);
+
+			/*for (int n = 0; n < list.size(); n++) {
+				ExtraObject base = list.get(n);
+				BB_Render render = BB_ResisteredList.getBraceBaseRender(base);
+				GL11.glPushMatrix();
+				GL11.glTranslated(base.pos.xCoord, base.pos.yCoord, base.pos.zCoord);
+				int i = base.getBrightnessForRender(partialticks);
+				int j = i % 65536;
+				int k = i / 65536;
+				OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j / 1.0F, (float) k / 1.0F);
+				render.doRender(base, partialticks);
+				GL11.glPopMatrix();
+			}*/
+			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
+			data.buffer.draw();
+
 			disableClient();
+			if (data.shouldUpdateRender) {
+				data.buffer.delete();
+				CreateVertexBufferObject c = CreateVertexBufferObject.INSTANCE;
+				c.beginRegist(GL15.GL_STATIC_DRAW, GL11.GL_TRIANGLES);
+				c.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+				for (int n = 0; n < list.size(); n++) {
+					ExtraObject base = list.get(n);
+					BB_Render render = BB_ResisteredList.getBraceBaseRender(base);
+					render.updateRender(c, base, partialticks);
+				}
+				data.shouldUpdateRender = false;
+				VBOHandler vbo = c.end();
+				data.buffer.add(vbo);
+				MyLogger.info("render update");
+			}
+			//GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
 			Minecraft.getMinecraft().entityRenderer.disableLightmap((double) partialticks);
 		}
 	}

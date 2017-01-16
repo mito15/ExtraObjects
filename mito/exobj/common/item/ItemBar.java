@@ -153,6 +153,7 @@ public class ItemBar extends ItemBraceBase {
 					}
 					brace.setRoll(div);
 					PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, brace));
+					brace.dataworld.shouldUpdateRender = true;
 					return true;
 				}
 			}

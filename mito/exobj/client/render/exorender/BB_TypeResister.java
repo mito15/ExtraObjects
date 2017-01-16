@@ -1,4 +1,4 @@
-package com.mito.exobj.BraceBase.Brace.Render;
+package com.mito.exobj.client.render.exorender;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,12 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.mito.exobj.client.render.model.BB_LoadModel;
+import com.mito.exobj.client.render.model.BB_Model;
+import com.mito.exobj.client.render.model.BB_Polygon;
 import com.mito.exobj.client.render.model.D_Ellipse;
-import com.mito.exobj.client.render.model.D_Face;
 import com.mito.exobj.client.render.model.IDrawBrace;
 import com.mito.exobj.client.render.model.Pattern;
-import com.mito.exobj.client.render.model.Polygon3D;
-import com.mito.exobj.client.render.model.T_OrdinaryModel;
 import com.mito.exobj.client.render.model.Vertex;
 import com.mito.exobj.common.MyLogger;
 
@@ -76,8 +75,8 @@ public class BB_TypeResister {
 		return figureToStringMapping.get(shape);
 	}
 
-	static public D_Face createSquare(double width, double height, double x, double y) {
-		D_Face ret = new D_Face();
+	static public BB_Polygon createSquare(double width, double height, double x, double y) {
+		BB_Polygon ret = new BB_Polygon();
 		ret.line.add(new Vertex(x + width / 2, y + height / 2, 0, x + width / 2, y - height / 2));
 		ret.line.add(new Vertex(x - width / 2, y + height / 2, 0, x - width / 2, y - height / 2));
 		ret.line.add(new Vertex(x - width / 2, y - height / 2, 0, x - width / 2, y + height / 2));
@@ -85,11 +84,11 @@ public class BB_TypeResister {
 		return ret;
 	}
 
-	static public D_Face create2d(double... array) {
+	static public BB_Polygon create2d(double... array) {
 		if (array.length % 2 == 1) {
 			return null;
 		}
-		D_Face ret = new D_Face();
+		BB_Polygon ret = new BB_Polygon();
 		for (int n = 0; n < array.length / 2; n++) {
 			Vertex v = new Vertex(array[2 * n], array[2 * n + 1]);
 			ret.line.add(v);
@@ -97,20 +96,20 @@ public class BB_TypeResister {
 		return ret;
 	}
 
-	public static Polygon3D createRectangle(double x, double y, double z, double sizeX, double sizeY, double sizeZ) {
+	public static BB_Model createRectangle(double x, double y, double z, double sizeX, double sizeY, double sizeZ) {
 		double maxX = x + sizeX / 2;
 		double maxY = y + sizeY / 2;
 		double maxZ = z + sizeZ / 2;
 		double minX = x - sizeX / 2;
 		double minY = y - sizeY / 2;
 		double minZ = z - sizeZ / 2;
-		return new T_OrdinaryModel(
-				new D_Face(new Vertex(maxX, maxY, maxZ, maxX, maxY), new Vertex(minX, maxY, maxZ, minX, maxY), new Vertex(minX, minY, maxZ, minX, minY), new Vertex(maxX, minY, maxZ, maxX, minY)),
-				new D_Face(new Vertex(maxX, maxY, minZ, minX, maxY), new Vertex(maxX, minY, minZ, minX, minY), new Vertex(minX, minY, minZ, maxX, minY), new Vertex(minX, maxY, minZ, maxX, maxY)),
-				new D_Face(new Vertex(maxX, maxY, maxZ, maxZ, maxX), new Vertex(maxX, maxY, minZ, minZ, maxX), new Vertex(minX, maxY, minZ, minZ, minX), new Vertex(minX, maxY, maxZ, maxZ, minX)),
-				new D_Face(new Vertex(maxX, minY, maxZ, minZ, maxX), new Vertex(minX, minY, maxZ, minZ, minX), new Vertex(minX, minY, minZ, maxZ, minX), new Vertex(maxX, minY, minZ, maxZ, maxX)),
-				new D_Face(new Vertex(maxX, maxY, maxZ, maxY, maxZ), new Vertex(maxX, minY, maxZ, minY, maxZ), new Vertex(maxX, minY, minZ, minY, minZ), new Vertex(maxX, maxY, minZ, maxY, minZ)),
-				new D_Face(new Vertex(minX, maxY, maxZ, minY, maxZ), new Vertex(minX, maxY, minZ, minY, minZ), new Vertex(minX, minY, minZ, maxY, minZ), new Vertex(minX, minY, maxZ, maxY, maxZ)));
+		return new BB_Model(
+				new BB_Polygon(new Vertex(maxX, maxY, maxZ, maxX, maxY), new Vertex(minX, maxY, maxZ, minX, maxY), new Vertex(minX, minY, maxZ, minX, minY), new Vertex(maxX, minY, maxZ, maxX, minY)),
+				new BB_Polygon(new Vertex(maxX, maxY, minZ, minX, maxY), new Vertex(maxX, minY, minZ, minX, minY), new Vertex(minX, minY, minZ, maxX, minY), new Vertex(minX, maxY, minZ, maxX, maxY)),
+				new BB_Polygon(new Vertex(maxX, maxY, maxZ, maxZ, maxX), new Vertex(maxX, maxY, minZ, minZ, maxX), new Vertex(minX, maxY, minZ, minZ, minX), new Vertex(minX, maxY, maxZ, maxZ, minX)),
+				new BB_Polygon(new Vertex(maxX, minY, maxZ, minZ, maxX), new Vertex(minX, minY, maxZ, minZ, minX), new Vertex(minX, minY, minZ, maxZ, minX), new Vertex(maxX, minY, minZ, maxZ, maxX)),
+				new BB_Polygon(new Vertex(maxX, maxY, maxZ, maxY, maxZ), new Vertex(maxX, minY, maxZ, minY, maxZ), new Vertex(maxX, minY, minZ, minY, minZ), new Vertex(maxX, maxY, minZ, maxY, minZ)),
+				new BB_Polygon(new Vertex(minX, maxY, maxZ, minY, maxZ), new Vertex(minX, maxY, minZ, minY, minZ), new Vertex(minX, minY, minZ, maxY, minZ), new Vertex(minX, minY, maxZ, maxY, maxZ)));
 	}
 
 	public static D_Ellipse createElipse(double i, double j, double k, double l) {

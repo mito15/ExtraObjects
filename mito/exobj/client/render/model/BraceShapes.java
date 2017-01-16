@@ -1,7 +1,6 @@
 package com.mito.exobj.client.render.model;
 
 import com.mito.exobj.BraceBase.CreateVertexBufferObject;
-import com.mito.exobj.BraceBase.VBOList;
 import com.mito.exobj.BraceBase.Brace.Brace;
 
 public class BraceShapes implements IDrawBrace {
@@ -13,36 +12,20 @@ public class BraceShapes implements IDrawBrace {
 		planes = list;
 	}
 
-	public void drawBrace(VBOList vbolist, Brace brace) {
+	public void drawBracewithVBO(CreateVertexBufferObject c, Brace brace) {
 		for (int n = 0; n < this.planes.length; n++) {
 			IDrawBrace plane = this.planes[n];
 			if (plane != null)
-				plane.drawBrace(vbolist, brace);
-		}
-	}
-
-	public void drawBraceSquare(CreateVertexBufferObject c, Brace brace) {
-		for (int n = 0; n < this.planes.length; n++) {
-			IDrawBrace plane = this.planes[n];
-			if (plane != null)
-				plane.drawBraceSquare(c, brace);
-		}
-	}
-
-	public void drawBraceTriangle(CreateVertexBufferObject c, Brace brace) {
-		for (int n = 0; n < this.planes.length; n++) {
-			IDrawBrace plane = this.planes[n];
-			if (plane != null)
-				plane.drawBraceTriangle(c, brace);
+				plane.drawBracewithVBO(c, brace);
 		}
 	}
 
 	@Override
-	public void renderBraceAt(Brace brace, float partialTickTime) {
+	public void drawBraceTessellator(Brace brace, float partialTickTime) {
 		for (int n = 0; n < this.planes.length; n++) {
 			IDrawBrace plane = this.planes[n];
 			if (plane != null)
-				plane.renderBraceAt(brace, partialTickTime);;
+				plane.drawBraceTessellator(brace, partialTickTime);;
 		}
 	}
 

@@ -3,7 +3,7 @@ package com.mito.exobj.common.item;
 import com.mito.exobj.BraceBase.Brace.Brace;
 import com.mito.exobj.BraceBase.Brace.LinearMotor;
 import com.mito.exobj.client.BB_Key;
-import com.mito.exobj.client.RenderHighLight;
+import com.mito.exobj.client.render.RenderHighLight;
 import com.mito.exobj.common.entity.EntityWrapperBB;
 import com.mito.exobj.utilities.MitoMath;
 

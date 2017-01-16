@@ -1,20 +1,12 @@
-package com.mito.exobj.client;
-
-import java.util.ArrayList;
-import java.util.List;
+package com.mito.exobj.client.render;
 
 import org.lwjgl.opengl.GL11;
 
 import com.mito.exobj.BraceBase.BB_DataLists;
 import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.BraceBase.Brace.Brace;
-import com.mito.exobj.common.entity.EntityBrace;
-import com.mito.exobj.common.entity.EntityFake;
-import com.mito.exobj.common.item.ItemBar;
 import com.mito.exobj.utilities.MitoMath;
-import com.mito.exobj.utilities.MyUtil;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
@@ -42,38 +34,6 @@ public class RenderHighLight {
 		}
 
 		GL11.glPopMatrix();
-
-	}
-
-	public void highlightWithBar(EntityPlayer player, double s, Vec3 c, byte f, boolean b) {
-		List list = player.worldObj.getEntitiesWithinAABBExcludingEntity((Entity) null, MyUtil.createAabbBySize(c, s));
-		List<EntityBrace> list1 = new ArrayList<EntityBrace>();
-
-		for (int n = 0; n < list.size(); n++) {
-			if (list.get(n) instanceof EntityFake) {
-				EntityBrace ent = ((EntityFake) list.get(n)).host;
-				if (ent != null) {
-					if (b) {
-						list1.add(ent);
-					} else {
-
-						ent.flags = (byte) (ent.flags | f);
-					}
-				}
-
-			}
-		}
-
-		if (list1.size() > 0 && player.getCurrentEquippedItem().getTagCompound() != null) {
-			EntityBrace ent;
-			if (player.getCurrentEquippedItem().getItem() instanceof ItemBar) {
-				ent = list1.get(player.getCurrentEquippedItem().getTagCompound().getInteger("selectNum") % list1.size());
-			} else {
-				ent = list1.get(0);
-			}
-
-			ent.flags = (byte) (ent.flags | f);
-		}
 
 	}
 

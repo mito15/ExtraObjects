@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.stream.JsonReader;
-import com.mito.exobj.BraceBase.Brace.Render.BB_TypeResister;
+import com.mito.exobj.client.render.exorender.BB_TypeResister;
 import com.mito.exobj.common.Main;
 import com.mito.exobj.common.MyLogger;
 
@@ -202,7 +202,7 @@ public class BB_LoadModel {
 		return ret;
 	}
 
-	public static D_Face loadFace(JsonReader reader) throws IOException {
+	public static BB_Polygon loadFace(JsonReader reader) throws IOException {
 
 		Vertex[] vertexs = null;
 		double size = 1.0;
@@ -246,7 +246,7 @@ public class BB_LoadModel {
 			return null;
 		}
 
-		return new D_Face(vertexs);
+		return new BB_Polygon(vertexs);
 	}
 
 }

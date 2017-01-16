@@ -13,7 +13,6 @@ import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.utilities.Line;
 import com.mito.exobj.utilities.MitoMath;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
@@ -134,8 +133,7 @@ public class GroupObject extends ExtraObject {
 					GL11.glPushMatrix();
 					GL11.glTranslated(brace.pos.xCoord, brace.pos.yCoord, brace.pos.zCoord);
 					OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j / 1.0F, (float) k / 1.0F);
-					Minecraft.getMinecraft().renderEngine.bindTexture(brace.texture.getResourceLocation(brace.color));
-					brace.shape.renderBraceAt(brace, 0);
+					//brace.shape.renderBraceAt(brace, 0);
 					GL11.glPopMatrix();
 				}
 			}

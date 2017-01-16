@@ -9,8 +9,9 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL15;
 
+import com.mito.exobj.client.render.model.Mat4;
 import com.mito.exobj.client.render.model.Vertex;
-import com.mito.exobj.utilities.MitoMath;
+import com.mito.exobj.common.MyLogger;
 
 import net.minecraft.util.Vec3;
 
@@ -30,9 +31,11 @@ public class CreateVertexBufferObject {
 	private int usage;
 	private VBOHandler p;
 	private boolean hasBrightness = false;
-	private double yaw, pitch, roll;
-	private boolean hasRot = false;
+	public Mat4 trans = new Mat4();
+	private List<Mat4> stack = new ArrayList<Mat4>();
 
+	//usage : glBufferData
+	//mode : gldrawMode
 	public void beginRegist(int usage, int mode) {
 		this.p = new VBOHandler();
 		this.size = 0;
@@ -44,10 +47,7 @@ public class CreateVertexBufferObject {
 		this.mode = mode;
 		this.p.mode = mode;
 		this.scale = 1;
-		this.hasRot = false;
-		this.yaw = 0;
-		this.pitch = 0;
-		this.roll = 0;
+		trans = new Mat4();
 	}
 
 	public VBOHandler end() {
@@ -85,18 +85,18 @@ public class CreateVertexBufferObject {
 		float n2 = this.normalArray[1];
 		float n3 = this.normalArray[2];
 
-		if (this.hasRot) {
-			Vec3 vec = Vec3.createVectorHelper(f, g, h);
-			Vec3 vec1 = Vec3.createVectorHelper(n1, n2, n3);
-			vec = MitoMath.rot(vec, this.roll, this.pitch, this.yaw);
-			vec1 = MitoMath.rot(vec1, this.roll, this.pitch, this.yaw);
-			f = (float) vec.xCoord;
-			g = (float) vec.yCoord;
-			h = (float) vec.zCoord;
-			n1 = (float) vec1.xCoord;
-			n2 = (float) vec1.yCoord;
-			n3 = (float) vec1.zCoord;
-		}
+		Vec3 vec = Vec3.createVectorHelper(f, g, h);
+		Vec3 vec1 = Vec3.createVectorHelper(n1, n2, n3);
+		vec = trans.transformVec3(vec);
+		vec1 = trans.transformVec3(vec1).normalize();
+		f = (float) vec.xCoord;
+		g = (float) vec.yCoord;
+		h = (float) vec.zCoord;
+		n1 = (float) vec1.xCoord;
+		n2 = (float) vec1.yCoord;
+		n3 = (float) vec1.zCoord;
+		MyLogger.info("cvbo normal " + n1 + " " + n2 + " " + n3);
+
 		List<Float> list;
 		this.size++;
 		list = Arrays.asList(f, g, h, this.textureArray[0], this.textureArray[1], n1, n2, n3, this.colorArray[0], this.colorArray[1], this.colorArray[2], this.colorArray[3]);
@@ -114,18 +114,17 @@ public class CreateVertexBufferObject {
 		float n2 = this.normalArray[1];
 		float n3 = this.normalArray[2];
 
-		if (this.hasRot) {
-			Vec3 vec = Vec3.createVectorHelper(f, g, h);
-			Vec3 vec1 = Vec3.createVectorHelper(n1, n2, n3);
-			vec = MitoMath.rot(vec, this.roll, this.pitch, this.yaw);
-			vec1 = MitoMath.rot(vec1, this.roll, this.pitch, this.yaw);
-			f = (float) vec.xCoord;
-			g = (float) vec.yCoord;
-			h = (float) vec.zCoord;
-			n1 = (float) vec1.xCoord;
-			n2 = (float) vec1.yCoord;
-			n3 = (float) vec1.zCoord;
-		}
+		Vec3 vec = Vec3.createVectorHelper(f, g, h);
+		Vec3 vec1 = Vec3.createVectorHelper(n1, n2, n3);
+		vec = trans.transformVec3(vec);
+		vec1 = trans.transformNormal(vec1).normalize();
+		f = (float) vec.xCoord;
+		g = (float) vec.yCoord;
+		h = (float) vec.zCoord;
+		n1 = (float) vec1.xCoord;
+		n2 = (float) vec1.yCoord;
+		n3 = (float) vec1.zCoord;
+
 		List<Float> list;
 		this.size++;
 		list = Arrays.asList(f, g, h, i, j, n1, n2, n3, this.colorArray[0], this.colorArray[1], this.colorArray[2], this.colorArray[3]);
@@ -188,15 +187,48 @@ public class CreateVertexBufferObject {
 
 	}
 
-	public void rotate(double roll, double pitch, double yaw) {
-		this.hasRot = true;
-		this.roll = roll;
-		this.yaw = yaw;
-		this.pitch = pitch;
+	public void rpyRotate(double r, double p, double y) {
+		trans.rpyRotation(r, p, y);
+	}
+
+	public void translate(double x, double y, double z) {
+		trans.translate(x, y, z);
+	}
+
+	public void translate(Vec3 v) {
+		trans.translate(v);
+	}
+
+	public void scale(double x, double y, double z) {
+		trans.scale(x, y, z);
+	}
+
+	public void rotate(double a, double x, double y, double z) {
+		trans.rotate(a, x, y, z);
+	}
+
+	public void rotate(double a, Vec3 v) {
+		trans.rotate(a, v);
 	}
 
 	public void setNormal(Vec3 v) {
 		this.setNormal(v.xCoord, v.yCoord, v.zCoord);
+	}
+
+	public void popMatrix() {
+		int n = stack.size() - 1;
+		if (n >= 0) {
+			trans = stack.get(n);
+			stack.remove(n);
+		}
+	}
+
+	public void pushMatrix() {
+		stack.add(trans.copy());
+	}
+
+	public void transform(Mat4 rotationMatrix) {
+		trans.transMat(rotationMatrix);
 	}
 
 }

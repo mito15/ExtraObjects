@@ -1,18 +1,19 @@
 package com.mito.exobj.common.item;
 
 import com.mito.exobj.BraceBase.BB_DataLists;
-import com.mito.exobj.BraceBase.BB_EnumTexture;
 import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.BraceBase.Brace.Brace;
 import com.mito.exobj.BraceBase.Brace.RedSignalCable;
 import com.mito.exobj.client.BB_Key;
-import com.mito.exobj.client.RenderHighLight;
+import com.mito.exobj.client.render.RenderHighLight;
 import com.mito.exobj.common.Main;
 import com.mito.exobj.common.entity.EntityWrapperBB;
 import com.mito.exobj.utilities.MitoMath;
 import com.mito.exobj.utilities.MyUtil;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
@@ -57,8 +58,8 @@ public class ItemRedCable extends ItemSet {
 		NBTTagCompound nbt = itemstack.getTagCompound();
 		if (nbt != null && nbt.getBoolean("activated")) {
 			Vec3 pos = mop.hitVec;
-			BB_EnumTexture texture = BB_EnumTexture.REDSTONE;
-			Main.proxy.playSound(new ResourceLocation(texture.getBreakSound()), texture.getVolume(), texture.getPitch(), (float) pos.xCoord, (float) pos.yCoord, (float) pos.zCoord);
+			Block texture = Blocks.redstone_block;
+			Main.proxy.playSound(new ResourceLocation(texture.stepSound.getBreakSound()), texture.stepSound.volume, texture.stepSound.getPitch(), (float) pos.xCoord, (float) pos.yCoord, (float) pos.zCoord);
 		}
 	}
 

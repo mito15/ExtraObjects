@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.mito.exobj.common.MyLogger;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -18,6 +20,9 @@ public class BB_DataChunk {
 	public boolean isDead = false;
 	public final int xPosition;
 	public final int zPosition;
+	
+	@SideOnly(Side.CLIENT)
+	public VBOList buffer = null;
 
 	public BB_DataChunk(World w, Chunk c) {
 		this.world = w;

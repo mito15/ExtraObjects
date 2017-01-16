@@ -2,12 +2,12 @@ package com.mito.exobj.client.gui;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mito.exobj.BraceBase.BB_EnumTexture;
-import com.mito.exobj.BraceBase.Brace.Render.BB_TypeResister;
 import com.mito.exobj.client.BB_SelectedGroup;
+import com.mito.exobj.client.render.exorender.BB_TypeResister;
 import com.mito.exobj.client.render.model.IDrawBrace;
 import com.mito.exobj.common.Main;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -23,7 +23,7 @@ public class GuiBraceProperty extends GuiScreen {
 	protected int ySize = 166;
 
 	private BB_GuiScrollingList texList;
-	private BB_EnumTexture selectedTex = null;
+	private Block selectedTex = null;
 	private int itex = 0;
 
 	private BB_GuiScrollingList2 shapeList;
@@ -55,7 +55,7 @@ public class GuiBraceProperty extends GuiScreen {
 		buttonList.add(new GuiButton(2, this.width / 2 - 120, this.height / 2 + 82, 30, 20, I18n.format("gui.done", new Object[0])));
 
 		buttonList.add(new GuiButton(101, this.width / 2 - 80, this.height / 2 + 60, 30, 20, "apply"));
-		this.texList = new BB_GuiScrollingList(this, BB_EnumTexture.values(), 60);
+		//this.texList = new BB_GuiScrollingList(this, BB_EnumTexture.values(), 60);
 		this.texList.registerScrollButtons(this.buttonList, 7, 8);
 		this.shapeList = new BB_GuiScrollingList2(this, BB_TypeResister.typeList, 80);
 		this.shapeList.registerScrollButtons(this.buttonList, 7, 8);
@@ -182,14 +182,14 @@ public class GuiBraceProperty extends GuiScreen {
 		return false;
 	}
 
-	public void selectTextureIndex(int var1) {
+	/*public void selectTextureIndex(int var1) {
 		this.itex = var1;
 		if (var1 >= 0 && var1 < BB_EnumTexture.values().length) {
 			this.selectedTex = BB_EnumTexture.values()[itex];
 		} else {
 			this.selectedTex = null;
 		}
-	}
+	}*/
 
 	public boolean textureIndexSelected(int var1) {
 		return var1 == itex;

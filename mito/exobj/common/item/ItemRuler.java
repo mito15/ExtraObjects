@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.mito.exobj.BraceBase.Brace.Scale;
 import com.mito.exobj.client.BB_Key;
-import com.mito.exobj.client.RenderHighLight;
+import com.mito.exobj.client.render.RenderHighLight;
 import com.mito.exobj.utilities.MitoMath;
 import com.mito.exobj.utilities.MyUtil;
 

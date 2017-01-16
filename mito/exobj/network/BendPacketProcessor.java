@@ -46,7 +46,7 @@ public class BendPacketProcessor implements IMessage, IMessageHandler<BendPacket
 				MyLogger.info("bender end");
 			}
 			//brace.hasCP = true;
-			brace.shouldUpdateRender = true;
+			//brace.shouldUpdateRender = true;
 		}
 		return null;
 	}

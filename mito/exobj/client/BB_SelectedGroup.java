@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mito.exobj.BraceBase.BB_EnumTexture;
 import com.mito.exobj.BraceBase.BB_GroupBase;
 import com.mito.exobj.BraceBase.BB_Render;
 import com.mito.exobj.BraceBase.BB_ResisteredList;
@@ -17,6 +16,7 @@ import com.mito.exobj.network.GroupPacketProcessor;
 import com.mito.exobj.network.GroupPacketProcessor.EnumGroupMode;
 import com.mito.exobj.network.PacketHandler;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -165,7 +165,7 @@ public class BB_SelectedGroup extends BB_GroupBase {
 		return mop.hitVec.addVector(-c.xCoord, -c.yCoord, -c.zCoord);
 	}
 
-	public void applyProperty(BB_EnumTexture tex, int color, IDrawBrace shape) {
+	public void applyProperty(Block tex, int color, IDrawBrace shape) {
 		for (int n = 0; n < this.list.size(); n++) {
 			if (this.list.get(n) instanceof Brace) {
 				Brace brace = ((Brace) this.list.get(n));
@@ -174,15 +174,11 @@ public class BB_SelectedGroup extends BB_GroupBase {
 				}
 				if (shape != null) {
 					brace.shape = shape;
-					brace.shouldUpdateRender = true;
+					//brace.shouldUpdateRender = true;
 				}
-				if (brace.texture.hasColor) {
-					if (color >= 0 && color < 16) {
-						brace.color = color;
-					} else if (color == 16) {
-					} else {
-						brace.color = 0;
-					}
+				if (color >= 0 && color < 16) {
+					brace.color = color;
+				} else if (color == 16) {
 				} else {
 					brace.color = 0;
 				}
@@ -195,13 +191,10 @@ public class BB_SelectedGroup extends BB_GroupBase {
 		for (int n = 0; n < this.list.size(); n++) {
 			if (this.list.get(n) instanceof Brace) {
 				Brace brace = ((Brace) this.list.get(n));
-				if (brace.texture.hasColor) {
-					if (color >= 0 && color < 16) {
-						brace.color = color;
-					} else if (color == 16) {
-					} else {
-						brace.color = 0;
-					}
+
+				if (color >= 0 && color < 16) {
+					brace.color = color;
+				} else if (color == 16) {
 				} else {
 					brace.color = 0;
 				}
@@ -222,7 +215,7 @@ public class BB_SelectedGroup extends BB_GroupBase {
 			if (this.list.get(n) instanceof Brace) {
 				Brace brace = ((Brace) this.list.get(n));
 				brace.size = (double) isize * 0.05;
-				brace.shouldUpdateRender = true;
+				//brace.shouldUpdateRender = true;
 				PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, this.list.get(n)));
 			}
 		}
@@ -252,7 +245,7 @@ public class BB_SelectedGroup extends BB_GroupBase {
 			if (this.list.get(n) instanceof Brace) {
 				Brace brace = ((Brace) this.list.get(n));
 				brace.setRoll(iroll);
-				brace.shouldUpdateRender = true;
+				//brace.shouldUpdateRender = true;
 				PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, this.list.get(n)));
 			}
 		}
@@ -263,7 +256,7 @@ public class BB_SelectedGroup extends BB_GroupBase {
 		for (int n = 0; n < this.list.size(); n++) {
 			ExtraObject brace = this.list.get(n);
 			brace.resize(c, (double) isize / this.size);
-			brace.shouldUpdateRender = true;
+			//brace.shouldUpdateRender = true;
 			PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, this.list.get(n)));
 
 		}
@@ -275,7 +268,7 @@ public class BB_SelectedGroup extends BB_GroupBase {
 		for (int n = 0; n < this.list.size(); n++) {
 			ExtraObject brace = this.list.get(n);
 			brace.rotation(c, -this.rot + irot);
-			brace.shouldUpdateRender = true;
+			//brace.shouldUpdateRender = true;
 			PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, this.list.get(n)));
 
 		}

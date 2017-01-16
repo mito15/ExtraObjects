@@ -3,12 +3,11 @@ package com.mito.exobj.common.item;
 import java.util.List;
 
 import com.mito.exobj.BraceBase.BB_DataLists;
-import com.mito.exobj.BraceBase.BB_EnumTexture;
 import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.BraceBase.Brace.Brace;
-import com.mito.exobj.BraceBase.Brace.Render.BB_TypeResister;
 import com.mito.exobj.client.BB_Key;
-import com.mito.exobj.client.RenderHighLight;
+import com.mito.exobj.client.render.RenderHighLight;
+import com.mito.exobj.client.render.exorender.BB_TypeResister;
 import com.mito.exobj.common.Main;
 import com.mito.exobj.common.entity.EntityWrapperBB;
 import com.mito.exobj.common.main.ResisterItem;
@@ -16,9 +15,11 @@ import com.mito.exobj.utilities.MyUtil;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -75,26 +76,25 @@ public class ItemBrace extends ItemSet {
 		NBTTagCompound nbt = getTagCompound(itemstack);
 		list.add("size : " + nbt.getInteger("size"));
 		list.add("type : " + this.getType(itemstack));
-		list.add("texture : " + this.getMaterial(itemstack).getTextureName(this.getColor(itemstack)));
+		list.add("texture : " + this.getMaterial(itemstack).getLocalizedName());
 
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tab, List list) {
-		for (int i2 = 0; i2 < BB_EnumTexture.values().length; ++i2) {
-			for (int i3 = 0; i3 < (BB_EnumTexture.values()[i2].hasColor ? 16 : 1); i3++) {
-				for (int i1 = 0; i1 < BB_TypeResister.shapeList.size(); ++i1) {
-					ItemStack itemstack = new ItemStack(item, 1, i3);
-					NBTTagCompound nbt = new NBTTagCompound();
-					itemstack.setTagCompound(nbt);
-					this.setSize(itemstack, 5);
-					this.setType(itemstack, BB_TypeResister.shapeList.get(i1));
-					nbt.setInteger("material", i2);
-					list.add(itemstack);
-				}
+		for (int i3 = 0; i3 < 16; i3++) {
+			for (int i1 = 0; i1 < BB_TypeResister.shapeList.size(); ++i1) {
+				ItemStack itemstack = new ItemStack(item, 1, i3);
+				NBTTagCompound nbt = new NBTTagCompound();
+				itemstack.setTagCompound(nbt);
+				this.setSize(itemstack, 5);
+				this.setType(itemstack, BB_TypeResister.shapeList.get(i1));
+				nbt.setInteger("block", Block.getIdFromBlock(Blocks.wool));
+				list.add(itemstack);
 			}
 		}
+
 		for (int i1 = 0; i1 < BB_TypeResister.patternList.size(); ++i1) {
 			ItemStack itemstack = new ItemStack(item, 1, 0);
 			NBTTagCompound nbt = new NBTTagCompound();
@@ -132,12 +132,14 @@ public class ItemBrace extends ItemSet {
 		return ret;
 	}
 
-	public BB_EnumTexture getMaterial(ItemStack itemstack) {
-		if (itemstack.getTagCompound() != null && itemstack.getTagCompound().hasKey("material")) {
-			return BB_EnumTexture.values()[itemstack.getTagCompound().getInteger("material")];
-		} else {
-			return BB_EnumTexture.IRON;
+	public Block getMaterial(ItemStack itemstack) {
+		if (itemstack.getTagCompound() != null) {
+			if (itemstack.getTagCompound().hasKey("block")) {
+				return Block.getBlockById(itemstack.getTagCompound().getInteger("block"));
+			}
 		}
+		return Blocks.stone;
+
 	}
 
 	public ItemStack setSize(ItemStack itemstack, int i) {
@@ -152,9 +154,9 @@ public class ItemBrace extends ItemSet {
 		return itemstack;
 	}
 
-	public ItemStack setMaterial(ItemStack itemstack, BB_EnumTexture e) {
+	public ItemStack setMaterial(ItemStack itemstack, Block e) {
 		NBTTagCompound nbt = getTagCompound(itemstack);
-		nbt.setInteger("material", e.ordinal());
+		nbt.setInteger("material", Block.getIdFromBlock(e));
 		return itemstack;
 	}
 
@@ -188,7 +190,7 @@ public class ItemBrace extends ItemSet {
 		int color = this.getColor(itemstack);
 		Brace brace = new Brace(world, set, end, BB_TypeResister.getFigure(this.getType(itemstack)), this.getMaterial(itemstack), this.getColor(itemstack), this.getRealSize(itemstack));
 		brace.addToWorld();
-		
+
 		if (MyUtil.isBrace(movingOP) && MyUtil.getBrace(movingOP).isStatic) {
 			ExtraObject base = MyUtil.getBrace(movingOP);
 			brace.connectBrace(base);
@@ -210,8 +212,8 @@ public class ItemBrace extends ItemSet {
 		NBTTagCompound nbt = itemstack.getTagCompound();
 		if (nbt != null && nbt.getBoolean("activated")) {
 			Vec3 pos = mop.hitVec;
-			BB_EnumTexture texture = getMaterial(itemstack);
-			Main.proxy.playSound(new ResourceLocation(texture.getBreakSound()), texture.getVolume(), texture.getPitch(), (float) pos.xCoord, (float) pos.yCoord, (float) pos.zCoord);
+			Block texture = getMaterial(itemstack);
+			Main.proxy.playSound(new ResourceLocation(texture.stepSound.getBreakSound()), texture.stepSound.volume, texture.stepSound.getPitch(), (float) pos.xCoord, (float) pos.yCoord, (float) pos.zCoord);
 		}
 	}
 
@@ -241,10 +243,6 @@ public class ItemBrace extends ItemSet {
 
 		return true;
 
-	}
-
-	public ResourceLocation getResourceLocation(ItemStack itemstack) {
-		return this.getMaterial(itemstack).getResourceLocation(this.getColor(itemstack));
 	}
 
 	public boolean wheelEvent(EntityPlayer player, ItemStack stack, BB_Key key, int dwheel) {

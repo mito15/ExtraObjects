@@ -4,7 +4,7 @@ import com.mito.exobj.BraceBase.BB_DataLists;
 import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.BraceBase.Brace.Brace;
 import com.mito.exobj.client.BB_Key;
-import com.mito.exobj.client.RenderHighLight;
+import com.mito.exobj.client.render.RenderHighLight;
 import com.mito.exobj.common.Main;
 import com.mito.exobj.common.MyLogger;
 import com.mito.exobj.common.entity.EntityWrapperBB;

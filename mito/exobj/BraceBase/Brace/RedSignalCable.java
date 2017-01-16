@@ -1,7 +1,6 @@
 package com.mito.exobj.BraceBase.Brace;
 
-import com.mito.exobj.BraceBase.BB_EnumTexture;
-import com.mito.exobj.BraceBase.Brace.Render.BB_TypeResister;
+import com.mito.exobj.client.render.exorender.BB_TypeResister;
 import com.mito.exobj.common.Main;
 import com.mito.exobj.common.item.ItemBar;
 import com.mito.exobj.common.item.ItemBrace;
@@ -12,6 +11,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
@@ -34,7 +34,7 @@ public class RedSignalCable extends Brace {
 	public RedSignalCable(World world, Vec3 pos, Vec3 end) {
 		this(world, pos);
 		this.line = new Line(pos, end);
-		this.texture = BB_EnumTexture.REDSTONE;
+		this.texture = Blocks.redstone_block;
 		this.shape = BB_TypeResister.getFigure("square");
 		this.size = 0.1;
 		this.color = 0;
@@ -57,10 +57,10 @@ public class RedSignalCable extends Brace {
 			boolean a = this.worldObj.isBlockIndirectlyGettingPowered(MathHelper.floor_double(v.xCoord), MathHelper.floor_double(v.yCoord), MathHelper.floor_double(v.zCoord));
 			if (a && !this.light) {
 				this.light = true;
-				this.shouldUpdateRender = true;
+				//this.shouldUpdateRender = true;
 			} else if (!a && this.light) {
 				this.light = false;
-				this.shouldUpdateRender = true;
+				//this.shouldUpdateRender = true;
 			}
 
 			//(MathHelper.floor_double(v.xCoord), MathHelper.floor_double(v.yCoord), MathHelper.floor_double(v.zCoord))
@@ -104,7 +104,7 @@ public class RedSignalCable extends Brace {
 				this.bindBraces.get(n).setDead();
 			}*/
 		} else {
-			Main.proxy.playSound(new ResourceLocation(this.texture.getBreakSound()), this.texture.getVolume(), this.texture.getPitch(), (float) pos.xCoord, (float) pos.yCoord, (float) pos.zCoord);
+			Main.proxy.playSound(new ResourceLocation(this.texture.stepSound.getBreakSound()), this.texture.stepSound.volume, this.texture.stepSound.getPitch(), (float) pos.xCoord, (float) pos.yCoord, (float) pos.zCoord);
 
 			//破壊時パーティクル
 			//this.setDead();

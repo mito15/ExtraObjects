@@ -35,12 +35,12 @@ public class MyUtil {
 		Vec3 v1, v2;
 		Vec3 norm = dir.normalize();
 
-		if (dir.crossProduct(v).lengthVector() < 0.01) {
-			v1 = norm.crossProduct(v);
-			v2 = norm.crossProduct(v1);
+		if (norm.crossProduct(v).lengthVector() > 0.01) {
+			v1 = norm.crossProduct(v).normalize();
+			v2 = norm.crossProduct(v1).normalize();
 		} else {
-			v1 = norm.crossProduct(Vec3.createVectorHelper(1, 0, 0));
-			v2 = norm.crossProduct(v1);
+			v1 = norm.crossProduct(Vec3.createVectorHelper(1, 0, 0)).normalize();
+			v2 = norm.crossProduct(v1).normalize();
 		}
 
 		Mat4 ret = Mat4.createMat4(v1, v2, norm);
@@ -60,12 +60,20 @@ public class MyUtil {
 		for (int lineU = (int) Math.floor(minU) + 1; lineU <= maxU; lineU++) {
 			decomposeLineU(list, lineU);
 		}
+		for (int lineV = (int) Math.floor(minV) + 1; lineV <= maxV; lineV++) {
+			decomposeLineV(list, lineV);
+		}
 
 		return list;
 	}
 
-	private static void decomposeLineU(List<Triangle> list, int lineU) {
+	private static void decomposeLineV(List<Triangle> list, int lineV) {
+		// TODO Auto-generated method stub
 		
+	}
+
+	private static void decomposeLineU(List<Triangle> list, int lineU) {
+
 		for (int n = 0; n < list.size(); n++) {
 			Triangle tri = list.get(n);
 			Vertex v1 = tri.vertexs[0];
@@ -73,8 +81,13 @@ public class MyUtil {
 			Vertex v3 = tri.vertexs[2];
 			double maxU = Math.max(Math.max(v1.textureU, v2.textureU), v3.textureU);
 			double minU = Math.min(Math.min(v1.textureU, v2.textureU), v3.textureU);
-			if(lineU < maxU && lineU > minU){
-				
+			if (lineU < maxU && lineU > minU) {
+				boolean flug = true;
+				if(flug){
+					
+				} else {
+					
+				}
 			}
 		}
 	}

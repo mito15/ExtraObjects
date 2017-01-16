@@ -5,7 +5,7 @@ import com.mito.exobj.utilities.MitoMath;
 
 import net.minecraft.util.Vec3;
 
-public class D_Ellipse extends D_Face {
+public class D_Ellipse extends BB_Polygon {
 	Vec3 pos;
 	double axisX;
 	double axisY;
@@ -19,7 +19,7 @@ public class D_Ellipse extends D_Face {
 	}
 
 	public int getSize(double size) {
-		return 20;
+		return (size < 1.0) ? 20 : (int)(size * 20);
 	}
 
 	public Vec3 getVec3(int n, double size) {

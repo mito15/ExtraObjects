@@ -1,35 +1,13 @@
-package com.mito.exobj.BraceBase.Brace.Render;
+package com.mito.exobj.client.render.exorender;
 
 import org.lwjgl.opengl.GL11;
 
 import com.mito.exobj.BraceBase.BB_Render;
-import com.mito.exobj.BraceBase.BB_RenderHandler;
 import com.mito.exobj.BraceBase.CreateVertexBufferObject;
 import com.mito.exobj.BraceBase.ExtraObject;
-import com.mito.exobj.BraceBase.VBOHandler;
-import com.mito.exobj.BraceBase.VBOList;
 import com.mito.exobj.BraceBase.Brace.Brace;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Tessellator;
-
 public class RenderBrace extends BB_Render {
-
-	public void staticRender(ExtraObject base) {
-		Tessellator t = Tessellator.instance;
-
-		int i = base.getBrightnessForRender(0);
-		int j = i % 65536;
-		int k = i / 65536;
-		Brace brace = (Brace) base;
-		Minecraft.getMinecraft().renderEngine.bindTexture(brace.texture.getResourceLocation(brace.color));
-		if (brace.shape == null)
-			return;
-
-		brace.shape.renderBraceAt(brace, 0);
-		
-
-	}
 
 	@Override
 	public void drawHighLight(ExtraObject base, float partialticks) {
@@ -52,8 +30,8 @@ public class RenderBrace extends BB_Render {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		if (base.buffer != null)
-			base.buffer.draw(GL11.GL_LINE_LOOP);
+		/*if (base.buffer != null)
+			base.buffer.draw(GL11.GL_LINE_LOOP);*/
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glPopMatrix();
 
@@ -64,29 +42,30 @@ public class RenderBrace extends BB_Render {
 	}
 
 	public void doRender(ExtraObject base, float partialTickTime) {
-		BB_RenderHandler.enableClient();
+		//BB_RenderHandler.enableClient();
 		Brace brace = (Brace) base;
-		Minecraft.getMinecraft().renderEngine.bindTexture(brace.texture.getResourceLocation(brace.color));
 		GL11.glTranslated(brace.rand.xCoord, brace.rand.yCoord, brace.rand.zCoord);
-		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
-		if (base.buffer != null) {
+		//GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
+		brace.shape.drawBraceTessellator(brace, partialTickTime);
+		/*if (base.buffer != null) {
 			base.buffer.draw();
-		}
+		}*/
 	}
 
-	public void updateRender(ExtraObject base, float partialticks) {
+	public void updateRender(CreateVertexBufferObject c, ExtraObject base, float partialticks) {
 
 		int i = base.getBrightnessForRender(partialticks);
 		int j = i % 65536;
 		int k = i / 65536;
 
-		base.shouldUpdateRender = false;
 		Brace brace = (Brace) base;
 		if (brace.shape == null)
 			return;
-		base.buffer = new VBOList(new VBOHandler[0]);
-		brace.shape.drawBrace(base.buffer, brace);
-		CreateVertexBufferObject c = CreateVertexBufferObject.INSTANCE;
+		c.setBrightness(j, k);
+		c.pushMatrix();
+		brace.shape.drawBracewithVBO(c, brace);
+		c.popMatrix();
+		/*brace.shape.drawBrace(c, brace);
 		c.beginRegist(35044, 7);
 		c.setColor(1.0F, 1.0F, 1.0F, 1.0F);
 		c.setBrightness(j, k);
@@ -98,6 +77,6 @@ public class RenderBrace extends BB_Render {
 		brace.shape.drawBraceTriangle(c, brace);
 		VBOHandler vbo2 = c.end();
 		base.buffer.add(vbo1);
-		base.buffer.add(vbo2);
+		base.buffer.add(vbo2);*/
 	}
 }

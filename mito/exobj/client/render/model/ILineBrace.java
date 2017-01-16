@@ -14,6 +14,8 @@ import net.minecraft.world.World;
 public interface ILineBrace {
 	
 	public Vec3 getPoint(double d);
+	
+	public Vec3 getTangent(double t);
 
 	public void move(Vec3 motion, int command);
 

@@ -46,4 +46,10 @@ public class Vertex {
 		return new Vertex(MitoMath.rot(this.pos, roll, pitch, yaw), this.textureU, this.textureV);
 	}
 
+	public Vertex transTexUV() {
+		this.textureU += 0.5;
+		this.textureV += 0.5;
+		return this;
+	}
+
 }

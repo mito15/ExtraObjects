@@ -1,4 +1,4 @@
-package com.mito.exobj.client;
+package com.mito.exobj.client.render;
 
 import org.lwjgl.opengl.GL11;
 

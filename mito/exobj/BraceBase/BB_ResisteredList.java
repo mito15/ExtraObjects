@@ -14,14 +14,14 @@ import com.mito.exobj.BraceBase.Brace.Motor;
 import com.mito.exobj.BraceBase.Brace.RedSignalCable;
 import com.mito.exobj.BraceBase.Brace.Scale;
 import com.mito.exobj.BraceBase.Brace.Wall;
-import com.mito.exobj.BraceBase.Brace.Render.RenderBrace;
-import com.mito.exobj.BraceBase.Brace.Render.RenderFakeBlock;
-import com.mito.exobj.BraceBase.Brace.Render.RenderGroupObject;
-import com.mito.exobj.BraceBase.Brace.Render.RenderJunction;
-import com.mito.exobj.BraceBase.Brace.Render.RenderLinearMotor;
-import com.mito.exobj.BraceBase.Brace.Render.RenderMotor;
-import com.mito.exobj.BraceBase.Brace.Render.RenderScale;
-import com.mito.exobj.BraceBase.Brace.Render.RenderWall;
+import com.mito.exobj.client.render.exorender.RenderBrace;
+import com.mito.exobj.client.render.exorender.RenderFakeBlock;
+import com.mito.exobj.client.render.exorender.RenderGroupObject;
+import com.mito.exobj.client.render.exorender.RenderJunction;
+import com.mito.exobj.client.render.exorender.RenderLinearMotor;
+import com.mito.exobj.client.render.exorender.RenderMotor;
+import com.mito.exobj.client.render.exorender.RenderScale;
+import com.mito.exobj.client.render.exorender.RenderWall;
 import com.mito.exobj.common.MyLogger;
 import com.mito.exobj.network.BB_PacketProcessor;
 import com.mito.exobj.network.BB_PacketProcessor.Mode;
@@ -146,9 +146,7 @@ public class BB_ResisteredList {
 	public static ExtraObject syncBraceBaseFromNBT(NBTTagCompound nbt, World world, int id) {
 		ExtraObject base = BB_DataLists.getWorldData(world).getBraceBaseByID(id);
 		if (base != null) {
-			MyLogger.info("syncsync33 " + ((Brace)base).texture.ordinal());
 			base.readFromNBT(nbt);
-			MyLogger.info("syncsync34 " + ((Brace)base).texture.ordinal());
 		} else {
 			PacketHandler.INSTANCE.sendToAll(new BB_PacketProcessor(Mode.DELETE, base));
 			MyLogger.warn("Skipping Entity with id " + nbt.getString("id"));

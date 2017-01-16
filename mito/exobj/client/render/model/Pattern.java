@@ -1,51 +1,38 @@
 package com.mito.exobj.client.render.model;
 
 import com.mito.exobj.BraceBase.CreateVertexBufferObject;
-import com.mito.exobj.BraceBase.VBOList;
 import com.mito.exobj.BraceBase.Brace.Brace;
 
 public class Pattern implements IDrawBrace {
 
-	public T_Group model;
+	public BB_Model model;
 	public double length;
 
-	public Pattern(double length, T_Group model) {
+	public Pattern(double length, BB_Model model) {
 		this.model = model;
 		this.length = length;
 	}
-
-	public Pattern(double length, Polygon3D... model) {
-		this.model = new T_Group(model);
+	
+	public Pattern(double length, BB_Model... list) {
+		this.model = new BB_ModelGroup(list);
 		this.length = length;
-	}
-
-	@Override
-	public void renderBraceAt(Brace brace, float partialTickTime) {
-		// TODO 自動生成されたメソッド・スタブ
-
-	}
-
-	@Override
-	public void drawBrace(VBOList buffer, Brace brace) {
-		// TODO 自動生成されたメソッド・スタブ
-
-	}
-
-	@Override
-	public void drawBraceSquare(CreateVertexBufferObject c, Brace brace) {
-		// TODO 自動生成されたメソッド・スタブ
-
-	}
-
-	@Override
-	public void drawBraceTriangle(CreateVertexBufferObject buffer, Brace brace) {
-		// TODO 自動生成されたメソッド・スタブ
-
 	}
 
 	@Override
 	public boolean hasNull() {
 		return false;
+	}
+
+	@Override
+	public void drawBraceTessellator(Brace brace, float partialTickTime) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void drawBracewithVBO(CreateVertexBufferObject buffer, Brace brace) {
+		// TODO Auto-generated method stub
+
 	}
 
 	/*public void renderBraceAt(Brace brace, float partialTickTime) {
@@ -61,7 +48,7 @@ public class Pattern implements IDrawBrace {
 			model.renderAt(offset, roll, pitch, yaw, brace.size, partialTickTime);
 		}
 	}
-
+	
 	@Override
 	public void drawBrace(VBOList vbolist, Brace brace) {
 		if (brace.size == 0 || this.length == 0) {
@@ -76,7 +63,7 @@ public class Pattern implements IDrawBrace {
 			model.drawSpecial(vbolist, offset, roll, pitch, yaw, brace.size);
 		}
 	}
-
+	
 	@Override
 	public void drawBraceSquare(CreateVertexBufferObject c, Brace brace) {
 		if (brace.size == 0 || this.length == 0) {
@@ -91,7 +78,7 @@ public class Pattern implements IDrawBrace {
 			model.drawQuad(c, offset, roll, pitch, yaw, brace.size);
 		}
 	}
-
+	
 	@Override
 	public void drawBraceTriangle(CreateVertexBufferObject c, Brace brace) {
 		if (brace.size == 0 || this.length == 0) {

@@ -47,12 +47,8 @@ public abstract class ExtraObject {
 	public int BBID;
 	private NBTTagCompound customFixedObjectData;
 
-	public VBOList buffer = null;
-
 	public double rotationYaw = 0;
-
 	public double rotationPitch = 0;
-
 	public double rotationRoll = 0;
 
 	public Vec3 prevPos;
@@ -61,9 +57,7 @@ public abstract class ExtraObject {
 	public int currentCommand = -1;
 
 	public double prevRotationYaw = 0;
-
 	public double prevRotationPitch = 0;
-
 	public double prevRotationRoll = 0;
 
 	//private BB_ObjectsBinder braces = null;
@@ -71,7 +65,6 @@ public abstract class ExtraObject {
 	public BB_DataWorld dataworld;
 	public BB_DataChunk datachunk;
 	public BB_DataGroup group = null;
-	public boolean shouldUpdateRender = true;
 
 	protected final Random random = new Random();
 

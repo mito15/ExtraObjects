@@ -28,7 +28,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public class NGTOWrapper extends Polygon3D {
+public class NGTOWrapper extends BB_Model {
 
 	@SideOnly(Side.CLIENT)
 	public World dummyWorld;
@@ -125,7 +125,7 @@ public class NGTOWrapper extends Polygon3D {
 	}
 
 	@Override
-	public void renderAt(Vec3 offset, double roll, double pitch, double yaw, double size, float partialTickTime) {
+	public void drawWithTessellator(Vec3 offset, double roll, double pitch, double yaw, double size, float partialTickTime) {
 		GL11.glPushMatrix();
 		GL11.glTranslated(offset.xCoord, offset.yCoord, offset.zCoord);
 		GL11.glRotated(yaw, 0, 1, 0);

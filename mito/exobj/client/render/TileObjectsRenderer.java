@@ -1,4 +1,4 @@
-package com.mito.exobj.client;
+package com.mito.exobj.client.render;
 
 import com.mito.exobj.common.block.TileObjects;
 
