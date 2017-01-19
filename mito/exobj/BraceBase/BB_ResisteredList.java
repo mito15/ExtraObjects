@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Level;
 import com.mito.exobj.BraceBase.Brace.Brace;
 import com.mito.exobj.BraceBase.Brace.FakeBlock;
 import com.mito.exobj.BraceBase.Brace.GroupObject;
+import com.mito.exobj.BraceBase.Brace.GuideBrace;
 import com.mito.exobj.BraceBase.Brace.Junction;
 import com.mito.exobj.BraceBase.Brace.LinearMotor;
 import com.mito.exobj.BraceBase.Brace.Motor;
@@ -17,6 +18,7 @@ import com.mito.exobj.BraceBase.Brace.Wall;
 import com.mito.exobj.client.render.exorender.RenderBrace;
 import com.mito.exobj.client.render.exorender.RenderFakeBlock;
 import com.mito.exobj.client.render.exorender.RenderGroupObject;
+import com.mito.exobj.client.render.exorender.RenderGuideBrace;
 import com.mito.exobj.client.render.exorender.RenderJunction;
 import com.mito.exobj.client.render.exorender.RenderLinearMotor;
 import com.mito.exobj.client.render.exorender.RenderMotor;
@@ -141,6 +143,7 @@ public class BB_ResisteredList {
 		addMapping(Motor.class, "Motor", nextID++, new RenderMotor());
 		addMapping(GroupObject.class, "GroupObject", nextID++, new RenderGroupObject());
 		addMapping(RedSignalCable.class, "RedSignalCable", nextID++, new RenderBrace());
+		addMapping(GuideBrace.class, "GuideBrace", nextID++, new RenderGuideBrace());
 	}
 
 	public static ExtraObject syncBraceBaseFromNBT(NBTTagCompound nbt, World world, int id) {

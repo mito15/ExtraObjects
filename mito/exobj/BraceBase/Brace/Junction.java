@@ -20,12 +20,12 @@ public class Junction extends ExtraObject {
 	}
 
 	@Override
-	protected void readExtraObjectFromNBT(NBTTagCompound nbt) {
+	public void readExtraObjectFromNBT(NBTTagCompound nbt) {
 
 	}
 
 	@Override
-	protected void writeExtraObjectToNBT(NBTTagCompound nbt) {
+	public void writeExtraObjectToNBT(NBTTagCompound nbt) {
 
 	}
 

@@ -100,7 +100,7 @@ public class Brace extends ExtraObject {
 	}
 
 	@Override
-	protected void readExtraObjectFromNBT(NBTTagCompound nbt) {
+	public void readExtraObjectFromNBT(NBTTagCompound nbt) {
 		//this.line.readNBT(nbt);
 
 		Vec3 start = getVec3(nbt, "start");
@@ -128,7 +128,7 @@ public class Brace extends ExtraObject {
 	}
 
 	@Override
-	protected void writeExtraObjectToNBT(NBTTagCompound nbt) {
+	public void writeExtraObjectToNBT(NBTTagCompound nbt) {
 		if (line != null && shape != null) {
 			line.writeNBT(nbt);
 			nbt.setString("shape", BB_TypeResister.getName(this.shape));

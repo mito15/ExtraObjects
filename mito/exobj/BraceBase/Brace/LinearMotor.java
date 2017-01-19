@@ -346,12 +346,12 @@ public class LinearMotor extends ExtraObject {
 	}
 
 	@Override
-	protected void readExtraObjectFromNBT(NBTTagCompound nbt) {
+	public void readExtraObjectFromNBT(NBTTagCompound nbt) {
 		this.direction = nbt.getBoolean("direction");
 	}
 
 	@Override
-	protected void writeExtraObjectToNBT(NBTTagCompound nbt) {
+	public void writeExtraObjectToNBT(NBTTagCompound nbt) {
 		nbt.setBoolean("direction", this.direction);
 	}
 

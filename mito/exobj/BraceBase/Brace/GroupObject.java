@@ -48,7 +48,7 @@ public class GroupObject extends ExtraObject {
 	}
 
 	@Override
-	protected void readExtraObjectFromNBT(NBTTagCompound nbt) {
+	public void readExtraObjectFromNBT(NBTTagCompound nbt) {
 		NBTTagList taglist = nbt.getTagList("exobjs", 10);
 		NBTTagCompound nbt1 = taglist.getCompoundTagAt(0);
 		list = new ArrayList<ExtraObject>();
@@ -77,7 +77,7 @@ public class GroupObject extends ExtraObject {
 	}
 
 	@Override
-	protected void writeExtraObjectToNBT(NBTTagCompound nbt) {
+	public void writeExtraObjectToNBT(NBTTagCompound nbt) {
 		NBTTagList taglistGroup = new NBTTagList();
 		Map<ExtraObject, Integer> BraceBaseToIntMapping = new HashMap<ExtraObject, Integer>();
 

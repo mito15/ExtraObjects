@@ -17,13 +17,13 @@ public class Wall extends ExtraObject {
 	}
 
 	@Override
-	protected void readExtraObjectFromNBT(NBTTagCompound nbt) {
+	public void readExtraObjectFromNBT(NBTTagCompound nbt) {
 		// TODO 自動生成されたメソッド・スタブ
 
 	}
 
 	@Override
-	protected void writeExtraObjectToNBT(NBTTagCompound nbt) {
+	public void writeExtraObjectToNBT(NBTTagCompound nbt) {
 		// TODO 自動生成されたメソッド・スタブ
 
 	}

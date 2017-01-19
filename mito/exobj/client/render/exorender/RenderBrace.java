@@ -65,18 +65,5 @@ public class RenderBrace extends BB_Render {
 		c.pushMatrix();
 		brace.shape.drawBracewithVBO(c, brace);
 		c.popMatrix();
-		/*brace.shape.drawBrace(c, brace);
-		c.beginRegist(35044, 7);
-		c.setColor(1.0F, 1.0F, 1.0F, 1.0F);
-		c.setBrightness(j, k);
-		brace.shape.drawBraceSquare(c, brace);
-		VBOHandler vbo1 = c.end();
-		c.beginRegist(35044, 4);
-		c.setColor(1.0F, 1.0F, 1.0F, 1.0F);
-		c.setBrightness(j, k);
-		brace.shape.drawBraceTriangle(c, brace);
-		VBOHandler vbo2 = c.end();
-		base.buffer.add(vbo1);
-		base.buffer.add(vbo2);*/
 	}
 }

@@ -52,4 +52,8 @@ public class Vertex {
 		return this;
 	}
 
+	public Vertex copy() {
+		return new Vertex(pos.xCoord, pos.yCoord, pos.zCoord, textureU, textureV);
+	}
+
 }

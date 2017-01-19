@@ -69,7 +69,7 @@ public class MyUtil {
 
 	private static void decomposeLineV(List<Triangle> list, int lineV) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private static void decomposeLineU(List<Triangle> list, int lineU) {
@@ -79,17 +79,37 @@ public class MyUtil {
 			Vertex v1 = tri.vertexs[0];
 			Vertex v2 = tri.vertexs[1];
 			Vertex v3 = tri.vertexs[2];
-			double maxU = Math.max(Math.max(v1.textureU, v2.textureU), v3.textureU);
-			double minU = Math.min(Math.min(v1.textureU, v2.textureU), v3.textureU);
-			if (lineU < maxU && lineU > minU) {
-				boolean flug = true;
-				if(flug){
-					
-				} else {
-					
-				}
+			int num = 0;
+			int flug = 0;
+			if (v1.textureU < lineU) {
+				num++;
+			}
+			if (v2.textureU < lineU) {
+				num++;
+			}
+			if (v3.textureU < lineU) {
+				num++;
+			}
+			if (num == 2) {
+				Vertex m1 = maxU(v1, v2, v3);
+			} else if (num == 1) {
 			}
 		}
+	}
+
+	private static Vertex maxU(Vertex v1, Vertex v2, Vertex v3) {
+		if(v1.textureU > v2.textureU){
+			if(v1.textureU > v3.textureU){
+				return v1.copy();
+			} else if (v2.textureU > v3.textureU){
+				return v3.copy();
+			}
+		} else if(v2.textureU > v3.textureU){
+			return v2.copy();
+		} else {
+			return v3.copy();
+		}
+		return null;
 	}
 
 	public static Triangle[] decomposeLine(Triangle tri, int d) {

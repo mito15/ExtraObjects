@@ -92,7 +92,7 @@ public class FakeWorld extends ExtraObject {
 	}
 
 	@Override
-	protected void readExtraObjectFromNBT(NBTTagCompound nbt) {
+	public void readExtraObjectFromNBT(NBTTagCompound nbt) {
 		contain = Block.getBlockById(nbt.getInteger("block"));
 		meta = nbt.getInteger("metadata");
 		NBTTagList taglist = nbt.getTagList("tileEntities", 10);
@@ -101,7 +101,7 @@ public class FakeWorld extends ExtraObject {
 	}
 
 	@Override
-	protected void writeExtraObjectToNBT(NBTTagCompound nbt) {
+	public void writeExtraObjectToNBT(NBTTagCompound nbt) {
 		nbt.setInteger("block", Block.getIdFromBlock(contain));
 		nbt.setInteger("metadata", meta);
 		NBTTagList taglist = new NBTTagList();

@@ -2,6 +2,10 @@ package com.mito.exobj.common.item;
 
 import java.util.List;
 
+import com.mito.exobj.BraceBase.BB_DataLists;
+import com.mito.exobj.BraceBase.BB_DataWorld;
+import com.mito.exobj.BraceBase.ExtraObject;
+import com.mito.exobj.BraceBase.Brace.GuideBrace;
 import com.mito.exobj.BraceBase.Brace.Scale;
 import com.mito.exobj.client.BB_Key;
 import com.mito.exobj.client.render.RenderHighLight;
@@ -43,6 +47,24 @@ public class ItemRuler extends ItemSet {
 		itemstack.getTagCompound().setByte("pressedKey", (byte) 0);
 	}
 
+	public void RightClick(ItemStack itemstack, World world, EntityPlayer player, MovingObjectPosition mop, BB_Key key, boolean p_77663_5_) {
+		if (key.isShiftPressed()) {
+			BB_DataWorld data = BB_DataLists.getWorldData(world);
+			List<ExtraObject> list = data.braceBaseList;
+			for (int n = 0; n < list.size(); n++) {
+				ExtraObject base = list.get(n);
+				if (base instanceof GuideBrace) {
+					GuideBrace guide = (GuideBrace) base;
+						guide.setDead();
+					if(guide.name.equals(player.getDisplayName())){
+					}
+				}
+			}
+		} else {
+			super.RightClick(itemstack, world, player, mop, key, p_77663_5_);
+		}
+	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIconFromDamage(int par1) {
@@ -72,11 +94,11 @@ public class ItemRuler extends ItemSet {
 		return (itemstack.getItemDamage() & (16 - 1)) + 1;
 	}
 
-	public double getRayDistance(BB_Key key){
+	public double getRayDistance(BB_Key key) {
 		return key.isAltPressed() ? 3.0 : 5.0;
 	}
 
-	public void snapDegree(MovingObjectPosition mop, ItemStack itemstack, World world, EntityPlayer player, BB_Key key, NBTTagCompound nbt){
+	public void snapDegree(MovingObjectPosition mop, ItemStack itemstack, World world, EntityPlayer player, BB_Key key, NBTTagCompound nbt) {
 		if (nbt.getBoolean("activated")) {
 			Vec3 set = Vec3.createVectorHelper(nbt.getDouble("setX"), nbt.getDouble("setY"), nbt.getDouble("setZ"));
 			MyUtil.snapByShiftKey(mop, set);
@@ -84,12 +106,12 @@ public class ItemRuler extends ItemSet {
 	}
 
 	public void onActiveClick(World world, EntityPlayer player, ItemStack itemstack, MovingObjectPosition movingOP, Vec3 set, Vec3 end, NBTTagCompound nbt) {
-		if (MitoMath.subAbs(set, end) < 100) {
-			int divine = this.getDiv(itemstack);
-			if (MitoMath.subAbs(set, end) < 100) {
-				this.spawnEntityRuler(world, set, end, divine);
-			}
-		}
+
+		int divine = this.getDiv(itemstack);
+		GuideBrace guide = new GuideBrace(world, set, end, 0.2, player);
+		guide.addToWorld();
+		//this.spawnEntityRuler(world, set, end, divine);
+
 	}
 
 	@Override

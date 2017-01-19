@@ -1,8 +1,11 @@
 package com.mito.exobj.common.block;
 
 import com.mito.exobj.BraceBase.BB_ResisteredList;
+import com.mito.exobj.BraceBase.VBOList;
 import com.mito.exobj.BraceBase.Brace.GroupObject;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
@@ -12,6 +15,9 @@ import net.minecraft.tileentity.TileEntity;
 
 public class TileObjects extends TileEntity {
 	public GroupObject name = null;
+	@SideOnly(Side.CLIENT)
+	public VBOList buffer = new VBOList();
+	public boolean shouldUpdateRender = true;
 
 	public TileObjects() {
 

@@ -84,12 +84,12 @@ public class RedSignalCable extends Brace {
 	}
 
 	@Override
-	protected void readExtraObjectFromNBT(NBTTagCompound nbt) {
+	public void readExtraObjectFromNBT(NBTTagCompound nbt) {
 		super.readExtraObjectFromNBT(nbt);
 	}
 
 	@Override
-	protected void writeExtraObjectToNBT(NBTTagCompound nbt) {
+	public void writeExtraObjectToNBT(NBTTagCompound nbt) {
 		super.writeExtraObjectToNBT(nbt);
 	}
 

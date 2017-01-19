@@ -5,6 +5,7 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 
+import com.mito.exobj.BraceBase.Brace.GuideBrace;
 import com.mito.exobj.common.MyLogger;
 
 import net.minecraft.client.Minecraft;
@@ -95,9 +96,8 @@ public class BB_RenderHandler {
 	public static void onRenderEntities(EntityLivingBase entity, ICamera camera, float partialticks) {
 
 		if (MinecraftForgeClient.getRenderPass() == 0) {
-
+			GL11.glPushMatrix();
 			Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
-			//GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
 			enableClient();
 			//GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 			double d0 = entity.prevPosX + (entity.posX - entity.prevPosX) * (double) partialticks;
@@ -108,22 +108,15 @@ public class BB_RenderHandler {
 			List<ExtraObject> list = data.braceBaseList;
 
 			Minecraft.getMinecraft().entityRenderer.enableLightmap((double) partialticks);
-			//camera.isBoundingBoxInFrustum(null);
-
-			/*for (int n = 0; n < list.size(); n++) {
-				ExtraObject base = list.get(n);
-				BB_Render render = BB_ResisteredList.getBraceBaseRender(base);
-				GL11.glPushMatrix();
-				GL11.glTranslated(base.pos.xCoord, base.pos.yCoord, base.pos.zCoord);
-				int i = base.getBrightnessForRender(partialticks);
-				int j = i % 65536;
-				int k = i / 65536;
-				OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j / 1.0F, (float) k / 1.0F);
-				render.doRender(base, partialticks);
-				GL11.glPopMatrix();
-			}*/
 			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
 			data.buffer.draw();
+			
+			for (int n = 0; n < list.size(); n++) {
+				ExtraObject base = list.get(n);
+				BB_Render render = BB_ResisteredList.getBraceBaseRender(base);
+				if(base instanceof GuideBrace)
+				render.doRender(base, partialticks);
+			}
 
 			disableClient();
 			if (data.shouldUpdateRender) {
@@ -141,8 +134,8 @@ public class BB_RenderHandler {
 				data.buffer.add(vbo);
 				MyLogger.info("render update");
 			}
-			//GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
 			Minecraft.getMinecraft().entityRenderer.disableLightmap((double) partialticks);
+			GL11.glPopMatrix();
 		}
 	}
 

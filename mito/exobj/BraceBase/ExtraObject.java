@@ -400,12 +400,12 @@ public abstract class ExtraObject {
 	/**
 	 * (abstract) Protected helper method to read subclass braceBase data from NBT.
 	 */
-	protected abstract void readExtraObjectFromNBT(NBTTagCompound nbt);
+	public abstract void readExtraObjectFromNBT(NBTTagCompound nbt);
 
 	/**
 	 * (abstract) Protected helper method to write subclass braceBase data to NBT.
 	 */
-	protected abstract void writeExtraObjectToNBT(NBTTagCompound nbt);
+	public abstract void writeExtraObjectToNBT(NBTTagCompound nbt);
 
 	public void onChunkLoad() {
 	}
