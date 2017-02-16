@@ -1,14 +1,16 @@
 package com.mito.exobj.common.item;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.mito.exobj.BraceBase.BB_DataLists;
 import com.mito.exobj.BraceBase.BB_DataWorld;
 import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.BraceBase.Brace.GuideBrace;
-import com.mito.exobj.BraceBase.Brace.Scale;
 import com.mito.exobj.client.BB_Key;
 import com.mito.exobj.client.render.RenderHighLight;
+import com.mito.exobj.client.render.model.Triangle;
+import com.mito.exobj.client.render.model.Vertex;
 import com.mito.exobj.utilities.MitoMath;
 import com.mito.exobj.utilities.MyUtil;
 
@@ -108,9 +110,24 @@ public class ItemRuler extends ItemSet {
 	public void onActiveClick(World world, EntityPlayer player, ItemStack itemstack, MovingObjectPosition movingOP, Vec3 set, Vec3 end, NBTTagCompound nbt) {
 
 		int divine = this.getDiv(itemstack);
-		GuideBrace guide = new GuideBrace(world, set, end, 0.2, player);
-		guide.addToWorld();
-		//this.spawnEntityRuler(world, set, end, divine);
+
+		Triangle tri = new Triangle(new Vertex(set), new Vertex(end), new Vertex(MitoMath.ratio_vector(set, end, 0.5).addVector(2, 0, 0)));
+		List<Triangle> list = new ArrayList<Triangle>();
+		list.add(tri);
+		List<Triangle> list2 = MyUtil.decomposeTexture(list);
+		for(int n = 0; n < list2.size(); n++){
+			Triangle t = list2.get(n);
+			GuideBrace guide = new GuideBrace(world, t.vertexs[0].pos, t.vertexs[1].pos, 0.2, player);
+			guide.addToWorld();
+			guide = new GuideBrace(world, t.vertexs[0].pos, t.vertexs[2].pos, 0.2, player);
+			guide.addToWorld();
+			guide = new GuideBrace(world, t.vertexs[2].pos, t.vertexs[1].pos, 0.2, player);
+			guide.addToWorld();
+		}
+		
+		
+		//GuideBrace guide = new GuideBrace(world, set, end, 0.2, player);
+		//guide.addToWorld();
 
 	}
 
@@ -130,15 +147,6 @@ public class ItemRuler extends ItemSet {
 		}
 
 		return true;
-
-	}
-
-	public void spawnEntityRuler(World world, Vec3 v1, Vec3 v2, int div) {
-		Vec3 partV12 = MitoMath.vectorDiv(v2.addVector(-v1.xCoord, -v1.yCoord, -v1.zCoord), (double) div);
-		for (int n = 0; n < (div + 1); n++) {
-			Scale scale = new Scale(world, v1.xCoord + (double) n * partV12.xCoord, v1.yCoord + (double) n * partV12.yCoord, v1.zCoord + (double) n * partV12.zCoord);
-			scale.addToWorld();
-		}
 
 	}
 

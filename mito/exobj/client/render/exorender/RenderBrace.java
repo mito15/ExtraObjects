@@ -52,9 +52,9 @@ public class RenderBrace extends BB_Render {
 		}*/
 	}
 
-	public void updateRender(CreateVertexBufferObject c, ExtraObject base, float partialticks) {
+	public void updateRender(CreateVertexBufferObject c, ExtraObject base) {
 
-		int i = base.getBrightnessForRender(partialticks);
+		int i = base.getBrightnessForRender(0);
 		int j = i % 65536;
 		int k = i / 65536;
 

@@ -6,10 +6,10 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 
 import com.mito.exobj.BraceBase.Brace.GuideBrace;
-import com.mito.exobj.common.MyLogger;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.culling.ICamera;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -99,23 +99,35 @@ public class BB_RenderHandler {
 			GL11.glPushMatrix();
 			Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 			enableClient();
+			
+			GL11.glTranslatef(-(float)RenderManager.renderPosX, -(float)RenderManager.renderPosY, -(float)RenderManager.renderPosZ);
+			
 			//GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-			double d0 = entity.prevPosX + (entity.posX - entity.prevPosX) * (double) partialticks;
+			/*double d0 = entity.prevPosX + (entity.posX - entity.prevPosX) * (double) partialticks;
 			double d1 = entity.prevPosY + (entity.posY - entity.prevPosY) * (double) partialticks;
 			double d2 = entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double) partialticks;
-			GL11.glTranslated(-d0, -d1, -d2);
+			GL11.glTranslated(-d0, -d1, -d2);*/
+			/*
+			 EntityLivingBase entitylivingbase1 = this.mc.renderViewEntity;
+			    double d3 = entitylivingbase1.lastTickPosX + (entitylivingbase1.posX - entitylivingbase1.lastTickPosX) * (double)partialticks;
+			    double d4 = entitylivingbase1.lastTickPosY + (entitylivingbase1.posY - entitylivingbase1.lastTickPosY) * (double)partialticks;
+			    double d5 = entitylivingbase1.lastTickPosZ + (entitylivingbase1.posZ - entitylivingbase1.lastTickPosZ) * (double)partialticks;
+			RenderManager.renderPosX = d3;
+			RenderManager.renderPosY = d4;
+			RenderManager.renderPosZ = d5;*/
+
 			BB_DataWorld data = LoadClientWorldHandler.INSTANCE.data;
 			List<ExtraObject> list = data.braceBaseList;
 
 			Minecraft.getMinecraft().entityRenderer.enableLightmap((double) partialticks);
 			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
 			data.buffer.draw();
-			
+
 			for (int n = 0; n < list.size(); n++) {
 				ExtraObject base = list.get(n);
 				BB_Render render = BB_ResisteredList.getBraceBaseRender(base);
-				if(base instanceof GuideBrace)
-				render.doRender(base, partialticks);
+				if (base instanceof GuideBrace)
+					render.doRender(base, partialticks);
 			}
 
 			disableClient();
@@ -127,12 +139,12 @@ public class BB_RenderHandler {
 				for (int n = 0; n < list.size(); n++) {
 					ExtraObject base = list.get(n);
 					BB_Render render = BB_ResisteredList.getBraceBaseRender(base);
-					render.updateRender(c, base, partialticks);
+					render.updateRender(c, base);
 				}
 				data.shouldUpdateRender = false;
 				VBOHandler vbo = c.end();
 				data.buffer.add(vbo);
-				MyLogger.info("render update");
+				//MyLogger.info("render update");
 			}
 			Minecraft.getMinecraft().entityRenderer.disableLightmap((double) partialticks);
 			GL11.glPopMatrix();

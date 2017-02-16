@@ -232,7 +232,7 @@ public class FakeBlock extends ExtraObject {
 		if (axisalignedbb1 != null && aabb.intersectsWith(axisalignedbb1)) {
 			collidingBoundingBoxes.add(axisalignedbb1);
 		}*/
-		Vec3 s = MitoMath.vectorSub(this.pos, this.prevPos);
+		Vec3 s = MitoMath.sub_vector(this.pos, this.prevPos);
 		if (access != null) {
 			List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>();
 			contain.addCollisionBoxesToList(access, 0, 0, 0, aabb.getOffsetBoundingBox(-pos.xCoord + 0.5, -pos.yCoord + 0.5, -pos.zCoord + 0.5), list, entity);

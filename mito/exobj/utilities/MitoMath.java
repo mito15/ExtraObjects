@@ -7,7 +7,7 @@ import net.minecraft.util.Vec3;
 
 public final class MitoMath {
 
-	public static Vec3 vectorRatio(Vec3 set, Vec3 end, double r) {
+	public static Vec3 ratio_vector(Vec3 set, Vec3 end, double r) {
 		Vec3 ret = vectorSum(vectorMul(end, r), vectorMul(set, 1 - r));
 		return ret;
 	}
@@ -67,7 +67,7 @@ public final class MitoMath {
 		return ret;
 	}
 
-	public static Vec3 vectorSub(Vec3 d1, Vec3 d2) {
+	public static Vec3 sub_vector(Vec3 d1, Vec3 d2) {
 		if (d1 == null || d2 == null) {
 			return Vec3.createVectorHelper(0, 0, 0);
 		}
@@ -143,13 +143,13 @@ public final class MitoMath {
 	public static Vec3 getNearPoint(Vec3 s, Vec3 e, Vec3 p) {
 		Vec3 ret;
 
-		double d1 = abs2(vectorSub(s, p));
-		double d2 = abs2(vectorSub(e, p));
-		double l = abs2(vectorSub(s, e));
+		double d1 = abs2(sub_vector(s, p));
+		double d2 = abs2(sub_vector(e, p));
+		double l = abs2(sub_vector(s, e));
 
 		double k = (d1 - d2 + l) / (2 * l);
 		k = k >= 1 ? 1 : (k <= 0 ? 0 : k);
-		ret = vectorSum(vectorMul(vectorSub(e, s), k), s);
+		ret = vectorSum(vectorMul(sub_vector(e, s), k), s);
 
 		return ret;
 	}
@@ -157,30 +157,30 @@ public final class MitoMath {
 	public static Line getLineNearPoint(Vec3 s, Vec3 e, Vec3 p) {
 		Vec3 ret;
 
-		double d1 = abs2(vectorSub(s, p));
-		double d2 = abs2(vectorSub(e, p));
-		double l = abs2(vectorSub(s, e));
+		double d1 = abs2(sub_vector(s, p));
+		double d2 = abs2(sub_vector(e, p));
+		double l = abs2(sub_vector(s, e));
 
 		double k = (d1 - d2 + l) / (2 * l);
 		k = k >= 1 ? 1 : (k <= 0 ? 0 : k);
-		ret = vectorSum(vectorMul(vectorSub(e, s), k), s);
+		ret = vectorSum(vectorMul(sub_vector(e, s), k), s);
 
 		return new Line(ret, p);
 	}
 
 	public static Line getDistanceLine(Vec3 s1, Vec3 e1, Vec3 s2, Vec3 e2) {
 
-		Vec3 v1 = MitoMath.vectorSub(e1, s1);
-		Vec3 v2 = MitoMath.vectorSub(e2, s2);
+		Vec3 v1 = MitoMath.sub_vector(e1, s1);
+		Vec3 v2 = MitoMath.sub_vector(e2, s2);
 		double l1 = v1.lengthVector();
 		double l2 = v2.lengthVector();
 		Vec3 u1 = v1.normalize();
 		Vec3 u2 = v2.normalize();
-		Vec3 ds = MitoMath.vectorSub(s2, s1);
+		Vec3 ds = MitoMath.sub_vector(s2, s1);
 		double dot = u1.dotProduct(u2);
 
-		double k1 = ds.dotProduct(vectorSub(u1, vectorMul(u2, dot))) / (1 - dot * dot);
-		double k2 = ds.dotProduct(vectorSub(vectorMul(u1, dot), u2)) / (1 - dot * dot);
+		double k1 = ds.dotProduct(sub_vector(u1, vectorMul(u2, dot))) / (1 - dot * dot);
+		double k2 = ds.dotProduct(sub_vector(vectorMul(u1, dot), u2)) / (1 - dot * dot);
 
 		k1 = k1 < 0 ? 0 : (k1 > l1 ? l1 : k1);
 		k2 = k2 < 0 ? 0 : (k2 > l2 ? l2 : k2);
@@ -189,7 +189,7 @@ public final class MitoMath {
 	}
 
 	public static double distancePointPlane(Vec3 plane, Vec3 normal, Vec3 p) {
-		return normal.dotProduct(vectorSub(plane, p));
+		return normal.dotProduct(sub_vector(plane, p));
 	}
 
 	public static double distancePointPlane(Vec3 v1, Vec3 v2, Vec3 v3, Vec3 v4) {
@@ -197,13 +197,13 @@ public final class MitoMath {
 	}
 
 	public static Vec3 getIntersectPlaneLine(Vec3 plane, Vec3 normal, Vec3 s, Vec3 e) {
-		double ls = normal.dotProduct(vectorSub(s, plane));
-		double le = normal.dotProduct(vectorSub(e, plane));
+		double ls = normal.dotProduct(sub_vector(s, plane));
+		double le = normal.dotProduct(sub_vector(e, plane));
 		double r = ls / (ls + le);
 		if (r < 0 || r > 1) {
 			return null;
 		}
-		Vec3 l = vectorSub(e, s);
+		Vec3 l = sub_vector(e, s);
 		Vec3 ret = vectorSum(vectorMul(l, r), s);
 
 		return ret;
@@ -226,7 +226,7 @@ public final class MitoMath {
 	}
 	
 	public static Vec3 rot(Vec3 v1, Vec3 v2, double r, double p, double y) {
-		return vectorSum(rotY(rotX(rotZ(vectorSub(v2, v1), r), p), y), v1);
+		return vectorSum(rotY(rotX(rotZ(sub_vector(v2, v1), r), p), y), v1);
 	}
 
 	public static Vec3 rot(Vec3 v1, double r, double p, double y) {
@@ -276,7 +276,7 @@ public final class MitoMath {
 	}
 
 	public static double getYaw(Vec3 v1, Vec3 v2) {
-		return getYaw(vectorSub(v2, v1));
+		return getYaw(sub_vector(v2, v1));
 	}
 
 	public static double getPitch(Vec3 v) {
@@ -290,11 +290,11 @@ public final class MitoMath {
 	}
 
 	public static double getPitch(Vec3 v1, Vec3 v2) {
-		return getPitch(vectorSub(v2, v1));
+		return getPitch(sub_vector(v2, v1));
 	}
 
 	public static Vec3 getNormal(Vec3 v1, Vec3 v2, Vec3 v3) {
-		return vectorSub(v2, v1).crossProduct(vectorSub(v3, v1)).normalize();
+		return sub_vector(v2, v1).crossProduct(sub_vector(v3, v1)).normalize();
 	}
 
 	public static Vec3 getNormal(Vertex rv1, Vertex rv2, Vertex rv3) {

@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.event.world.ChunkDataEvent;
+import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
 public class LoadWorldHandler {
@@ -85,6 +86,9 @@ public class LoadWorldHandler {
 						if (exObj1.writeToNBTOptional(nbt2)) {
 							taglistGroup.appendTag(nbt2);
 							exObj1.writeNBTAssociate(nbt2, BraceBaseToIntMapping);
+						}
+						if (chunkData.isDead) {
+							exObj1.removeFromWorld();
 						}
 					}
 					nbt1.setTag("BB_Group", taglistGroup);
@@ -170,14 +174,13 @@ public class LoadWorldHandler {
 
 	// 重複については未処理  unload -> save
 
-	/*public void onChunkLoad(ChunkEvent.Load e) {
-		//BB_DataWorld data = DataLists.getWorldData(e.world);
-		//data.chunkToDataMapping.put(e.getChunk(), new FOChunkData(e.world, e.getChunk()));
+	public void onChunkLoad(ChunkEvent.Load e) {
+		//MyLogger.info("on load");
 	}
 
 	public void onChunkUnload(ChunkEvent.Unload e) {
-		//BB_DataChunk datachunk = BB_DataLists.getChunkData(e.getChunk());
-		//datachunk.setDead();
-	}*/
+		BB_DataChunk datachunk = BB_DataLists.getChunkData(e.getChunk());
+		datachunk.setDead();
+	}
 
 }

@@ -94,6 +94,7 @@ public class BB_LoadModel {
 				String name = reader.nextName();
 				if (name.equals("name")) {
 					typename = reader.nextString();
+					MyLogger.info("load " + typename);
 				} else if (name.equals("author")) {
 					author = reader.nextString();
 				} else if (name.equals("load_type")) {
@@ -225,12 +226,15 @@ public class BB_LoadModel {
 							n1++;
 						}
 						reader.endArray();
-						if (da.length == 2) {
+						if (n1 == 1) {
 							vertexs[n] = new Vertex(da[0] * size, da[1] * size);
-						} else if (da.length == 3) {
+							MyLogger.info("vertex 2");
+						} else if (n1 == 2) {
 							vertexs[n] = new Vertex(da[0] * size, da[1] * size, da[2] * size);
-						} else if (da.length == 5) {
+							MyLogger.info("vertex 3");
+						} else if (n1 == 4) {
 							vertexs[n] = new Vertex(da[0] * size, da[1] * size, da[2] * size, da[3] * size, da[4] * size);
+							MyLogger.info("vertex 5");
 						} else {
 							return null;
 						}

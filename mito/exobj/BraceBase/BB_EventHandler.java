@@ -79,7 +79,7 @@ public class BB_EventHandler {
 		if (e.world.isRemote) {
 			LoadClientWorldHandler.INSTANCE.onChunkLoad(e);
 		} else {
-			//LoadWorldHandler.INSTANCE.onChunkLoad(e);
+			LoadWorldHandler.INSTANCE.onChunkLoad(e);
 		}
 	}
 
@@ -88,7 +88,7 @@ public class BB_EventHandler {
 		if (e.world.isRemote) {
 			LoadClientWorldHandler.INSTANCE.onChunkUnload(e);
 		} else {
-			//LoadWorldHandler.INSTANCE.onChunkUnload(e);
+			LoadWorldHandler.INSTANCE.onChunkUnload(e);
 		}
 	}
 

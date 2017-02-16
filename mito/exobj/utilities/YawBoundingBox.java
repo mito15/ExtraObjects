@@ -20,7 +20,7 @@ public class YawBoundingBox extends AxisAlignedBB {
 	public boolean intersectsWith(AxisAlignedBB aabb1) {
 		Vec3 center = this.getCenter();
 		Vec3 center1 = getCenter(aabb1);
-		Vec3 deff = MitoMath.vectorSub(MitoMath.rot(center, center1, 0, 0, yaw), center1);
+		Vec3 deff = MitoMath.sub_vector(MitoMath.rot(center, center1, 0, 0, yaw), center1);
 		AxisAlignedBB aabb = aabb1.copy().offset(deff.xCoord, deff.yCoord, deff.zCoord);
 		return aabb.maxX > this.minX && aabb.minX < this.maxX ? (aabb.maxY > this.minY && aabb.minY < this.maxY ? aabb.maxZ > this.minZ && aabb.minZ < this.maxZ : false) : false;
 	}

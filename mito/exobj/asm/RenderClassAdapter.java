@@ -4,8 +4,6 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-import com.mito.exobj.common.MyLogger;
-
 import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 
 public class RenderClassAdapter extends ClassVisitor implements Opcodes {
@@ -32,7 +30,6 @@ public class RenderClassAdapter extends ClassVisitor implements Opcodes {
 
 		@Override
 		public void visitInsn(int opcode) {
-			MyLogger.info("adapt" + opcode);
 			if (opcode == RETURN) {
 				super.visitVarInsn(ALOAD, 1);
 				super.visitVarInsn(ALOAD, 2);

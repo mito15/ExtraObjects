@@ -4,8 +4,8 @@ import java.util.Iterator;
 
 import com.mito.exobj.common.Main;
 import com.mito.exobj.network.BB_PacketProcessor;
-import com.mito.exobj.network.PacketHandler;
 import com.mito.exobj.network.BB_PacketProcessor.Mode;
+import com.mito.exobj.network.PacketHandler;
 
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -55,7 +55,6 @@ public class LoadClientWorldHandler {
 			ExtraObject fobj = (ExtraObject) iterator.next();
 			fobj.datachunk = null;
 			fobj.removeFromWorld();
-			//mitoLogger.warn("delete!!!!!!!!!!!!!!!!!chunk");
 		}
 		data.removeDataChunk(chunkData);
 	}

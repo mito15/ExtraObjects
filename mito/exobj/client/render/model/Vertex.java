@@ -19,6 +19,10 @@ public class Vertex {
 		this(x, y, z, x, y);
 	}
 	
+	public Vertex(Vec3 p){
+		this(p, p.xCoord, p.yCoord);
+	}
+	
 	public Vertex(Vec3 p, double u, double v) {
 		this(p.xCoord, p.yCoord, p.zCoord, u, v);
 	}
@@ -54,6 +58,10 @@ public class Vertex {
 
 	public Vertex copy() {
 		return new Vertex(pos.xCoord, pos.yCoord, pos.zCoord, textureU, textureV);
+	}
+
+	public Vertex copySet() {
+		return new Vertex(pos.xCoord, pos.yCoord, pos.zCoord, textureU % 1.0, textureV % 1.0);
 	}
 
 }

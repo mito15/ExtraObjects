@@ -159,7 +159,7 @@ public class BB_Polygon implements IDrawBrace {
 			double yaw2 = MitoMath.getYaw(norm2);
 			double pitch2 = MitoMath.getPitch(norm2);
 
-			Vec3 offset = MitoMath.vectorSub(bc.getPoint(1), bc.getPoint(0));
+			Vec3 offset = MitoMath.sub_vector(bc.getPoint(1), bc.getPoint(0));
 			drawPlane(c, Vec3.createVectorHelper(0.0D, 0.0D, 0.0D), norm1, roll, pitch1, yaw1, size);
 			drawPlane(c, offset, norm2, -roll, pitch2, yaw2, size);
 
@@ -167,10 +167,10 @@ public class BB_Polygon implements IDrawBrace {
 			for (int n1 = 0; n1 < getSize(size); n1++) {
 				vers.add(getVertex(n1, size));
 			}
-			Triangle[] ts = MyUtil.decomposePolygon(vers);
-			for (int n1 = 0; n1 < ts.length; n1++) {
-				ts[n1].drawReverse(c, Vec3.createVectorHelper(0.0D, 0.0D, 0.0D), roll, pitch1, yaw1);
-				ts[n1].draw(c, offset, roll, pitch2, yaw2);
+			List<Triangle> ts = MyUtil.decomposePolygon(vers);
+			for (int n1 = 0; n1 < ts.size(); n1++) {
+				ts.get(n1).drawReverse(c, Vec3.createVectorHelper(0.0D, 0.0D, 0.0D), roll, pitch1, yaw1);
+				ts.get(n1).draw(c, offset, roll, pitch2, yaw2);
 			}
 		} else if (brace.line instanceof Line) {
 			Line line = (Line) brace.line;
@@ -188,10 +188,10 @@ public class BB_Polygon implements IDrawBrace {
 			for (int n1 = 0; n1 < getSize(size); n1++) {
 				vers.add(getVertex(n1, size));
 			}
-			Triangle[] ts = MyUtil.decomposePolygon(vers);
-			for (int n1 = 0; n1 < ts.length; n1++) {
-				ts[n1].draw(c, l);
-				ts[n1].drawReverse(c, 0.0D);
+			List<Triangle> ts = MyUtil.decomposePolygon(vers);
+			for (int n1 = 0; n1 < ts.size(); n1++) {
+				ts.get(n1).draw(c, l);
+				ts.get(n1).drawReverse(c, 0.0D);
 			}
 		}
 	}
@@ -239,7 +239,7 @@ public class BB_Polygon implements IDrawBrace {
 				}
 			}
 			t.draw();
-
+		
 			if (getSize(size) < 3) {
 				return;
 			}
@@ -249,10 +249,10 @@ public class BB_Polygon implements IDrawBrace {
 				vers.add(getVertex(n1, size));
 			}
 			t.startDrawing(4);
-			Triangle[] ts = MyUtil.decomposePolygon(vers);
-			for (int n1 = 0; n1 < ts.length; n1++) {
-				ts[n1].draw(t, l);
-				ts[n1].drawReverse(t, 0.0D);
+			List<Triangle> ts = MyUtil.decomposePolygon(vers);
+			for (int n1 = 0; n1 < ts.size(); n1++) {
+				ts.get(n1).draw(t, l);
+				ts.get(n1).drawReverse(t, 0.0D);
 			}
 			t.draw();
 		}
@@ -351,42 +351,41 @@ public class BB_Polygon implements IDrawBrace {
 		double size = brace.size;
 		double roll = brace.getRoll();
 		c.rpyRotate(roll, 0, 0);
-		Triangle[] ts = getTriangles(size);
-		if(ts == null)return;
-		c.pushMatrix();
-		c.translate(brace.line.getPoint(0.0));
-		Vec3 tangen = brace.line.getTangent(0.0);
-		Mat4 romat = MyUtil.getRotationMatrix(tangen);
-		c.transform(romat);
-		double mu = iicon.getMinU();
-		double mv = iicon.getMinV();
-		double du = iicon.getMaxU() - iicon.getMinU();
-		double dv = iicon.getMaxV() - iicon.getMinV();
-		for (int n1 = 0; n1 < ts.length; n1++) {
-			c.setNormal(MitoMath.vectorMul(ts[n1].norm, -1));
-			c.registVertexWithUV(ts[n1].vertexs[2].pos, mu + du * ts[n1].vertexs[2].textureU, mv + dv * ts[n1].vertexs[2].textureV);
-			c.registVertexWithUV(ts[n1].vertexs[1].pos, mu + du * ts[n1].vertexs[1].textureU, mv + dv * ts[n1].vertexs[1].textureV);
-			c.registVertexWithUV(ts[n1].vertexs[0].pos, mu + du * ts[n1].vertexs[0].textureU, mv + dv * ts[n1].vertexs[0].textureV);
-		}
-		c.popMatrix();
-		
-		c.pushMatrix();
-		c.translate(brace.line.getPoint(1.0));
-		tangen = brace.line.getTangent(1.0);
-		romat = MyUtil.getRotationMatrix(tangen);
-		c.transform(romat);
-		for (int n1 = 0; n1 < ts.length; n1++) {
-			c.setNormal(ts[n1].norm);
-			c.registVertexWithUV(ts[n1].vertexs[0].pos, mu + du * ts[n1].vertexs[0].textureU, mv + dv * ts[n1].vertexs[0].textureV);
-			c.registVertexWithUV(ts[n1].vertexs[1].pos, mu + du * ts[n1].vertexs[1].textureU, mv + dv * ts[n1].vertexs[1].textureV);
-			c.registVertexWithUV(ts[n1].vertexs[2].pos, mu + du * ts[n1].vertexs[2].textureU, mv + dv * ts[n1].vertexs[2].textureV);
-		}
-		c.popMatrix();
-		double uvOffset = (brace.pos.xCoord + brace.pos.yCoord + brace.pos.zCoord) % 1.0D;
-		
-		
-		
+		List<Triangle> ts0 = getTriangles(size);
+		List<Triangle> ts = MyUtil.decomposeTexture(ts0);
+		if (ts != null) {
+			c.pushMatrix();
+			c.translate(brace.line.getPoint(0.0));
+			Vec3 tangen = brace.line.getTangent(0.0);
+			Mat4 romat = MyUtil.getRotationMatrix(tangen);
+			c.transform(romat);
+			double mu = iicon.getMinU();
+			double mv = iicon.getMinV();
+			double du = iicon.getMaxU() - iicon.getMinU();
+			double dv = iicon.getMaxV() - iicon.getMinV();
+			for (int n1 = 0; n1 < ts.size(); n1++) {
+				c.setNormal(MitoMath.vectorMul(ts.get(n1).norm, -1));
+				c.registVertexWithUV(ts.get(n1).vertexs[2].pos, mu, mv + dv);
+				c.registVertexWithUV(ts.get(n1).vertexs[1].pos, mu, mv);
+				c.registVertexWithUV(ts.get(n1).vertexs[0].pos, mu + du, mv);
+			}
+			c.popMatrix();
 
+			c.pushMatrix();
+			c.translate(brace.line.getPoint(1.0));
+			tangen = brace.line.getTangent(1.0);
+			romat = MyUtil.getRotationMatrix(tangen);
+			c.transform(romat);
+			for (int n1 = 0; n1 < ts.size(); n1++) {
+				c.setNormal(ts.get(n1).norm);
+				c.registVertexWithUV(ts.get(n1).vertexs[2].pos, mu, mv + dv);
+				c.registVertexWithUV(ts.get(n1).vertexs[0].pos, mu + du, mv);
+				c.registVertexWithUV(ts.get(n1).vertexs[1].pos, mu, mv);
+			}
+			c.popMatrix();
+		}
+
+		double uvOffset = (brace.pos.xCoord + brace.pos.yCoord + brace.pos.zCoord) % 1.0D;
 		c.translate(brace.pos);
 		if (brace.line instanceof BezierCurve) {
 
@@ -397,8 +396,8 @@ public class BB_Polygon implements IDrawBrace {
 			for (int n = 0; n < acc; n++) {
 				double t = (double) n / (double) acc;
 				double t1 = (double) (n + 1) / (double) acc;
-				Vec3 s = MitoMath.vectorSub(bc.getPoint(t), brace.pos);
-				Vec3 e = MitoMath.vectorSub(bc.getPoint(t1), brace.pos);
+				Vec3 s = MitoMath.sub_vector(bc.getPoint(t), brace.pos);
+				Vec3 e = MitoMath.sub_vector(bc.getPoint(t1), brace.pos);
 				Vec3 sn = bc.getTangent(t);
 				Vec3 en = bc.getTangent(t1);
 				double usum = 0.0D;
@@ -458,43 +457,43 @@ public class BB_Polygon implements IDrawBrace {
 					double vOffset = v1.zCoord - v2.zCoord;
 
 					//for (int n2 = 0; (double)n2 <= uOffset; n2++) {
-						double ou = iicon.getMinU() + usum * (iicon.getMaxU() - iicon.getMinU());
-						if (usum + uOffset > 1) {
-							Vec3 v3 = MitoMath.vectorRatio(v1, v2, (1 - usum) / uOffset);
-							c.setNormal(norm1);
-							c.registVertexWithUV(v1.xCoord, v1.yCoord, v1.zCoord + vz, ou, tv);
-							c.registVertexWithUV(v1.xCoord, v1.yCoord, v1.zCoord + n, ou, iicon.getMinV());
-							c.registVertexWithUV(v3.xCoord, v3.yCoord, v3.zCoord + n, iicon.getMaxU(), iicon.getMinV());
-							c.setNormal(norm2);
-							c.registVertexWithUV(v3.xCoord, v3.yCoord, v3.zCoord + n, iicon.getMaxU(), iicon.getMinV());
-							c.registVertexWithUV(v3.xCoord, v3.yCoord, v3.zCoord + vz, iicon.getMaxU(), tv);
-							c.registVertexWithUV(v1.xCoord, v1.yCoord, v1.zCoord + vz, ou, tv);
-							ou = iicon.getMinU();
-							v1 = v3;
-							usum = usum - 1;
-							tex++;
-							if (tex == 5) {
-								tex = 1;
-							}
-							iicon = brace.getIIcon(tex);
-						}
-						double tu = iicon.getMinU() + (usum + uOffset) * (iicon.getMaxU() - iicon.getMinU());
+					double ou = iicon.getMinU() + usum * (iicon.getMaxU() - iicon.getMinU());
+					if (usum + uOffset > 1) {
+						Vec3 v3 = MitoMath.ratio_vector(v1, v2, (1 - usum) / uOffset);
 						c.setNormal(norm1);
 						c.registVertexWithUV(v1.xCoord, v1.yCoord, v1.zCoord + vz, ou, tv);
 						c.registVertexWithUV(v1.xCoord, v1.yCoord, v1.zCoord + n, ou, iicon.getMinV());
-						c.registVertexWithUV(v2.xCoord, v2.yCoord, v2.zCoord + n, tu, iicon.getMinV());
+						c.registVertexWithUV(v3.xCoord, v3.yCoord, v3.zCoord + n, iicon.getMaxU(), iicon.getMinV());
 						c.setNormal(norm2);
-						c.registVertexWithUV(v2.xCoord, v2.yCoord, v2.zCoord + n, tu, iicon.getMinV());
-						c.registVertexWithUV(v2.xCoord, v2.yCoord, v2.zCoord + vz, tu, tv);
+						c.registVertexWithUV(v3.xCoord, v3.yCoord, v3.zCoord + n, iicon.getMaxU(), iicon.getMinV());
+						c.registVertexWithUV(v3.xCoord, v3.yCoord, v3.zCoord + vz, iicon.getMaxU(), tv);
 						c.registVertexWithUV(v1.xCoord, v1.yCoord, v1.zCoord + vz, ou, tv);
-						usum += uOffset;
+						ou = iicon.getMinU();
+						v1 = v3;
+						usum = usum - 1;
+						tex++;
+						if (tex == 5) {
+							tex = 1;
+						}
+						iicon = brace.getIIcon(tex);
+					}
+					double tu = iicon.getMinU() + (usum + uOffset) * (iicon.getMaxU() - iicon.getMinU());
+					c.setNormal(norm1);
+					c.registVertexWithUV(v1.xCoord, v1.yCoord, v1.zCoord + vz, ou, tv);
+					c.registVertexWithUV(v1.xCoord, v1.yCoord, v1.zCoord + n, ou, iicon.getMinV());
+					c.registVertexWithUV(v2.xCoord, v2.yCoord, v2.zCoord + n, tu, iicon.getMinV());
+					c.setNormal(norm2);
+					c.registVertexWithUV(v2.xCoord, v2.yCoord, v2.zCoord + n, tu, iicon.getMinV());
+					c.registVertexWithUV(v2.xCoord, v2.yCoord, v2.zCoord + vz, tu, tv);
+					c.registVertexWithUV(v1.xCoord, v1.yCoord, v1.zCoord + vz, ou, tv);
+					usum += uOffset;
 					//}
 				}
 			}
 		}
 	}
 
-	private Triangle[] getTriangles(double size) {
+	private List<Triangle> getTriangles(double size) {
 		List<Vertex> ret = new ArrayList();
 		for (int n1 = 0; n1 < getSize(size); n1++) {
 			ret.add(getVertex(n1, size).transTexUV());

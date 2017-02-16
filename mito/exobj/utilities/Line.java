@@ -80,15 +80,15 @@ public class Line implements ILineBrace {
 
 	@Override
 	public void rotation(Vec3 cent, double yaw) {
-		start = MitoMath.vectorSum(MitoMath.rotY(MitoMath.vectorSub(start, cent), yaw), cent);
-		end = MitoMath.vectorSum(MitoMath.rotY(MitoMath.vectorSub(end, cent), yaw), cent);
+		start = MitoMath.vectorSum(MitoMath.rotY(MitoMath.sub_vector(start, cent), yaw), cent);
+		end = MitoMath.vectorSum(MitoMath.rotY(MitoMath.sub_vector(end, cent), yaw), cent);
 
 	}
 
 	@Override
 	public void resize(Vec3 cent, double i) {
-		start = MitoMath.vectorSum(MitoMath.vectorMul(MitoMath.vectorSub(start, cent), i), cent);
-		end = MitoMath.vectorSum(MitoMath.vectorMul(MitoMath.vectorSub(end, cent), i), cent);
+		start = MitoMath.vectorSum(MitoMath.vectorMul(MitoMath.sub_vector(start, cent), i), cent);
+		end = MitoMath.vectorSum(MitoMath.vectorMul(MitoMath.sub_vector(end, cent), i), cent);
 
 	}
 
@@ -130,7 +130,7 @@ public class Line implements ILineBrace {
 
 	@Override
 	public Vec3 getPos() {
-		return MitoMath.vectorRatio(start, end, 0.5);
+		return MitoMath.ratio_vector(start, end, 0.5);
 	}
 
 	@Override
@@ -148,9 +148,9 @@ public class Line implements ILineBrace {
 
 	@Override
 	public void addCollisionBoxesToList(World world, AxisAlignedBB aabb, List collidingBoundingBoxes, Entity entity, double size) {
-		Vec3 v3 = MitoMath.vectorSub(this.end, this.start);
+		Vec3 v3 = MitoMath.sub_vector(this.end, this.start);
 		int div = size > 0 ? (int) Math.floor(MitoMath.abs(v3) / size) + 1 : 1;
-		Vec3 part = MitoMath.vectorDiv(MitoMath.vectorSub(v3, MitoMath.vectorMul(v3.normalize(), size)), div);
+		Vec3 part = MitoMath.vectorDiv(MitoMath.sub_vector(v3, MitoMath.vectorMul(v3.normalize(), size)), div);
 		Vec3 offset = MitoMath.vectorMul(v3.normalize(), size / 2);
 		List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>();
 		for (int n = 0; n <= div; n++) {
@@ -182,15 +182,15 @@ public class Line implements ILineBrace {
 				} else if (r > 0.6666) {
 					mop.hitVec = end;
 				} else {
-					mop.hitVec = MitoMath.vectorRatio(start, end, 0.5);
+					mop.hitVec = MitoMath.ratio_vector(start, end, 0.5);
 				}
 			} else {
 				if (MitoMath.subAbs(start, mop.hitVec) < 0.5) {
 					mop.hitVec = start;
 				} else if (MitoMath.subAbs(end, mop.hitVec) < 0.5) {
 					mop.hitVec = end;
-				} else if (MitoMath.subAbs(MitoMath.vectorRatio(start, end, 0.5), mop.hitVec) < 0.25) {
-					mop.hitVec = MitoMath.vectorRatio(start, end, 0.5);
+				} else if (MitoMath.subAbs(MitoMath.ratio_vector(start, end, 0.5), mop.hitVec) < 0.25) {
+					mop.hitVec = MitoMath.ratio_vector(start, end, 0.5);
 				}
 			}
 		} else {
@@ -230,17 +230,17 @@ public class Line implements ILineBrace {
 			}
 		}
 		v1 = MitoMath.getNearPoint(start, end, pos);
-		Vec3 unit = MitoMath.vectorSub(v2, v3).normalize();
+		Vec3 unit = MitoMath.sub_vector(v2, v3).normalize();
 		Vec3 moved = MitoMath.vectorSum(v1, MitoMath.vectorMul(unit, speed));
 		if(MitoMath.subAbs2(v1, moved) > MitoMath.subAbs2(v1, v2)){
 			moved = v2;
 		}
-		return MitoMath.vectorSub(moved, pos);
+		return MitoMath.sub_vector(moved, pos);
 	}
 
 	@Override
 	public Vec3 getPoint(double d) {
-		Vec3 ret = MitoMath.vectorRatio(start, end, d);
+		Vec3 ret = MitoMath.ratio_vector(start, end, d);
 		return ret;
 	}
 

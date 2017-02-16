@@ -44,7 +44,7 @@ public class TileObjectsRenderer extends TileEntitySpecialRenderer {
 					for (int n = 0; n < list.size(); n++) {
 						ExtraObject base = list.get(n);
 						BB_Render render = BB_ResisteredList.getBraceBaseRender(base);
-						render.updateRender(c, base, part);
+						render.updateRender(c, base);
 					}
 					to.shouldUpdateRender = false;
 					VBOHandler vbo = c.end();

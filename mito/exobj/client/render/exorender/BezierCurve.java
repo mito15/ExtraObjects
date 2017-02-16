@@ -32,7 +32,7 @@ public class BezierCurve implements ILineBrace {
 		} else if (points.length == 4) {
 			return MitoMath.normalBezier(points[3], points[2], points[1], points[0], t);
 		} else if (points.length == 2) {
-			return MitoMath.vectorSub(points[1], points[0]).normalize();
+			return MitoMath.sub_vector(points[1], points[0]).normalize();
 		}
 		return null;
 	}
@@ -41,7 +41,7 @@ public class BezierCurve implements ILineBrace {
 		if (points.length > 1) {
 			Vec3[] ps = new Vec3[points.length - 1];
 			for (int n = 0; n < points.length - 1; n++) {
-				ps[n] = MitoMath.vectorRatio(points[n], points[n + 1], t);
+				ps[n] = MitoMath.ratio_vector(points[n], points[n + 1], t);
 			}
 			return processBezier(ps, t);
 		} else if (points.length == 1) {
@@ -157,15 +157,15 @@ public class BezierCurve implements ILineBrace {
 				} else if (r > 0.6666) {
 					mop.hitVec = end;
 				} else {
-					mop.hitVec = MitoMath.vectorRatio(points[0], end, 0.5);
+					mop.hitVec = MitoMath.ratio_vector(points[0], end, 0.5);
 				}
 			} else {
 				if (MitoMath.subAbs(points[0], mop.hitVec) < 0.5) {
 					mop.hitVec = points[0];
 				} else if (MitoMath.subAbs(end, mop.hitVec) < 0.5) {
 					mop.hitVec = end;
-				} else if (MitoMath.subAbs(MitoMath.vectorRatio(points[0], end, 0.5), mop.hitVec) < 0.25) {
-					mop.hitVec = MitoMath.vectorRatio(points[0], end, 0.5);
+				} else if (MitoMath.subAbs(MitoMath.ratio_vector(points[0], end, 0.5), mop.hitVec) < 0.25) {
+					mop.hitVec = MitoMath.ratio_vector(points[0], end, 0.5);
 				}
 			}
 		} else {

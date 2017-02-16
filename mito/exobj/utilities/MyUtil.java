@@ -46,88 +46,99 @@ public class MyUtil {
 		Mat4 ret = Mat4.createMat4(v1, v2, norm);
 		return ret;
 	}
-
-	public static List<Triangle> decomposeTexture(Triangle tri) {
-		Vertex v1 = tri.vertexs[0];
-		Vertex v2 = tri.vertexs[1];
-		Vertex v3 = tri.vertexs[2];
-		List<Triangle> list = new ArrayList<Triangle>();
-		list.add(tri);
-		double maxU = Math.max(Math.max(v1.textureU, v2.textureU), v3.textureU);
-		double minU = Math.min(Math.min(v1.textureU, v2.textureU), v3.textureU);
-		double maxV = Math.max(Math.max(v1.textureV, v2.textureV), v3.textureV);
-		double minV = Math.min(Math.min(v1.textureV, v2.textureV), v3.textureV);
-		for (int lineU = (int) Math.floor(minU) + 1; lineU <= maxU; lineU++) {
-			decomposeLineU(list, lineU);
-		}
-		for (int lineV = (int) Math.floor(minV) + 1; lineV <= maxV; lineV++) {
-			decomposeLineV(list, lineV);
-		}
-
+	
+	public static List<Triangle> decomposeTexture(List<Triangle> list){
 		return list;
 	}
 
-	private static void decomposeLineV(List<Triangle> list, int lineV) {
-		// TODO Auto-generated method stub
-
-	}
-
-	private static void decomposeLineU(List<Triangle> list, int lineU) {
-
-		for (int n = 0; n < list.size(); n++) {
-			Triangle tri = list.get(n);
-			Vertex v1 = tri.vertexs[0];
-			Vertex v2 = tri.vertexs[1];
-			Vertex v3 = tri.vertexs[2];
-			int num = 0;
-			int flug = 0;
-			if (v1.textureU < lineU) {
-				num++;
+	public static List<Triangle> decomposeTexture(Triangle tri) {
+		double maxU = Double.MIN_VALUE;
+		double minU = Double.MAX_VALUE;
+		double maxV = Double.MIN_VALUE;
+		double minV = Double.MAX_VALUE;
+		List<Triangle> list = new ArrayList<Triangle>();
+		for (int n1 = 0; n1 < 3; n1++) {
+			if (tri.vertexs[n1].textureU > maxU) {
+				maxU = tri.vertexs[n1].textureU;
 			}
-			if (v2.textureU < lineU) {
-				num++;
+			if (tri.vertexs[n1].textureU < minU) {
+				minU = tri.vertexs[n1].textureU;
 			}
-			if (v3.textureU < lineU) {
-				num++;
+			if (tri.vertexs[n1].textureV > maxV) {
+				maxV = tri.vertexs[n1].textureV;
 			}
-			if (num == 2) {
-				Vertex m1 = maxU(v1, v2, v3);
-			} else if (num == 1) {
+			if (tri.vertexs[n1].textureV < minV) {
+				minV = tri.vertexs[n1].textureV;
 			}
 		}
+		for (int lineU = (int) Math.floor(minU); (double) lineU < maxU; lineU++) {
+			for (int lineV = (int) Math.floor(minV); (double) lineV < maxV; lineV++) {
+				decomposeSquare(tri, list, lineU, lineV);
+			}
+		}
+		return list;
 	}
 
-	private static Vertex maxU(Vertex v1, Vertex v2, Vertex v3) {
-		if(v1.textureU > v2.textureU){
-			if(v1.textureU > v3.textureU){
-				return v1.copy();
-			} else if (v2.textureU > v3.textureU){
-				return v3.copy();
-			}
-		} else if(v2.textureU > v3.textureU){
-			return v2.copy();
-		} else {
-			return v3.copy();
+	private static void decomposeSquare(Triangle tri, List<Triangle> list, int u, int v) {
+
+		Vertex[] va = tri.vertexs;
+		boolean[] fa1 = new boolean[3];
+		int fi1 = 0;
+		for (int n = 0; n < 3; n++) {
+			fa1[n] = va[0].textureU < u + 1 && va[0].textureU > u && va[0].textureV < v + 1 && va[0].textureV > v;
+			fi1 = fa1[n] ? fi1 : fi1 + 1;
 		}
-		return null;
+		if (fi1 == 3) {
+			list.add(tri);
+			return;
+		}
+		
+		boolean[] fa = new boolean[12];
+		for (int n = 0; n < 3; n++) {
+			fa[n * 4] = u < va[n].textureU;
+			fa[n * 4 + 1] = u + 1 < va[n].textureU;
+			fa[n * 4 + 2] = v < va[n].textureV;
+			fa[n * 4 + 3] = v + 1 < va[n].textureV;
+		}
+		List<Vertex> list1 = new ArrayList<Vertex>();
+		for (int n = 0; n < 3; n++) {
+			int n1 = (n + 1) % 3;
+			if(fa1[n]){
+				list1.add(va[n].copySet());
+			}
+			
+			
+			
+			if (fa[n*4] ^ fa[n1*4]) {
+				double d1 = (u - va[n].textureU) / (va[n1].textureU - va[n].textureU);
+				double v1 = va[n].textureV + d1 * (va[n1].textureV - va[n].textureV);
+				if (v1 < v + 1 && v1 > v) {
+					list1.add(new Vertex(MitoMath.ratio_vector(va[n].pos, va[n1].pos, d1), 0, v1 % 1.0));
+					if(fa1[n1]){
+						list1.add(va[n1].copySet());
+					}
+				}
+			}
+		}
+
+		return;
 	}
 
 	public static Triangle[] decomposeLine(Triangle tri, int d) {
 		return null;
 	}
 
-	public static Triangle[] decomposePolygon(List<Vertex> list) {
+	public static List<Triangle> decomposePolygon(List<Vertex> list) {
 		if (list.size() < 3) {
 			return null;
 		}
-		Triangle[] ret = new Triangle[list.size() - 2];
-		int n = 0;
+		List<Triangle> ret = new ArrayList<Triangle>();
 		Vec3 curcross = null;
 		int curVer = getfar(list);
 
 		while (!list.isEmpty()) {
 			if (list.size() == 3) {
-				ret[n] = new Triangle(list.get(0), list.get(1), list.get(2));
+				ret.add(new Triangle(list.get(0), list.get(1), list.get(2)));
 				break;
 			}
 			int ne = curVer == list.size() - 1 ? 0 : curVer + 1;
@@ -145,15 +156,13 @@ public class MyUtil {
 				}
 			}
 			if (!includePoint(curVec.pos, neVec.pos, prVec.pos, list)) {
-				ret[n] = new Triangle(curVec, neVec, prVec);
+				ret.add(new Triangle(curVec, neVec, prVec));
 				list.remove(curVer);
 				curVer = getfar(list);
-				n++;
 			} else {
 				curVer = curVer == list.size() - 1 ? 0 : curVer + 1;
 			}
 		}
-
 		return ret;
 	}
 
@@ -168,16 +177,16 @@ public class MyUtil {
 			if (n != curVer && n != ne && n != pr) {
 				Vec3 d1 = list.get(n).pos;
 				//if (Math.abs(curcross.dotProduct(MitoMath.vectorSub(d1, curVec))) < 1.0) {
-				Vec3 v12 = MitoMath.vectorSub(neVec, curVec);
-				Vec3 v13 = MitoMath.vectorSub(prVec, curVec);
-				Vec3 vn1 = MitoMath.vectorSub(v12, MitoMath.vectorMul(v13.normalize(), v13.normalize().dotProduct(v12)));
-				if (vn1.dotProduct(MitoMath.vectorSub(d1, curVec)) > 0) {
-					Vec3 vn2 = MitoMath.vectorSub(v13, MitoMath.vectorMul(v12.normalize(), v12.normalize().dotProduct(v13)));
-					if (vn2.dotProduct(MitoMath.vectorSub(d1, curVec)) > 0) {
-						Vec3 v32 = MitoMath.vectorSub(neVec, prVec);
-						Vec3 v31 = MitoMath.vectorSub(curVec, prVec);
-						Vec3 vn3 = MitoMath.vectorSub(v31, MitoMath.vectorMul(v32.normalize(), v32.normalize().dotProduct(v31)));
-						if (vn3.dotProduct(MitoMath.vectorSub(d1, prVec)) > 0) {
+				Vec3 v12 = MitoMath.sub_vector(neVec, curVec);
+				Vec3 v13 = MitoMath.sub_vector(prVec, curVec);
+				Vec3 vn1 = MitoMath.sub_vector(v12, MitoMath.vectorMul(v13.normalize(), v13.normalize().dotProduct(v12)));
+				if (vn1.dotProduct(MitoMath.sub_vector(d1, curVec)) > 0) {
+					Vec3 vn2 = MitoMath.sub_vector(v13, MitoMath.vectorMul(v12.normalize(), v12.normalize().dotProduct(v13)));
+					if (vn2.dotProduct(MitoMath.sub_vector(d1, curVec)) > 0) {
+						Vec3 v32 = MitoMath.sub_vector(neVec, prVec);
+						Vec3 v31 = MitoMath.sub_vector(curVec, prVec);
+						Vec3 vn3 = MitoMath.sub_vector(v31, MitoMath.vectorMul(v32.normalize(), v32.normalize().dotProduct(v31)));
+						if (vn3.dotProduct(MitoMath.sub_vector(d1, prVec)) > 0) {
 							flag = true;
 							break;
 						}

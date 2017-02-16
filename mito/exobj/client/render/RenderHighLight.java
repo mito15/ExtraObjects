@@ -19,10 +19,9 @@ public class RenderHighLight {
 		Vec3 partV12 = MitoMath.vectorDiv(v2.addVector(-v1.xCoord, -v1.yCoord, -v1.zCoord), (double) div);
 
 		GL11.glPushMatrix();
-		GL11.glTranslated(-(player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks),
-				-(player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks),
-				-(player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks));
-		GL11.glTranslated(v1.xCoord, v1.yCoord, v1.zCoord);
+		GL11.glTranslated(v1.xCoord - (player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks),
+				v1.yCoord - (player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks),
+				v1.zCoord - (player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks));
 		for (int n = 0; n < (div + 1); n++) {
 			this.renderLine(0.0, 0.0, 0.1);
 			this.renderLine(0.0, 0.0, -0.1);
@@ -43,10 +42,9 @@ public class RenderHighLight {
 
 	public void drawCenter(EntityPlayer player, Vec3 set, double size, double partialTicks) {
 		GL11.glPushMatrix();
-		GL11.glTranslated(-(player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks),
-				-(player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks),
-				-(player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks));
-		GL11.glTranslated(set.xCoord, set.yCoord, set.zCoord);
+		GL11.glTranslated(set.xCoord - (player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks),
+				set.yCoord - (player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks),
+				set.zCoord - (player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks));
 		this.renderLine(0.0, 0.0, size);
 		this.renderLine(0.0, 0.0, -size);
 		this.renderLine(0.0, size, 0.0);
@@ -58,62 +56,105 @@ public class RenderHighLight {
 
 	public void drawLine(EntityPlayer player, Vec3 set, Vec3 end, double partialTicks) {
 		GL11.glPushMatrix();
-		GL11.glTranslated(-(player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks),
-				-(player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks),
-				-(player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks));
-		GL11.glTranslated(set.xCoord, set.yCoord, set.zCoord);
-		this.renderLine(MitoMath.vectorSub(end, set));
+		GL11.glTranslated(set.xCoord - (player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks),
+				set.yCoord - (player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks),
+				set.zCoord - (player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks));
+		this.renderLine(MitoMath.sub_vector(end, set));
 		GL11.glPopMatrix();
 	}
 
 	public void drawBox(EntityPlayer player, Vec3 set, double size, double partialTicks) {
 		GL11.glPushMatrix();
-		GL11.glTranslated(-(player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks),
-				-(player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks),
-				-(player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks));
-		GL11.glTranslated(set.xCoord, set.yCoord, set.zCoord);
+		GL11.glTranslated(set.xCoord - (player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks),
+				set.yCoord - (player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks),
+				set.zCoord - (player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks));
 		this.renderBox(size);
 		GL11.glPopMatrix();
 	}
 
 	public void drawBox(EntityPlayer player, Vec3 set, Vec3 end, double partialTicks) {
 		GL11.glPushMatrix();
-		GL11.glTranslated(-(player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks),
-				-(player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks),
-				-(player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks));
-		this.renderBox(set, end);
+		GL11.glTranslated((set.xCoord + end.xCoord) / 2 - (player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks),
+				(set.yCoord + end.yCoord) / 2 - (player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks),
+				(set.zCoord + end.zCoord) / 2 - (player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks));
+
+		this.renderBox(Math.abs((set.xCoord - end.xCoord)) / 2 + 0.01, Math.abs((set.yCoord - end.yCoord)) / 2 + 0.01, Math.abs((set.zCoord - end.zCoord)) / 2 + 0.01, false);
+
 		GL11.glPopMatrix();
 	}
 
 	public void drawFakeBrace(EntityPlayer player, Vec3 set, Vec3 end, double size, double partialTicks) {
 
 		GL11.glPushMatrix();
-		GL11.glTranslated(-(player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks),
-				-(player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks),
-				-(player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks));
+		GL11.glTranslated((end.xCoord + set.xCoord) / 2-(player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks),
+				(end.yCoord + set.yCoord) / 2-(player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks),
+				(end.zCoord + set.zCoord) / 2-(player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks));
 		GL11.glPushMatrix();
 
-		GL11.glTranslated(set.xCoord, set.yCoord, set.zCoord);
-		this.renderBox(size);
+		this.renderBox(size, (set.xCoord - end.xCoord) / 2, (set.yCoord - end.yCoord) / 2, (set.zCoord - end.zCoord) / 2);
 
 		GL11.glPopMatrix();
 
 		GL11.glPushMatrix();
 
-		GL11.glTranslated(end.xCoord, end.yCoord, end.zCoord);
-		this.renderBox(size);
+		this.renderBox(size, (end.xCoord - set.xCoord) / 2, (end.yCoord - set.yCoord) / 2, (end.zCoord - set.zCoord) / 2);
 
 		GL11.glPopMatrix();
 
 		GL11.glPushMatrix();
 
-		GL11.glTranslated((end.xCoord + set.xCoord) / 2, (end.yCoord + set.yCoord) / 2, (end.zCoord + set.zCoord) / 2);
 		this.renderBrace(set, end, size);
 
 		GL11.glPopMatrix();
 
 		GL11.glPopMatrix();
 
+	}
+
+	private void renderBox(double size, double cx, double cy, double cz) {
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		double x = cx + size / 2;
+		double y = cy + size / 2;
+		double z = cz + size / 2;
+		double x1 = cx - size / 2;
+		double y1 = cy - size / 2;
+		double z1 = cz - size / 2;
+		GL11.glLineWidth(2.0F);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glBegin(1);
+
+		GL11.glVertex3d(x, y, z);
+		GL11.glVertex3d(x, y1, z);
+		GL11.glVertex3d(x, y, z1);
+		GL11.glVertex3d(x, y1, z1);
+		GL11.glVertex3d(x1, y, z);
+		GL11.glVertex3d(x1, y1, z);
+		GL11.glVertex3d(x1, y, z1);
+		GL11.glVertex3d(x1, y1, z1);
+
+		GL11.glVertex3d(x, y, z);
+		GL11.glVertex3d(x, y, z1);
+		GL11.glVertex3d(x, y1, z);
+		GL11.glVertex3d(x, y1, z1);
+		GL11.glVertex3d(x1, y, z);
+		GL11.glVertex3d(x1, y, z1);
+		GL11.glVertex3d(x1, y1, z);
+		GL11.glVertex3d(x1, y1, z1);
+
+		GL11.glVertex3d(x, y, z);
+		GL11.glVertex3d(x1, y, z);
+		GL11.glVertex3d(x, y, z1);
+		GL11.glVertex3d(x1, y, z1);
+		GL11.glVertex3d(x, y1, z);
+		GL11.glVertex3d(x1, y1, z);
+		GL11.glVertex3d(x, y1, z1);
+		GL11.glVertex3d(x1, y1, z1);
+
+		GL11.glEnd();
+
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 
 	public void renderBox(double s, boolean b) {
@@ -124,12 +165,6 @@ public class RenderHighLight {
 	public void renderBox(double s) {
 		double size = s / 2.0;
 		this.renderBox(size, size, size);
-	}
-
-	private void renderBox(Vec3 set, Vec3 end) {
-		GL11.glTranslated((set.xCoord + end.xCoord) / 2, (set.yCoord + end.yCoord) / 2, (set.zCoord + end.zCoord) / 2);
-
-		this.renderBox(Math.abs((set.xCoord - end.xCoord)) / 2 + 0.01, Math.abs((set.yCoord - end.yCoord)) / 2 + 0.01, Math.abs((set.zCoord - end.zCoord)) / 2 + 0.01, false);
 	}
 
 	private void renderBox(double x, double y, double z) {

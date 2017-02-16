@@ -347,7 +347,7 @@ public class Brace extends ExtraObject {
 	}
 
 	public void rotation(Vec3 cent, double yaw) {
-		Vec3 p = MitoMath.vectorSum(MitoMath.rotY(MitoMath.vectorSub(this.pos, cent), yaw), cent);
+		Vec3 p = MitoMath.vectorSum(MitoMath.rotY(MitoMath.sub_vector(this.pos, cent), yaw), cent);
 		/*end = MitoMath.vectorPul(MitoMath.rotY(MitoMath.vectorSub(this.end, cent), yaw), cent);
 		offCurvePoints1 = MitoMath.rotY(offCurvePoints1, yaw);
 		offCurvePoints2 = MitoMath.rotY(offCurvePoints2, yaw);*/
@@ -359,7 +359,7 @@ public class Brace extends ExtraObject {
 	}
 
 	public void resize(Vec3 cent, double i) {
-		Vec3 p = MitoMath.vectorSum(MitoMath.vectorMul(MitoMath.vectorSub(this.pos, cent), i), cent);
+		Vec3 p = MitoMath.vectorSum(MitoMath.vectorMul(MitoMath.sub_vector(this.pos, cent), i), cent);
 		//end = MitoMath.vectorPul(MitoMath.vectorMul(MitoMath.vectorSub(this.end, cent), i), cent);
 		if (line != null)
 			line.resize(cent, i);
