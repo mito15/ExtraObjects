@@ -57,14 +57,7 @@ public class BB_TypeResister {
 	}
 
 	public static void loadModels() {
-		/*addMapping(createSquare(1, 1, 0, 0), "square", true);
-		addMapping(createElipse(1, 1, 0, 0), "round", true);
-		addMapping(createSquare(0.2, 1, 0, 0), "vertical", true);
-		addMapping(createSquare(1, 0.2, 0, 0), "horizontal", true);*/
-		//addMapping(create2d(0.5, 0.55, -0.5, 0.55, -0.5, 0.45, -0.05, 0.45, -0.05, -0.45, -0.5, -0.45, -0.5, -0.55, +0.5, -0.55, 0.5, -0.45, 0.05, -0.45, 0.05, 0.45, 0.5, 0.45), "H-section", true);
-		//addMapping(new BraceShapes(createSquare(0.1, 1.0, -0.45, 0), createSquare(1, 0.1, 0, -0.45)), "Equal-Angle", true);
 		addMapping(new Pattern(0.6, createRectangle(0, 0, 0.15, 0.9, 0.9, 0.3), createRectangle(0, 0, 0.3, 0.3, 0.3, 0.6)), "pattern", true);
-		//addMapping(create2d(-0.1123, 0.1545, -0.4756, 0.1545, -0.1817, -0.0590, -0.2939, -0.4045, 0.0000, -0.1910, 0.2939, -0.4045, 0.1817, -0.0590, 0.4756, 0.1545, 0.1123, 0.1545, 0.0000, 0.5000), "star", true);
 		if (Loader.isModLoaded("NGTLib")) {
 			//addMapping(new Pattern(0.6, new NGTOWrapper("chino.ngto")), "ngto");
 		}

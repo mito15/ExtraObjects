@@ -142,7 +142,7 @@ public class CreateVertexBufferObject {
 	}
 
 	public void registVertexWithUV(Vertex v) {
-		registVertexWithUV(v.pos, v.textureU, v.textureV);
+		registVertexWithUV(v.pos, v.u, v.v);
 	}
 
 	public void setBrightness(float f, float g) {

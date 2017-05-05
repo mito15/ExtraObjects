@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.client.BB_Key;
+import com.mito.exobj.client.render.model.BB_Polygon;
 import com.mito.exobj.client.render.model.Mat4;
 import com.mito.exobj.client.render.model.Triangle;
 import com.mito.exobj.client.render.model.Vertex;
@@ -28,7 +29,7 @@ import net.minecraft.world.World;
 public class MyUtil {
 
 	public static Mat4 getRotationMatrix(Vec3 dir) {
-		return getRotationMatrix(dir, Vec3.createVectorHelper(0, 1, 0));
+		return getRotationMatrix(dir, Vec3.createVectorHelper(0, -1, 0));
 	}
 
 	public static Mat4 getRotationMatrix(Vec3 dir, Vec3 v) {
@@ -46,82 +47,30 @@ public class MyUtil {
 		Mat4 ret = Mat4.createMat4(v1, v2, norm);
 		return ret;
 	}
-	
-	public static List<Triangle> decomposeTexture(List<Triangle> list){
-		return list;
+
+	public static Vertex generateVertex(Triangle t, double u, double v, double texu, double texv) {
+		double ua = t.vertexs[1].u - t.vertexs[0].u;
+		double ub = t.vertexs[2].u - t.vertexs[0].u;
+		double uc = u - t.vertexs[0].u;
+		double va = t.vertexs[1].v - t.vertexs[0].v;
+		double vb = t.vertexs[2].v - t.vertexs[0].v;
+		double vc = v - t.vertexs[0].v;
+
+		double a = (ub * vc - vb * uc) / (ub * va - vb * ua);
+		double b = (ua * vc - va * uc) / (ua * vb - va * ub);
+
+		return new Vertex(MitoMath.vectorSum(MitoMath.vectorMul(t.vertexs[0].pos.subtract(t.vertexs[1].pos), a), MitoMath.vectorMul(t.vertexs[0].pos.subtract(t.vertexs[2].pos), b)), texu, texv);
+
 	}
 
-	public static List<Triangle> decomposeTexture(Triangle tri) {
-		double maxU = Double.MIN_VALUE;
-		double minU = Double.MAX_VALUE;
-		double maxV = Double.MIN_VALUE;
-		double minV = Double.MAX_VALUE;
-		List<Triangle> list = new ArrayList<Triangle>();
-		for (int n1 = 0; n1 < 3; n1++) {
-			if (tri.vertexs[n1].textureU > maxU) {
-				maxU = tri.vertexs[n1].textureU;
-			}
-			if (tri.vertexs[n1].textureU < minU) {
-				minU = tri.vertexs[n1].textureU;
-			}
-			if (tri.vertexs[n1].textureV > maxV) {
-				maxV = tri.vertexs[n1].textureV;
-			}
-			if (tri.vertexs[n1].textureV < minV) {
-				minV = tri.vertexs[n1].textureV;
-			}
-		}
-		for (int lineU = (int) Math.floor(minU); (double) lineU < maxU; lineU++) {
-			for (int lineV = (int) Math.floor(minV); (double) lineV < maxV; lineV++) {
-				decomposeSquare(tri, list, lineU, lineV);
-			}
-		}
-		return list;
-	}
-
-	private static void decomposeSquare(Triangle tri, List<Triangle> list, int u, int v) {
-
-		Vertex[] va = tri.vertexs;
-		boolean[] fa1 = new boolean[3];
-		int fi1 = 0;
-		for (int n = 0; n < 3; n++) {
-			fa1[n] = va[0].textureU < u + 1 && va[0].textureU > u && va[0].textureV < v + 1 && va[0].textureV > v;
-			fi1 = fa1[n] ? fi1 : fi1 + 1;
-		}
-		if (fi1 == 3) {
-			list.add(tri);
-			return;
-		}
-		
-		boolean[] fa = new boolean[12];
-		for (int n = 0; n < 3; n++) {
-			fa[n * 4] = u < va[n].textureU;
-			fa[n * 4 + 1] = u + 1 < va[n].textureU;
-			fa[n * 4 + 2] = v < va[n].textureV;
-			fa[n * 4 + 3] = v + 1 < va[n].textureV;
-		}
-		List<Vertex> list1 = new ArrayList<Vertex>();
+	public static boolean checkInside(Triangle t, double u, double v) {
+		boolean[] c = new boolean[3];
 		for (int n = 0; n < 3; n++) {
 			int n1 = (n + 1) % 3;
-			if(fa1[n]){
-				list1.add(va[n].copySet());
-			}
-			
-			
-			
-			if (fa[n*4] ^ fa[n1*4]) {
-				double d1 = (u - va[n].textureU) / (va[n1].textureU - va[n].textureU);
-				double v1 = va[n].textureV + d1 * (va[n1].textureV - va[n].textureV);
-				if (v1 < v + 1 && v1 > v) {
-					list1.add(new Vertex(MitoMath.ratio_vector(va[n].pos, va[n1].pos, d1), 0, v1 % 1.0));
-					if(fa1[n1]){
-						list1.add(va[n1].copySet());
-					}
-				}
-			}
+			c[n] = 0 > (t.vertexs[n].u - t.vertexs[n1].u) * (t.vertexs[n].v - v) - (t.vertexs[n].v - t.vertexs[n1].v) * (t.vertexs[n].u - u);
 		}
 
-		return;
+		return (c[0] ^ c[1]) & (c[1] ^ c[2]);
 	}
 
 	public static Triangle[] decomposeLine(Triangle tri, int d) {
@@ -587,12 +536,199 @@ public class MyUtil {
 	public static List<ExtraObject> copyList(List<ExtraObject> list, Vec3 pos) {
 		List<ExtraObject> ret = new ArrayList<ExtraObject>();
 		Vec3 pos1 = MitoMath.vectorMul(pos, -1);
-		for (int n = 0; n < list.size(); n++) {
-			ExtraObject eo = list.get(n).copy();
-			eo.addCoordinate(pos1);
-			ret.add(eo);
+		for (ExtraObject eo : list) {
+			ExtraObject eo1 = eo.copy();
+			eo1.addCoordinate(pos1);
+			ret.add(eo1);
 		}
 		return ret;
 	}
+
+	public static List<Triangle> decomposeTexture(List<Triangle> triangles) {
+		List<Triangle> list = new ArrayList<Triangle>();
+		for (Triangle t : triangles) {
+			decomposeTexture(new BB_Polygon(t), list);
+		}
+		return list;
+	}
+
+	public static List<Triangle> decomposeTexture(BB_Polygon t) {
+		List<Triangle> list = new ArrayList<Triangle>();
+		decomposeTexture(t, list);
+		return list;
+	}
+
+	public static void decomposeTexture(BB_Polygon tri, List<Triangle> list) {
+		List<BB_Polygon> polys = new ArrayList<BB_Polygon>();
+		polys.add(tri);
+		for (int lineU = (int) Math.floor(tri.minU()) + 1; lineU <= tri.maxU(); lineU++) {
+			List<BB_Polygon> polys2 = new ArrayList<BB_Polygon>();
+			for (BB_Polygon p : polys) {
+				decomposeLineU(p, lineU, polys2);
+			}
+			polys = polys2;
+		}
+		for (int lineV = (int) Math.floor(tri.minV()) + 1; lineV <= tri.maxV(); lineV++) {
+			List<BB_Polygon> polys2 = new ArrayList<BB_Polygon>();
+			for (BB_Polygon p : polys) {
+				decomposeLineV(p, lineV, polys2);
+			}
+			polys = polys2;
+		}
+		for (BB_Polygon p : polys) {
+			list.addAll(MyUtil.decomposePolygon(p.line));
+		}
+	}
+
+	private static void decomposeLineV(BB_Polygon p, int v, List<BB_Polygon> ap) {
+		int n1 = -1;
+		int n2 = -1;
+		double d1 = 0;
+		double d2 = 0;
+		boolean flag = true;
+		if (v < p.maxV() && v > p.minV()) {
+			for (int n = 0; n < p.line.size(); n++) {
+				Vertex v1 = p.line.get(n);
+				Vertex v2 = p.line.get((n + 1) % p.line.size());
+				if (!(v1.v <= v ^ v2.v > v)) {
+					if (flag) {
+						n1 = n;
+						d1 = (v - v1.v) / (v2.v - v1.v);
+						flag = false;
+					} else {
+						n2 = n;
+						d2 = (v - v1.v) / (v2.v - v1.v);
+						continue;
+					}
+				}
+			}
+			if (n1 != -1 && n2 != -1) {
+
+				Vertex v1 = splitVertex(p.line.get(n1), p.line.get((n1 + 1) % p.line.size()), d1);
+				Vertex v2 = splitVertex(p.line.get(n2), p.line.get((n2 + 1) % p.line.size()), d2);
+				BB_Polygon p1 = new BB_Polygon(), p2 = new BB_Polygon();
+				for (int i = 0; i < p.line.size(); i++) {
+					p1.line.add(p.line.get(i));
+					if (i == n1) {
+						if (p.line.get(i).v != v1.v)
+							p1.line.add(v1.copy());
+						p1.line.add(v2.copy());
+						i = n2;
+					}
+				}
+				for (int i = n1 + 1; i < n2 + 1; i++) {
+					p2.line.add(p.line.get(i));
+					if (i == n2) {
+						if (p.line.get(i).v != v2.v)
+							p2.line.add(v2.copy());
+						p2.line.add(v1.copy());
+					}
+				}
+				ap.add(p1);
+				ap.add(p2);
+				return;
+			}
+		}
+		ap.add(p);
+	}
+
+	private static void decomposeLineU(BB_Polygon p, int u, List<BB_Polygon> ap) {
+		int n1 = -1;
+		int n2 = -1;
+		double d1 = 0;
+		double d2 = 0;
+		boolean flag = true;
+		if (u < p.maxU() && u > p.minU()) {
+			for (int n = 0; n < p.line.size(); n++) {
+				Vertex v1 = p.line.get(n);
+				Vertex v2 = p.line.get((n + 1) % p.line.size());
+				if (!(v1.u <= u ^ v2.u > u)) {
+					if (flag) {
+						n1 = n;
+						d1 = (u - v1.u) / (v2.u - v1.u);
+						flag = false;
+					} else {
+						n2 = n;
+						d2 = (u - v1.u) / (v2.u - v1.u);
+						continue;
+					}
+				}
+			}
+			if (n1 != -1 && n2 != -1) {
+
+				Vertex v1 = splitVertex(p.line.get(n1), p.line.get((n1 + 1) % p.line.size()), d1);
+				Vertex v2 = splitVertex(p.line.get(n2), p.line.get((n2 + 1) % p.line.size()), d2);
+				BB_Polygon p1 = new BB_Polygon(), p2 = new BB_Polygon();
+				for (int i = 0; i < p.line.size(); i++) {
+					p1.line.add(p.line.get(i));
+					if (i == n1) {
+						if (p.line.get(i).u != v1.u)
+							p1.line.add(v1.copy());
+						p1.line.add(v2.copy());
+						i = n2;
+					}
+				}
+				for (int i = n1 + 1; i < n2 + 1; i++) {
+					p2.line.add(p.line.get(i));
+					if (i == n2) {
+						if (p.line.get(i).u != v2.u)
+							p2.line.add(v2.copy());
+						p2.line.add(v1.copy());
+					}
+				}
+				ap.add(p1);
+				ap.add(p2);
+				return;
+			}
+		}
+		ap.add(p);
+	}
+
+	private static Vertex splitVertex(Vertex v1, Vertex v2, double d) {
+		return new Vertex(MitoMath.ratio_vector(v1.pos, v2.pos, d), v1.u + d * (v2.u - v1.u), v1.v + d * (v2.v - v1.v), MitoMath.ratio_vector(v1.norm, v2.norm, d).normalize());
+	}
+
+	/*public static List<Triangle> decomposeTexture(List<Triangle> list) {
+		List<Triangle> list1 = new ArrayList<Triangle>();
+		for (int n = 0; n < list.size(); n++) {
+			decomposeTexture(list.get(n), list1);
+		}
+		return list1;
+	}
+	
+	public static void decomposeTexture(Triangle tri, List<Triangle> list) {
+		double maxU = Double.MIN_VALUE;
+		double minU = Double.MAX_VALUE;
+		double maxV = Double.MIN_VALUE;
+		double minV = Double.MAX_VALUE;
+		for (int n1 = 0; n1 < 3; n1++) {
+			if (tri.vertexs[n1].textureU > maxU) {
+				maxU = tri.vertexs[n1].textureU;
+			}
+			if (tri.vertexs[n1].textureU < minU) {
+				minU = tri.vertexs[n1].textureU;
+			}
+			if (tri.vertexs[n1].textureV > maxV) {
+				maxV = tri.vertexs[n1].textureV;
+			}
+			if (tri.vertexs[n1].textureV < minV) {
+				minV = tri.vertexs[n1].textureV;
+			}
+		}
+		for (int lineU = (int) Math.floor(minU); (double) lineU < maxU; lineU++) {
+			for (int lineV = (int) Math.floor(minV); (double) lineV < maxV; lineV++) {
+				decomposeSquare(tri, list, lineU, lineV);
+			}
+		}
+	}
+	
+	private static void decomposeSquare(Triangle tri, List<Triangle> list, int u, int v) {
+	
+		
+	}
+	
+	public static BB_Polygon SplitPolygon(BB_Polygon po, Vertex v1, Vertex v2){
+		return po;	
+	}*/
 
 }

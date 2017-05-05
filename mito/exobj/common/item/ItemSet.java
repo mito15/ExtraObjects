@@ -48,11 +48,12 @@ public class ItemSet extends ItemBraceBase {
 					this.onActiveClick(world, player, itemstack, mop1, set, end, nbt);
 					this.nbtInit(nbt, itemstack);
 				} else {
-					nbt.setDouble("setX", mop.hitVec.xCoord);
-					nbt.setDouble("setY", mop.hitVec.yCoord);
-					nbt.setDouble("setZ", mop.hitVec.zCoord);
-					nbt.setBoolean("activated", true);
-					this.activate(world, player, itemstack, mop1, nbt);
+					if (this.activate(world, player, itemstack, mop1, nbt, key)) {
+						nbt.setDouble("setX", mop.hitVec.xCoord);
+						nbt.setDouble("setY", mop.hitVec.yCoord);
+						nbt.setDouble("setZ", mop.hitVec.zCoord);
+						nbt.setBoolean("activated", true);
+					}
 				}
 			}
 		} else {
@@ -65,7 +66,8 @@ public class ItemSet extends ItemBraceBase {
 	public void clientProcess(MovingObjectPosition mop, ItemStack itemstack) {
 	}
 
-	public void activate(World world, EntityPlayer player, ItemStack itemstack, MovingObjectPosition movingOP, NBTTagCompound nbt) {
+	public boolean activate(World world, EntityPlayer player, ItemStack itemstack, MovingObjectPosition movingOP, NBTTagCompound nbt, BB_Key key) {
+		return true;
 	}
 
 	public void onActiveClick(World world, EntityPlayer player, ItemStack itemstack, MovingObjectPosition movingOP, Vec3 set, Vec3 end, NBTTagCompound nbt) {

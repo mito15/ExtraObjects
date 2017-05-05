@@ -311,13 +311,12 @@ public class RenderHighLight {
 		ExtraObject base = BB_DataLists.getWorldData(player.worldObj).getBraceBaseByID(nbt.getInteger("brace"));
 
 		if (base != null && base instanceof Brace) {
-			boolean flag = nbt.getBoolean("isPos");
 			Brace brace = (Brace) base;
-			/*Vec3 v1 = brace.pos;
-			Vec3 v2 = flag ? end : MitoMath.vectorPul(v1, brace.offCurvePoints1);
-			Vec3 v4 = brace.end;
-			Vec3 v3 = flag ? MitoMath.vectorPul(v4, brace.offCurvePoints2) : end;
-			drawBezier(player, v1, v2, v3, v4, 4, partialTicks);*/
+			Vec3 v1 = brace.line.getPoint(0);
+			Vec3 v2 = end;
+			Vec3 v4 = brace.line.getPoint(1);
+			Vec3 v3 = end;
+			drawBezier(player, v1, v2, v3, v4, 4, partialTicks);
 		}
 	}
 

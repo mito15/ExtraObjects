@@ -48,10 +48,11 @@ public class ItemRedCable extends ItemSet {
 		}
 	}
 
-	public void activate(World world, EntityPlayer player, ItemStack itemstack, MovingObjectPosition mop, NBTTagCompound nbt) {
+	public boolean activate(World world, EntityPlayer player, ItemStack itemstack, MovingObjectPosition mop, NBTTagCompound nbt, BB_Key key) {
 		if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && mop.entityHit != null && mop.entityHit instanceof EntityWrapperBB) {
 			nbt.setInteger("brace", ((EntityWrapperBB) mop.entityHit).base.BBID);
 		}
+		return true;
 	}
 	@Override
 	public void clientProcess(MovingObjectPosition mop, ItemStack itemstack) {

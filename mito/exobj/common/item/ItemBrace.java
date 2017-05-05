@@ -83,16 +83,14 @@ public class ItemBrace extends ItemSet {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tab, List list) {
-		for (int i3 = 0; i3 < 16; i3++) {
-			for (int i1 = 0; i1 < BB_TypeResister.shapeList.size(); ++i1) {
-				ItemStack itemstack = new ItemStack(item, 1, i3);
-				NBTTagCompound nbt = new NBTTagCompound();
-				itemstack.setTagCompound(nbt);
-				this.setSize(itemstack, 5);
-				this.setType(itemstack, BB_TypeResister.shapeList.get(i1));
-				nbt.setInteger("block", Block.getIdFromBlock(Blocks.wool));
-				list.add(itemstack);
-			}
+		for (int i1 = 0; i1 < BB_TypeResister.shapeList.size(); ++i1) {
+			ItemStack itemstack = new ItemStack(item, 1, 0);
+			NBTTagCompound nbt = new NBTTagCompound();
+			itemstack.setTagCompound(nbt);
+			this.setSize(itemstack, 5);
+			this.setType(itemstack, BB_TypeResister.shapeList.get(i1));
+			nbt.setInteger("block", Block.getIdFromBlock(Blocks.wool));
+			list.add(itemstack);
 		}
 
 		for (int i1 = 0; i1 < BB_TypeResister.patternList.size(); ++i1) {
@@ -180,10 +178,11 @@ public class ItemBrace extends ItemSet {
 		}
 	}
 
-	public void activate(World world, EntityPlayer player, ItemStack itemstack, MovingObjectPosition mop, NBTTagCompound nbt) {
+	public boolean activate(World world, EntityPlayer player, ItemStack itemstack, MovingObjectPosition mop, NBTTagCompound nbt, BB_Key key) {
 		if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && mop.entityHit != null && mop.entityHit instanceof EntityWrapperBB) {
 			nbt.setInteger("brace", ((EntityWrapperBB) mop.entityHit).base.BBID);
 		}
+		return true;
 	}
 
 	public void onActiveClick(World world, EntityPlayer player, ItemStack itemstack, MovingObjectPosition movingOP, Vec3 set, Vec3 end, NBTTagCompound nbt) {

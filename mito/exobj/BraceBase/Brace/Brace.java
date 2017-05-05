@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.client.render.exorender.BB_TypeResister;
+import com.mito.exobj.client.render.exorender.BezierCurve;
 import com.mito.exobj.client.render.exorender.IJoint;
 import com.mito.exobj.client.render.model.IDrawBrace;
 import com.mito.exobj.client.render.model.ILineBrace;
@@ -103,9 +104,23 @@ public class Brace extends ExtraObject {
 	public void readExtraObjectFromNBT(NBTTagCompound nbt) {
 		//this.line.readNBT(nbt);
 
-		Vec3 start = getVec3(nbt, "start");
-		Vec3 end = getVec3(nbt, "end");
-		line = new Line(start, end);
+		switch (nbt.getInteger("line")) {
+		case 0:
+			Vec3 start = getVec3(nbt, "start");
+			Vec3 end = getVec3(nbt, "end");
+			line = new Line(start, end);
+			break;
+		case 1:
+			Vec3 v1 = getVec3(nbt, "bezier1");
+			Vec3 v2 = getVec3(nbt, "bezier2");
+			Vec3 v3= getVec3(nbt, "bezier3");
+			Vec3 v4 = getVec3(nbt, "bezier4");
+			line = new BezierCurve(v1, v2, v3, v4);
+			break;
+		default:
+			line = new Line(Vec3.createVectorHelper(0, 0, 0), Vec3.createVectorHelper(0, 0, 0));
+			break;
+		}
 		this.shape = BB_TypeResister.getFigure(nbt.getString("shape"));
 		this.joint = BB_TypeResister.getJoint(nbt.getString("joint"));
 		this.size = nbt.getDouble("size");
@@ -134,7 +149,7 @@ public class Brace extends ExtraObject {
 			nbt.setString("shape", BB_TypeResister.getName(this.shape));
 			nbt.setString("joint", BB_TypeResister.getJointName(this.joint));
 			nbt.setDouble("size", this.size);
-			nbt.setInteger("block",Block.getIdFromBlock(texture));
+			nbt.setInteger("block", Block.getIdFromBlock(texture));
 			nbt.setInteger("color", this.color);
 		}
 	}

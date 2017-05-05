@@ -57,7 +57,7 @@ public class ItemWall extends ItemSet {
 					nbt.setDouble("setY", mop.hitVec.yCoord);
 					nbt.setDouble("setZ", mop.hitVec.zCoord);
 					nbt.setBoolean("activated", true);
-					this.activate(world, player, itemstack, mop1, nbt);
+					this.activate(world, player, itemstack, mop1, nbt, key);
 				}
 			}
 		}

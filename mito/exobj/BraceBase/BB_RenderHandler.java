@@ -123,8 +123,7 @@ public class BB_RenderHandler {
 			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
 			data.buffer.draw();
 
-			for (int n = 0; n < list.size(); n++) {
-				ExtraObject base = list.get(n);
+			for (ExtraObject base : list) {
 				BB_Render render = BB_ResisteredList.getBraceBaseRender(base);
 				if (base instanceof GuideBrace)
 					render.doRender(base, partialticks);
@@ -136,8 +135,7 @@ public class BB_RenderHandler {
 				CreateVertexBufferObject c = CreateVertexBufferObject.INSTANCE;
 				c.beginRegist(GL15.GL_STATIC_DRAW, GL11.GL_TRIANGLES);
 				c.setColor(1.0F, 1.0F, 1.0F, 1.0F);
-				for (int n = 0; n < list.size(); n++) {
-					ExtraObject base = list.get(n);
+				for (ExtraObject base : list) {
 					BB_Render render = BB_ResisteredList.getBraceBaseRender(base);
 					render.updateRender(c, base);
 				}

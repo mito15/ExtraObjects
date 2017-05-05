@@ -5,10 +5,13 @@ import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.BraceBase.Brace.Brace;
 import com.mito.exobj.client.BB_Key;
 import com.mito.exobj.client.render.RenderHighLight;
+import com.mito.exobj.client.render.exorender.BezierCurve;
 import com.mito.exobj.common.Main;
 import com.mito.exobj.common.MyLogger;
 import com.mito.exobj.common.entity.EntityWrapperBB;
-import com.mito.exobj.utilities.MitoMath;
+import com.mito.exobj.network.BendPacketProcessor;
+import com.mito.exobj.network.PacketHandler;
+import com.mito.exobj.utilities.Line;
 import com.mito.exobj.utilities.MyUtil;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -36,57 +39,66 @@ public class ItemBender extends ItemSet {
 		nbt.setInteger("brace", -1);
 	}
 
-	public double getRayDistance(BB_Key key){
+	public double getRayDistance(BB_Key key) {
 		return key.isAltPressed() ? 3.0 : 5.0;
 	}
 
-	public void snapDegree(MovingObjectPosition mop, ItemStack itemstack, World world, EntityPlayer player, BB_Key key, NBTTagCompound nbt){
+	public void snapDegree(MovingObjectPosition mop, ItemStack itemstack, World world, EntityPlayer player, BB_Key key, NBTTagCompound nbt) {
 		if (nbt.getBoolean("activated")) {
 			Vec3 set = Vec3.createVectorHelper(nbt.getDouble("setX"), nbt.getDouble("setY"), nbt.getDouble("setZ"));
 			MyUtil.snapByShiftKey(mop, set);
 		}
 	}
 
-	public boolean snapCenter(){
+	public boolean snapCenter() {
 		return false;
 	}
 
-	public void activate(World world, EntityPlayer player, ItemStack itemstack, MovingObjectPosition mop, NBTTagCompound nbt) {
+	public boolean activate(World world, EntityPlayer player, ItemStack itemstack, MovingObjectPosition mop, NBTTagCompound nbt, BB_Key key) {
 
-
-		MyLogger.info("cul! x : " + MitoMath.rot(Vec3.createVectorHelper(0, 1, 0), Math.PI / 6, Vec3.createVectorHelper(0, 0, 1)));
-
-
-		if (mop.entityHit != null && mop.entityHit instanceof EntityWrapperBB && ((EntityWrapperBB)mop.entityHit).base instanceof Brace && ((EntityWrapperBB)mop.entityHit).base.isStatic) {
-			MyLogger.info("bender register complete");
+		if (mop.entityHit != null && mop.entityHit instanceof EntityWrapperBB && ((EntityWrapperBB) mop.entityHit).base instanceof Brace && ((EntityWrapperBB) mop.entityHit).base.isStatic) {
 			Vec3 set = mop.hitVec;
-			Brace brace = (Brace) ((EntityWrapperBB)mop.entityHit).base;
-			nbt.setBoolean("activated", true);
-			if (set.xCoord == brace.pos.xCoord && set.yCoord == brace.pos.yCoord && set.zCoord == brace.pos.zCoord) {
+			Brace brace = (Brace) ((EntityWrapperBB) mop.entityHit).base;
+			if (key.isShiftPressed()) {
+				if(brace.line instanceof BezierCurve){
+					BezierCurve b = (BezierCurve) brace.line;
+					brace.line = new Line(b.points[0], b.points[1]);
+				}
+				return false;
+			}
+			if (set.distanceTo(brace.line.getPoint(0.0)) < 0.01) {
 				nbt.setBoolean("isPos", true);
 			} else {
 				nbt.setBoolean("isPos", false);
 			}
 			nbt.setInteger("brace", brace.BBID);
+			return true;
 		}
+		return false;
 	}
 
 	public void onActiveClick(World world, EntityPlayer player, ItemStack itemstack, MovingObjectPosition movingOP, Vec3 set, Vec3 end, NBTTagCompound nbt) {
 		ExtraObject base = BB_DataLists.getWorldData(world).getBraceBaseByID(nbt.getInteger("brace"));
 		if (base != null && base.isStatic && base instanceof Brace) {
 			Brace brace = (Brace) base;
-			/*if (nbt.getBoolean("isPos")) {
-				end = MitoMath.vectorSub(end, brace.pos);
-				brace.offCurvePoints1 = end;
+			if (nbt.getBoolean("isPos")) {
+				if (brace.line instanceof Line) {
+					brace.line = new BezierCurve(brace.line.getPoint(0.0), end, brace.line.getPoint(1.0), brace.line.getPoint(1.0));
+				} else if (brace.line instanceof BezierCurve) {
+					BezierCurve b = (BezierCurve) brace.line;
+					b.points[1] = end;
+				}
 				PacketHandler.INSTANCE.sendToAll(new BendPacketProcessor(brace, end, true));
-				mitoLogger.info("bend set");
 			} else {
-				end = MitoMath.vectorSub(end, brace.end);
-				brace.offCurvePoints2 = end;
+				if (brace.line instanceof Line) {
+					brace.line = new BezierCurve(brace.line.getPoint(0.0), brace.line.getPoint(0.0), end, brace.line.getPoint(1.0));
+				} else if (brace.line instanceof BezierCurve) {
+					BezierCurve b = (BezierCurve) brace.line;
+					b.points[2] = end;
+				}
 				PacketHandler.INSTANCE.sendToAll(new BendPacketProcessor(brace, end, false));
-				mitoLogger.info("bender end");
 			}
-			brace.hasCP = true;*/
+			MyLogger.info("bend");
 		}
 	}
 
@@ -99,11 +111,11 @@ public class ItemBender extends ItemSet {
 
 		RenderHighLight rh = RenderHighLight.INSTANCE;
 		if (nbt.getBoolean("activated")) {
-			//Vec3 end = Vec3.createVectorHelper(nbt.getDouble("setX"), nbt.getDouble("setY"), nbt.getDouble("setZ"));
+			Vec3 end = Vec3.createVectorHelper(nbt.getDouble("setX"), nbt.getDouble("setY"), nbt.getDouble("setZ"));
 			rh.drawFakeBraceBend(player, set, nbt, partialTicks);
 		} else {
-			if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && mop.entityHit != null && mop.entityHit instanceof EntityWrapperBB && ((EntityWrapperBB)mop.entityHit).base instanceof Brace) {
-				rh.drawCenter(player, set, ((Brace) ((EntityWrapperBB)mop.entityHit).base).size / 2 + 0.1, partialTicks);
+			if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && mop.entityHit != null && mop.entityHit instanceof EntityWrapperBB && ((EntityWrapperBB) mop.entityHit).base instanceof Brace) {
+				rh.drawCenter(player, set, ((Brace) ((EntityWrapperBB) mop.entityHit).base).size / 2 + 0.1, partialTicks);
 				this.drawHighLightBrace(player, partialTicks, mop);
 			}
 		}

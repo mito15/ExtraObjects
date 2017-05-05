@@ -133,7 +133,6 @@ public class BB_LoadModel {
 		IDrawBrace ret = null;
 		while (reader.hasNext()) {
 			String name1 = reader.nextName();
-			MyLogger.info("loadClass " + name1);
 			if (name1.equals("class_name")) {
 				String classname = reader.nextString();
 				if (classname.equals("D_Face")) {
@@ -228,13 +227,10 @@ public class BB_LoadModel {
 						reader.endArray();
 						if (n1 == 1) {
 							vertexs[n] = new Vertex(da[0] * size, da[1] * size);
-							MyLogger.info("vertex 2");
 						} else if (n1 == 2) {
 							vertexs[n] = new Vertex(da[0] * size, da[1] * size, da[2] * size);
-							MyLogger.info("vertex 3");
 						} else if (n1 == 4) {
 							vertexs[n] = new Vertex(da[0] * size, da[1] * size, da[2] * size, da[3] * size, da[4] * size);
-							MyLogger.info("vertex 5");
 						} else {
 							return null;
 						}

@@ -3,8 +3,10 @@ package com.mito.exobj.network;
 import com.mito.exobj.BraceBase.BB_DataLists;
 import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.BraceBase.Brace.Brace;
+import com.mito.exobj.client.render.exorender.BezierCurve;
 import com.mito.exobj.common.Main;
 import com.mito.exobj.common.MyLogger;
+import com.mito.exobj.utilities.Line;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -39,14 +41,22 @@ public class BendPacketProcessor implements IMessage, IMessageHandler<BendPacket
 		if (base != null && base.isStatic && base instanceof Brace) {
 			Brace brace = (Brace) base;
 			if (message.isSetCP) {
-				//brace.offCurvePoints1 = end;
-				MyLogger.info("bend set");
+				if (brace.line instanceof Line) {
+					brace.line = new BezierCurve(brace.line.getPoint(0.0), end, brace.line.getPoint(1.0), brace.line.getPoint(1.0));
+				} else if (brace.line instanceof BezierCurve) {
+					BezierCurve b = (BezierCurve) brace.line;
+					b.points[1] = end;
+				}
 			} else {
-				//brace.offCurvePoints2 = end;
-				MyLogger.info("bender end");
+				if (brace.line instanceof Line) {
+					brace.line = new BezierCurve(brace.line.getPoint(0.0), brace.line.getPoint(0.0), end, brace.line.getPoint(1.0));
+				} else if (brace.line instanceof BezierCurve) {
+					BezierCurve b = (BezierCurve) brace.line;
+					b.points[2] = end;
+				}
 			}
-			//brace.hasCP = true;
-			//brace.shouldUpdateRender = true;
+			BB_DataLists.getWorldData(Main.proxy.getClientWorld()).shouldUpdateRender = true;
+			MyLogger.info("bend5");
 		}
 		return null;
 	}

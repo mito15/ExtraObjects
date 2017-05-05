@@ -69,7 +69,7 @@ public class MitoShapelessRecipe implements IRecipe {
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting inv) {
 		int braceNum = 0;
-		int isize = 0;
+		int bracesize = 0;
 		String mode = "";
 		int dye = -1;
 		Block material = null;
@@ -86,12 +86,12 @@ public class MitoShapelessRecipe implements IRecipe {
 				if (inv.getStackInRowAndColumn(h, w) != null) {
 					itemstack = inv.getStackInRowAndColumn(h, w);
 					if (inv.getStackInRowAndColumn(h, w).getItem() instanceof ItemBrace) {
-						isize = brace.getSize(itemstack);
+						bracesize = brace.getSize(itemstack);
 						mode = brace.getType(itemstack);
 						braceColor = brace.getColor(itemstack);
 						braceMaterial = brace.getMaterial(itemstack);
 						braceNum++;
-						totalSize += isize;
+						totalSize += bracesize;
 						place = h * 3 + w;
 					} else if (inv.getStackInRowAndColumn(h, w).getItem() == Items.dye) {
 						dye = brace.getColor(itemstack);
@@ -104,26 +104,27 @@ public class MitoShapelessRecipe implements IRecipe {
 		}
 
 		if (dye != -1) {
-			ItemStack itemstack1 = new ItemStack(ResisterItem.ItemBrace, braceNum, dye);
+			ItemStack itemstack1 = new ItemStack(brace, braceNum, dye);
 			brace.setMaterial(itemstack1, braceMaterial);
-			brace.setSize(itemstack1, isize);
+			brace.setSize(itemstack1, bracesize);
 			brace.setType(itemstack1, mode);
 			return itemstack1;
 		} else if (material != null) {
-			ItemStack itemstack1 = new ItemStack(ResisterItem.ItemBrace, braceNum, materialColor);
+			ItemStack itemstack1 = new ItemStack(brace, braceNum, materialColor);
 			brace.setMaterial(itemstack1, material);
-			brace.setSize(itemstack1, isize);
+			brace.setSize(itemstack1, bracesize);
 			brace.setType(itemstack1, mode);
+			MyLogger.info("kkkkk" + brace.getSize(itemstack1));
 			return itemstack1;
 		} else if (braceNum == 1) {
 			String mode1 = BB_TypeResister.shapeList.get(place%BB_TypeResister.shapeList.size());//(mode + place >= brace.typeMax) ? mode + place - brace.typeMax : mode + place;
-			ItemStack itemstack1 = new ItemStack(ResisterItem.ItemBrace, braceNum, braceColor);
+			ItemStack itemstack1 = new ItemStack(brace, braceNum, braceColor);
 			brace.setMaterial(itemstack1, braceMaterial);
-			brace.setSize(itemstack1, isize);
+			brace.setSize(itemstack1, bracesize);
 			brace.setType(itemstack1, mode1);
 			return itemstack1;
 		} else {
-			ItemStack itemstack1 = new ItemStack(ResisterItem.ItemBrace, braceNum, braceColor);
+			ItemStack itemstack1 = new ItemStack(brace, braceNum, braceColor);
 			if (totalSize > brace.sizeMax) {
 				totalSize = brace.sizeMax;
 			} else if (totalSize < -1) {

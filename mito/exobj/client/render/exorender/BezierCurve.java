@@ -5,6 +5,7 @@ import java.util.List;
 import com.mito.exobj.client.render.model.ILineBrace;
 import com.mito.exobj.utilities.Line;
 import com.mito.exobj.utilities.MitoMath;
+import com.mito.exobj.utilities.MyUtil;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,10 +16,10 @@ import net.minecraft.world.World;
 
 public class BezierCurve implements ILineBrace {
 
-	Vec3[] points;
+	public Vec3[] points;
 
-	public BezierCurve(Vec3... points) {
-		this.points = points;
+	public BezierCurve(Vec3 p1, Vec3 p2, Vec3 p3, Vec3 p4) {
+		this.points = new Vec3[] { p1, p2, p3, p4 };
 	}
 
 	public Vec3 getPoint(double t) {
@@ -35,6 +36,11 @@ public class BezierCurve implements ILineBrace {
 			return MitoMath.sub_vector(points[1], points[0]).normalize();
 		}
 		return null;
+	}
+
+	public Vec3 secondTan(double t) {
+		Vec3 ret = MitoMath.vectorSum(MitoMath.vectorMul(points[0], 1 - t), MitoMath.vectorMul(points[1], 3 * t - 2), MitoMath.vectorMul(points[2], 1 - 3 * t), MitoMath.vectorMul(points[3], t));
+		return ret.normalize();
 	}
 
 	public Vec3 processBezier(Vec3[] points, double t) {
@@ -56,6 +62,16 @@ public class BezierCurve implements ILineBrace {
 
 	}
 
+	private void setVec3(NBTTagCompound nbt, String name, Vec3 vec) {
+		nbt.setDouble(name + "X", vec.xCoord);
+		nbt.setDouble(name + "Y", vec.yCoord);
+		nbt.setDouble(name + "Z", vec.zCoord);
+	}
+
+	private Vec3 getVec3(NBTTagCompound nbt, String name) {
+		return Vec3.createVectorHelper(nbt.getDouble(name + "X"), nbt.getDouble(name + "Y"), nbt.getDouble(name + "Z"));
+	}
+
 	@Override
 	public void readNBT(NBTTagCompound nbt) {
 		// TODO 自動生成されたメソッド・スタブ
@@ -64,14 +80,17 @@ public class BezierCurve implements ILineBrace {
 
 	@Override
 	public void writeNBT(NBTTagCompound nbt) {
-		// TODO 自動生成されたメソッド・スタブ
-
+		setVec3(nbt, "bezier1", points[0]);
+		setVec3(nbt, "bezier2", points[1]);
+		setVec3(nbt, "bezier3", points[2]);
+		setVec3(nbt, "bezier4", points[3]);
+		nbt.setInteger("line", 1);
 	}
 
 	@Override
 	public Vec3 interactWithLine(Vec3 s, Vec3 e) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+		Line line = MitoMath.getDistanceLine(s, e, this.points[0], this.points[3]);
+		return line.end;
 	}
 
 	@Override
@@ -124,14 +143,27 @@ public class BezierCurve implements ILineBrace {
 	}
 
 	@Override
-	public boolean interactWithAABB(AxisAlignedBB boundingBox, double size) {
-		// TODO 自動生成されたメソッド・スタブ
-		return false;
+	public boolean interactWithAABB(AxisAlignedBB aabb, double size) {
+		boolean ret = false;
+		if (aabb.expand(size, size, size).calculateIntercept(points[0], this.points[3]) != null
+				|| (aabb.expand(size, size, size).isVecInside(points[0]) && aabb.expand(size, size, size).isVecInside(this.points[3]))) {
+			ret = true;
+		}
+		return ret;
 	}
 
 	@Override
 	public Line interactWithRay(Vec3 set, Vec3 end, double size) {
-		// TODO 自動生成されたメソッド・スタブ
+		if (this.points[0].distanceTo(this.points[3]) < 0.01) {
+			Vec3 ve = MitoMath.getNearPoint(set, end, this.points[0]);
+			if (ve.distanceTo(this.points[0]) < size / 1.5) {
+				return new Line(ve, this.points[0]);
+			}
+		}
+		Line line = MitoMath.getDistanceLine(set, end, this.points[0], this.points[3]);
+		if (line.getAbs() < size / 1.5 && !(MyUtil.isVecEqual(line.end, this.points[0]) || MyUtil.isVecEqual(line.end, this.points[3]))) {
+			return line;
+		}
 		return null;
 	}
 
@@ -180,13 +212,11 @@ public class BezierCurve implements ILineBrace {
 
 	@Override
 	public double getYaw(Vec3 pos) {
-		// TODO 自動生成されたメソッド・スタブ
 		return 0;
 	}
 
 	@Override
 	public double getPitch(Vec3 pos) {
-		// TODO 自動生成されたメソッド・スタブ
 		return 0;
 	}
 

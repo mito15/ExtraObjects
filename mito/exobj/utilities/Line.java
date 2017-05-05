@@ -52,6 +52,7 @@ public class Line implements ILineBrace {
 	public void writeNBT(NBTTagCompound nbt) {
 		setVec3(nbt, "start", start);
 		setVec3(nbt, "end", end);
+		nbt.setInteger("line", 0);
 	}
 
 	@Override
