@@ -3,10 +3,9 @@ package com.mito.exobj.BraceBase;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mito.exobj.common.MyLogger;
+import com.mito.exobj.MyLogger;
+import com.mito.exobj.client.render.VBOList;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -14,15 +13,15 @@ import net.minecraft.world.chunk.Chunk;
 
 public class BB_DataChunk {
 
-	public List<ExtraObject> braceList = new ArrayList<ExtraObject>();
+	public List<ExtraObject> exObjList = new ArrayList<ExtraObject>();
 	public List<BB_DataGroup> groupList = new ArrayList<BB_DataGroup>();
 	public World world;
 	public boolean isDead = false;
 	public final int xPosition;
 	public final int zPosition;
 	
-	@SideOnly(Side.CLIENT)
-	public VBOList buffer = null;
+	private boolean shouldUpdateRender = false;
+	public VBOList buffer = new VBOList();
 
 	public BB_DataChunk(World w, Chunk c) {
 		this.world = w;
@@ -41,13 +40,17 @@ public class BB_DataChunk {
 			this.world.getChunkFromChunkCoords(xPosition, zPosition).setChunkModified();;
 		}
 	}
+	
+	public void updateRenderer(){
+		setShouldUpdateRender(true);
+	}
 
 	public int getLength() {
-		return braceList.size();
+		return exObjList.size();
 	}
 
 	public void removeBrace(ExtraObject base) {
-		this.braceList.remove(base);
+		this.exObjList.remove(base);
 		if (!this.world.isRemote) {
 			this.getSingleGroup().remove(base);
 		}
@@ -67,7 +70,7 @@ public class BB_DataChunk {
 			this.getSingleGroup().add(base);
 		}
 		this.modified();
-		return this.braceList.add(base);
+		return this.exObjList.add(base);
 	}
 
 	public BB_DataGroup getSingleGroup() {
@@ -90,8 +93,7 @@ public class BB_DataChunk {
 
 	public void getEntitiesWithinAABBForEntity(AxisAlignedBB boundingBox, ArrayList arraylist) {
 
-		for (int l = 0; l < braceList.size(); ++l) {
-			ExtraObject base = (ExtraObject) braceList.get(l);
+		for (ExtraObject base : exObjList) {
 			if (base.interactWithAABB(boundingBox)) {
 				arraylist.add(base);
 			}
@@ -109,6 +111,14 @@ public class BB_DataChunk {
 			this.groupList.add(group);
 		}
 		this.modified();
+	}
+
+	public boolean isShouldUpdateRender() {
+		return shouldUpdateRender;
+	}
+
+	public void setShouldUpdateRender(boolean shouldUpdateRender) {
+		this.shouldUpdateRender = shouldUpdateRender;
 	}
 
 }

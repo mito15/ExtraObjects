@@ -2,7 +2,8 @@ package com.mito.exobj.client.render;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mito.exobj.common.item.ItemBrace;
+import com.mito.exobj.MyLogger;
+import com.mito.exobj.item.ItemBrace;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
@@ -37,12 +38,34 @@ public class RenderItemBrace implements IItemRenderer {
 		Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 
 		IIcon iicon = item.getMaterial(itemstack).getIcon(0, item.getColor(itemstack));
+		if(iicon == null){
+			MyLogger.warn("missing iicon");
+			return;
+		}
 
-		double size = 0.25 * (double) isize + 0.25;
+		double size = 0.05 * (double) isize + 0.25;
 		size = size >= 5.0 ? 5.0 : size;
 
 		GL11.glPushMatrix();
 		GL11.glTranslated(8, 8, 0);
+		
+		tess.startDrawingQuads();
+
+		tess.setNormal(0, 0, 1);
+		tess.addVertexWithUV(2, -2, 0, iicon.getMinU(), iicon.getMinV());
+		tess.addVertexWithUV(6, -2, 0, iicon.getMaxU(), iicon.getMinV());
+		tess.addVertexWithUV(6, -6, 0, iicon.getMaxU(), iicon.getMaxV());
+		tess.addVertexWithUV(2, -6, 0, iicon.getMinU(), iicon.getMaxV());
+
+		tess.setNormal(0, 0, 1);
+		tess.addVertexWithUV(-2, 2, 0, iicon.getMinU(), iicon.getMinV());
+		tess.addVertexWithUV(-6, 2, 0, iicon.getMaxU(), iicon.getMinV());
+		tess.addVertexWithUV(-6, 6, 0, iicon.getMaxU(), iicon.getMaxV());
+		tess.addVertexWithUV(-2, 6, 0, iicon.getMinU(), iicon.getMaxV());
+
+		tess.draw();
+		
+		GL11.glRotated(-45, 0, 0, 1);
 
 		tess.startDrawingQuads();
 

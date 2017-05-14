@@ -1,7 +1,7 @@
 package com.mito.exobj.client.render.model;
 
-import com.mito.exobj.BraceBase.CreateVertexBufferObject;
 import com.mito.exobj.BraceBase.Brace.Brace;
+import com.mito.exobj.client.render.CreateVertexBufferObject;
 
 public interface IDrawBrace {
 

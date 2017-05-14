@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
-import com.mito.exobj.common.MyLogger;
+import com.mito.exobj.MyLogger;
 import com.mito.exobj.network.BB_PacketProcessor;
 import com.mito.exobj.network.BB_PacketProcessor.Mode;
 import com.mito.exobj.network.PacketHandler;
@@ -26,7 +26,6 @@ import net.minecraft.nbt.NBTTagDouble;
 import net.minecraft.nbt.NBTTagFloat;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
@@ -410,19 +409,6 @@ public abstract class ExtraObject {
 	public void onChunkLoad() {
 	}
 
-	@SideOnly(Side.CLIENT)
-	public int getBrightnessForRender(float partialtick) {
-		int i = MathHelper.floor_double(this.pos.xCoord);
-		int j = MathHelper.floor_double(this.pos.zCoord);
-		int k = MathHelper.floor_double(this.pos.yCoord);
-
-		if (this.worldObj.blockExists(i, 0, j)) {
-			return this.worldObj.getLightBrightnessForSkyBlocks(i, k, j, 0);
-		} else {
-			return 0;
-		}
-	}
-
 	public boolean interactWithAABB(AxisAlignedBB boundingBox) {
 		boolean ret = false;
 		if (boundingBox.isVecInside(pos)) {
@@ -464,6 +450,11 @@ public abstract class ExtraObject {
 			//gui
 		}
 		return false;
+	}
+	
+	public void updateRenderer(){
+		if(datachunk != null)
+		this.datachunk.updateRenderer();
 	}
 
 	public boolean leftClick(EntityPlayer player, ItemStack itemStack) {
@@ -551,6 +542,25 @@ public abstract class ExtraObject {
 		NBTTagCompound nbt = new NBTTagCompound();
 		this.writeToNBTOptional(nbt);
 		return BB_ResisteredList.createExObjFromNBT(nbt, null);
+	}
+
+	@SideOnly(Side.CLIENT)
+	public void particle() {
+
+	}
+
+	@SideOnly(Side.CLIENT)
+	public int getBrightnessForRender(float i, double x, double y, double z) {
+		return 0;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public int getBrightnessForRender(float i) {
+		return getBrightnessForRender(i, 0, 0, 0);
+	}
+
+	public boolean isBind(ExtraObject brace) {
+		return true;
 	}
 
 }

@@ -11,8 +11,7 @@ import com.mito.exobj.client.render.model.BB_Polygon;
 import com.mito.exobj.client.render.model.Mat4;
 import com.mito.exobj.client.render.model.Triangle;
 import com.mito.exobj.client.render.model.Vertex;
-import com.mito.exobj.common.Direction26;
-import com.mito.exobj.common.entity.EntityWrapperBB;
+import com.mito.exobj.entity.EntityWrapperBB;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.EntityLivingBase;
@@ -20,6 +19,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.Facing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
@@ -321,6 +321,7 @@ public class MyUtil {
 	}
 
 	public static void snapByShiftKey(MovingObjectPosition mop, Vec3 set) {
+		mop.hitVec = MitoMath.copyVec3(mop.hitVec);
 
 		if (Math.abs(mop.hitVec.xCoord - set.xCoord) > Math.abs(mop.hitVec.yCoord - set.yCoord) && Math.abs(mop.hitVec.xCoord - set.xCoord) > Math.abs(mop.hitVec.zCoord - set.zCoord)) {
 
@@ -520,9 +521,9 @@ public class MyUtil {
 
 	public static void snapBlockOffset(MovingObjectPosition mop) {
 		if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-			int x = Direction26.offsetsXForSide[mop.sideHit];
-			int y = Direction26.offsetsYForSide[mop.sideHit];
-			int z = Direction26.offsetsZForSide[mop.sideHit];
+			int x = Facing.offsetsXForSide[mop.sideHit];
+			int y = Facing.offsetsYForSide[mop.sideHit];
+			int z = Facing.offsetsZForSide[mop.sideHit];
 			if (x != 0) {
 				mop.hitVec = Vec3.createVectorHelper(0.5 + (double) mop.blockX + (double) x, mop.hitVec.yCoord, mop.hitVec.zCoord);
 			} else if (y != 0) {

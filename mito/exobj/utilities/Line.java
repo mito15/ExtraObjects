@@ -22,7 +22,7 @@ public class Line implements ILineBrace {
 		this.end = e;
 	}
 
-	public double getAbs() {
+	public double getLength() {
 		return MitoMath.subAbs(this.start, this.end);
 	}
 
@@ -30,12 +30,6 @@ public class Line implements ILineBrace {
 	public void move(Vec3 motion, int command) {
 		this.start = MitoMath.vectorSum(this.start, motion);
 		this.end = MitoMath.vectorSum(this.end, motion);
-	}
-
-	@Override
-	public void readNBT(NBTTagCompound nbt) {
-		this.start = getVec3(nbt, "start");
-		this.end = getVec3(nbt, "end");
 	}
 
 	private void setVec3(NBTTagCompound nbt, String name, Vec3 vec) {
@@ -102,7 +96,7 @@ public class Line implements ILineBrace {
 			}
 		}
 		Line line = MitoMath.getDistanceLine(set, end, this.start, this.end);
-		if (line.getAbs() < size / 1.5 && !(MyUtil.isVecEqual(line.end, this.start) || MyUtil.isVecEqual(line.end, this.end))) {
+		if (line.getLength() < size / 1.5 && !(MyUtil.isVecEqual(line.end, this.start) || MyUtil.isVecEqual(line.end, this.end))) {
 			return line;
 		}
 		return null;
@@ -138,12 +132,6 @@ public class Line implements ILineBrace {
 	public void addCoordinate(double x, double y, double z) {
 		this.start = this.start.addVector(x, y, z);
 		this.end = this.end.addVector(x, y, z);
-
-	}
-
-	@Override
-	public void particle() {
-		// TODO 自動生成されたメソッド・スタブ
 
 	}
 
@@ -248,6 +236,16 @@ public class Line implements ILineBrace {
 	@Override
 	public Vec3 getTangent(double t) {
 		return start.subtract(end).normalize();
+	}
+
+	@Override
+	public Vec3 getStart() {
+		return MitoMath.copyVec3(this.start);
+	}
+
+	@Override
+	public Vec3 getEnd() {
+		return MitoMath.copyVec3(this.end);
 	}
 
 }

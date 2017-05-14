@@ -7,7 +7,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import com.mito.exobj.common.MyLogger;
+import com.mito.exobj.MyLogger;
 
 import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import net.minecraft.client.renderer.EntityRenderer;

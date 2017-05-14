@@ -1,7 +1,7 @@
 package com.mito.exobj.client.render.model;
 
-import com.mito.exobj.BraceBase.CreateVertexBufferObject;
 import com.mito.exobj.BraceBase.Brace.Brace;
+import com.mito.exobj.client.render.CreateVertexBufferObject;
 
 public class BraceShapes implements IDrawBrace {
 
@@ -13,8 +13,7 @@ public class BraceShapes implements IDrawBrace {
 	}
 
 	public void drawBracewithVBO(CreateVertexBufferObject c, Brace brace) {
-		for (int n = 0; n < this.planes.length; n++) {
-			IDrawBrace plane = this.planes[n];
+		for (IDrawBrace plane : planes) {
 			if (plane != null)
 				plane.drawBracewithVBO(c, brace);
 		}

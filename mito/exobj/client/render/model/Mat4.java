@@ -1,5 +1,9 @@
 package com.mito.exobj.client.render.model;
 
+import java.nio.DoubleBuffer;
+
+import org.lwjgl.BufferUtils;
+
 import net.minecraft.util.Vec3;
 
 public class Mat4 {
@@ -203,6 +207,13 @@ public class Mat4 {
 
 	public void rotate(double a, Vec3 v) {
 		rotate(a, v.xCoord, v.yCoord, v.zCoord);
+	}
+
+	public DoubleBuffer getBuffer() {
+		DoubleBuffer vertexBuffer = BufferUtils.createDoubleBuffer(16);
+		vertexBuffer.put(this.val);
+		vertexBuffer.flip();
+		return null;
 	}
 
 }

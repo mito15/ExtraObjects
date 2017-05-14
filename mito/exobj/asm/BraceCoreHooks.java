@@ -21,8 +21,8 @@ public class BraceCoreHooks {
 	public static void getCollisionHook(World world, AxisAlignedBB aabb, List collidingBoundingBoxes, Entity entity) {
 		double d0 = 0.25D;
 		List<ExtraObject> list = BB_DataLists.getWorldData(world).getExtraObjectWithAABB(aabb);
-		for (int j2 = 0; j2 < list.size(); ++j2) {
-			list.get(j2).addCollisionBoxesToList(world, aabb, collidingBoundingBoxes, entity);
+		for (ExtraObject base : list) {
+			base.addCollisionBoxesToList(world, aabb, collidingBoundingBoxes, entity);
 		}
 	}
 
@@ -59,7 +59,7 @@ public class BraceCoreHooks {
 					double l2 = MitoMath.subAbs(line.start, set);
 					if (l2 < l) {
 						l = l2;
-						m = new MovingObjectPosition(BB_DataLists.getWorldData(world).wrapper.wrap(base), line.end);
+						m = new MovingObjectPosition(BB_DataLists.getWorldData(world).wrapper.wrap(base), MitoMath.copyVec3(line.end));
 					}
 				}
 			}

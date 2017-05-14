@@ -39,7 +39,7 @@ public class Scale extends ExtraObject {
 	@Override
 	public Line interactWithRay(Vec3 set, Vec3 end) {
 		Line line = MitoMath.getLineNearPoint(set, end, this.pos);
-		if (line.getAbs() < 0.1) {
+		if (line.getLength() < 0.1) {
 			return line;
 		}
 		return null;

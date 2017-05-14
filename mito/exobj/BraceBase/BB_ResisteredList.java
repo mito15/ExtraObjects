@@ -5,26 +5,21 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 
+import com.mito.exobj.MyLogger;
 import com.mito.exobj.BraceBase.Brace.Brace;
 import com.mito.exobj.BraceBase.Brace.FakeBlock;
 import com.mito.exobj.BraceBase.Brace.GroupObject;
 import com.mito.exobj.BraceBase.Brace.GuideBrace;
-import com.mito.exobj.BraceBase.Brace.Junction;
 import com.mito.exobj.BraceBase.Brace.LinearMotor;
 import com.mito.exobj.BraceBase.Brace.Motor;
-import com.mito.exobj.BraceBase.Brace.RedSignalCable;
-import com.mito.exobj.BraceBase.Brace.Scale;
-import com.mito.exobj.BraceBase.Brace.Wall;
-import com.mito.exobj.client.render.exorender.RenderBrace;
-import com.mito.exobj.client.render.exorender.RenderFakeBlock;
-import com.mito.exobj.client.render.exorender.RenderGroupObject;
-import com.mito.exobj.client.render.exorender.RenderGuideBrace;
-import com.mito.exobj.client.render.exorender.RenderJunction;
-import com.mito.exobj.client.render.exorender.RenderLinearMotor;
-import com.mito.exobj.client.render.exorender.RenderMotor;
-import com.mito.exobj.client.render.exorender.RenderScale;
-import com.mito.exobj.client.render.exorender.RenderWall;
-import com.mito.exobj.common.MyLogger;
+import com.mito.exobj.BraceBase.Brace.Tofu;
+import com.mito.exobj.client.render.exobj.RenderBrace;
+import com.mito.exobj.client.render.exobj.RenderFakeBlock;
+import com.mito.exobj.client.render.exobj.RenderGroupObject;
+import com.mito.exobj.client.render.exobj.RenderGuideBrace;
+import com.mito.exobj.client.render.exobj.RenderLinearMotor;
+import com.mito.exobj.client.render.exobj.RenderMotor;
+import com.mito.exobj.client.render.exobj.RenderTofu;
 import com.mito.exobj.network.BB_PacketProcessor;
 import com.mito.exobj.network.BB_PacketProcessor.Mode;
 import com.mito.exobj.network.PacketHandler;
@@ -136,14 +131,15 @@ public class BB_ResisteredList {
 	static {
 		addMapping(Brace.class, "Brace", nextID++, new RenderBrace());
 		addMapping(LinearMotor.class, "LinearMotor", nextID++, new RenderLinearMotor());
-		addMapping(Scale.class, "Scale", nextID++, new RenderScale());
-		addMapping(Wall.class, "Wall", nextID++, new RenderWall());
-		addMapping(Junction.class, "Junction", nextID++, new RenderJunction());
+		//addMapping(Scale.class, "Scale", nextID++, new RenderScale());
+		//addMapping(Wall.class, "Wall", nextID++, new RenderWall());
+		//addMapping(Junction.class, "Junction", nextID++, new RenderJunction());
 		addMapping(FakeBlock.class, "FakeBlock", nextID++, new RenderFakeBlock());
 		addMapping(Motor.class, "Motor", nextID++, new RenderMotor());
 		addMapping(GroupObject.class, "GroupObject", nextID++, new RenderGroupObject());
-		addMapping(RedSignalCable.class, "RedSignalCable", nextID++, new RenderBrace());
+		//addMapping(RedSignalCable.class, "RedSignalCable", nextID++, new RenderBrace());
 		addMapping(GuideBrace.class, "GuideBrace", nextID++, new RenderGuideBrace());
+		addMapping(Tofu.class, "Tofu", nextID++, new RenderTofu());
 	}
 
 	public static ExtraObject syncBraceBaseFromNBT(NBTTagCompound nbt, World world, int id) {

@@ -2,18 +2,15 @@ package com.mito.exobj.client.gui;
 
 import java.util.List;
 
-import com.mito.exobj.client.render.exorender.BB_TypeResister;
-import com.mito.exobj.client.render.model.IDrawBrace;
-
 import cpw.mods.fml.client.GuiScrollingList;
 import net.minecraft.client.renderer.Tessellator;
 
 public class BB_GuiScrollingList2 extends GuiScrollingList {
 
 	private GuiBraceProperty parent;
-	private List<IDrawBrace> shapes;
+	private List<String> shapes;
 
-	public BB_GuiScrollingList2(GuiBraceProperty parent, List<IDrawBrace> names, int listWidth) {
+	public BB_GuiScrollingList2(GuiBraceProperty parent, List<String> names, int listWidth) {
 		super(parent.mc, listWidth, 90, 82, 172, parent.width - 10 - listWidth, 35);
 		this.parent = parent;
 		this.shapes = names;
@@ -47,8 +44,8 @@ public class BB_GuiScrollingList2 extends GuiScrollingList {
 
 	@Override
 	protected void drawSlot(int listIndex, int var2, int var3, int var4, Tessellator var5) {
-		IDrawBrace tex = shapes.get(listIndex);
-		if (tex != null) {
+		String name = shapes.get(listIndex);
+		if (name != null) {
 			/*if (tex instanceof IDrawable) {
 				parent.mc.getTextureManager().bindTexture(this.parent.texture);
 				int dx = 20;
@@ -65,7 +62,6 @@ public class BB_GuiScrollingList2 extends GuiScrollingList {
 				tessellator.draw();
 				((IDrawable)tex).renderAt(Vec3.createVectorHelper(this.left, var3, 0), 0.0, 0.0, 30, 1.0, 1.0F);
 			}*/
-			String name = BB_TypeResister.getName(tex);
 			String[] names = name.split(":");
 			if (names.length == 1) {
 				this.parent.getFontRenderer().drawString(this.parent.getFontRenderer().trimStringToWidth(names[0], listWidth - 10), this.left + 23, var3 + 2, 0xFFFFFF);

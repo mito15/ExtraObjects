@@ -2,7 +2,7 @@ package com.mito.exobj.BraceBase;
 
 import java.util.Iterator;
 
-import com.mito.exobj.common.Main;
+import com.mito.exobj.Main;
 import com.mito.exobj.network.BB_PacketProcessor;
 import com.mito.exobj.network.BB_PacketProcessor.Mode;
 import com.mito.exobj.network.PacketHandler;
@@ -43,14 +43,15 @@ public class LoadClientWorldHandler {
 	}
 
 	public void onChunkLoad(ChunkEvent.Load e) {
-		//mitoLogger.info("chunk load " + e.getChunk().xPosition + " " + e.getChunk().zPosition);
 		PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.REQUEST_CHUNK, e.getChunk().xPosition, e.getChunk().zPosition));
 	}
 
 	public void onChunkUnload(ChunkEvent.Unload e) {
-		//mitoLogger.info("chunk unload " + e.getChunk().xPosition + " " + e.getChunk().zPosition);
+		if (!BB_DataLists.existChunkData(e.getChunk())) {
+			return;
+		}
 		BB_DataChunk chunkData = BB_DataLists.getChunkData(e.getChunk());
-		Iterator iterator = chunkData.braceList.iterator();
+		Iterator iterator = chunkData.exObjList.iterator();
 		while (iterator.hasNext()) {
 			ExtraObject fobj = (ExtraObject) iterator.next();
 			fobj.datachunk = null;

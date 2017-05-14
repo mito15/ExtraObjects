@@ -1,6 +1,6 @@
 package com.mito.exobj.client.gui;
 
-import com.mito.exobj.common.Main;
+import com.mito.exobj.Main;
 
 import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;

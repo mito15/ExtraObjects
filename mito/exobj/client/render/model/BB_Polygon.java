@@ -3,9 +3,8 @@ package com.mito.exobj.client.render.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mito.exobj.BraceBase.CreateVertexBufferObject;
 import com.mito.exobj.BraceBase.Brace.Brace;
-import com.mito.exobj.client.render.exorender.BezierCurve;
+import com.mito.exobj.client.render.CreateVertexBufferObject;
 import com.mito.exobj.utilities.Line;
 import com.mito.exobj.utilities.MitoMath;
 import com.mito.exobj.utilities.MyUtil;
@@ -90,34 +89,37 @@ public class BB_Polygon implements IDrawBrace {
 
 	@Override
 	public void drawBracewithVBO(CreateVertexBufferObject c, Brace brace) {
-		IIcon iicon = brace.getIIcon(0);
+		//double rofst = (brace.pos.xCoord + brace.pos.yCoord + brace.pos.zCoord) % 1.0D;
+		IIcon iicon = brace.getIIcon(brace.color);
 		double size = brace.size;
 		double roll = brace.getRoll();
-		c.rpyRotate(roll, 0, 0);
-		List<Triangle> ts = MyUtil.decomposeTexture(getTriangles(size));
-		if (ts != null) {
-			c.pushMatrix();
-			c.translate(brace.line.getPoint(0.0));
-			c.transform(MyUtil.getRotationMatrix(brace.line.getTangent(0.0)));
-			for (Triangle t0 : ts) {
-				t0.drawIconR(c, iicon);
-			}
-			c.popMatrix();
-
-			c.pushMatrix();
-			c.translate(brace.line.getPoint(1.0));
-			c.transform(MyUtil.getRotationMatrix(brace.line.getTangent(1.0)));
-			for (Triangle t0 : ts) {
-				t0.drawIcon(c, iicon);
-			}
-			c.popMatrix();
-		}
-
-		//double rofst = (brace.pos.xCoord + brace.pos.yCoord + brace.pos.zCoord) % 1.0D;
-		c.translate(brace.pos);
 		if (brace.line instanceof BezierCurve) {
-			int acc = 20;
 			BezierCurve bc = (BezierCurve) brace.line;
+			c.pushMatrix();
+			List<Triangle> ts = MyUtil.decomposeTexture(getTriangles(size));
+			if (ts != null) {
+				c.pushMatrix();
+				c.translate(brace.line.getStart());
+				c.transform(MyUtil.getRotationMatrix(brace.line.getTangent(0.0), bc.secondTan(0.0)));
+				c.rpyRotate(roll, 0, 0);
+				for (Triangle t0 : ts) {
+					t0.drawIconR(c, iicon);
+				}
+				c.popMatrix();
+
+				c.pushMatrix();
+				c.translate(brace.line.getEnd());
+				c.transform(MyUtil.getRotationMatrix(brace.line.getTangent(1.0), bc.secondTan(1.0)));
+				c.rpyRotate(roll, 0, 0);
+				for (Triangle t0 : ts) {
+					t0.drawIcon(c, iicon);
+				}
+				c.popMatrix();
+			}
+			c.popMatrix();
+			c.pushMatrix();
+			c.translate(brace.pos);
+			int acc = bc.getAccuracy();
 			double v = 0.0D;
 			Vec3 setNormal = bc.getTangent(0.0D);
 			for (int n = 0; n < acc; n++) {
@@ -149,20 +151,45 @@ public class BB_Polygon implements IDrawBrace {
 					Vertex ve4 = new Vertex(ven1, v + vofst, usum, norm2);
 					BB_Polygon square = new BB_Polygon(ve1, ve2, ve3, ve4);
 					List<Triangle> arrayTriangle = MyUtil.decomposeTexture(square);
-					for(Triangle triangle : arrayTriangle){
+					for (Triangle triangle : arrayTriangle) {
 						triangle.drawIcon(c, iicon);
 					}
 					usum += uofst;
 				}
 				v += vofst;
 			}
+			c.popMatrix();
 		} else if (brace.line instanceof Line) {
+			c.pushMatrix();
+			List<Triangle> ts = MyUtil.decomposeTexture(getTriangles(size));
+			if (ts != null) {
+				c.pushMatrix();
+				c.translate(brace.line.getStart());
+				c.transform(MyUtil.getRotationMatrix(brace.line.getTangent(0.0)));
+				c.rpyRotate(roll, 0, 0);
+				for (Triangle t0 : ts) {
+					t0.drawIconR(c, iicon);
+				}
+				c.popMatrix();
+
+				c.pushMatrix();
+				c.translate(brace.line.getEnd());
+				c.transform(MyUtil.getRotationMatrix(brace.line.getTangent(1.0)));
+				c.rpyRotate(roll, 0, 0);
+				for (Triangle t0 : ts) {
+					t0.drawIcon(c, iicon);
+				}
+				c.popMatrix();
+			}
+			c.popMatrix();
+
 			iicon = brace.getIIcon(1);
 			Line line = (Line) brace.line;
 			double l = MitoMath.subAbs(line.start, line.end);
 			c.pushMatrix();
+			c.translate(brace.pos);
 			c.transform(MyUtil.getRotationMatrix(line.getTangent(0).normalize()));
-			c.rotate(roll, 0, 0, 1);
+			c.rpyRotate(roll, 0, 0);
 			double vofst = 0;
 			for (int n1 = 0; n1 < getSize(size); n1++) {
 				Vec3 v1 = getVec3(n1 - 1, size);
@@ -175,7 +202,7 @@ public class BB_Polygon implements IDrawBrace {
 				Vertex ve4 = new Vertex(v1.addVector(0, 0, l), l, vofst, norm);
 				BB_Polygon square = new BB_Polygon(ve1, ve2, ve3, ve4);
 				List<Triangle> arrayTriangle = MyUtil.decomposeTexture(square);
-				for(Triangle triangle : arrayTriangle){
+				for (Triangle triangle : arrayTriangle) {
 					triangle.drawIcon(c, iicon);
 				}
 				vofst = vofst + r;
@@ -238,4 +265,6 @@ public class BB_Polygon implements IDrawBrace {
 		// TODO Auto-generated method stub
 
 	}
+
+	
 }

@@ -1,6 +1,5 @@
 package com.mito.exobj.client.render.model;
 
-import com.mito.exobj.BraceBase.CreateVertexBufferObject;
 import com.mito.exobj.utilities.MitoMath;
 
 import net.minecraft.util.Vec3;
@@ -32,17 +31,6 @@ public class D_Ellipse extends BB_Polygon {
 
 	private Vec3 getNorm2(Vec3 v1, Vec3 v2) {
 		return MitoMath.unitVector(v2);
-	}
-
-	public void drawPlane(CreateVertexBufferObject c) {
-		Vec3 v1 = this.getVec3(1, 1.0);
-		for (int n1 = 0; n1 < 18; n1++) {
-			Vec3 v2 = this.getVec3(n1 + 1, 1.0);
-			Vec3 v3 = this.getVec3(n1 + 2, 1.0);
-			c.registVertexWithUV(v1, v1.xCoord, v1.yCoord);
-			c.registVertexWithUV(v2, v2.xCoord, v2.yCoord);
-			c.registVertexWithUV(v3, v3.xCoord, v3.yCoord);
-		}
 	}
 
 	public Vertex getVertex(int n, double size) {

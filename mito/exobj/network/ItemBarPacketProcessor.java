@@ -1,7 +1,7 @@
 package com.mito.exobj.network;
 
 import com.mito.exobj.client.BB_Key;
-import com.mito.exobj.common.item.ItemBraceBase;
+import com.mito.exobj.item.ItemBraceBase;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;

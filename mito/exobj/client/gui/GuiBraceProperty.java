@@ -2,10 +2,9 @@ package com.mito.exobj.client.gui;
 
 import org.lwjgl.opengl.GL11;
 
+import com.mito.exobj.Main;
 import com.mito.exobj.client.BB_SelectedGroup;
-import com.mito.exobj.client.render.exorender.BB_TypeResister;
-import com.mito.exobj.client.render.model.IDrawBrace;
-import com.mito.exobj.common.Main;
+import com.mito.exobj.client.render.exobj.BB_TypeResister;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -26,7 +25,7 @@ public class GuiBraceProperty extends GuiScreen {
 	private int itex = 0;*/
 
 	private BB_GuiScrollingList2 shapeList;
-	private IDrawBrace shape;
+	private String shape;
 	private int ishape = 0;
 
 	private GuiTextField color;
@@ -72,7 +71,7 @@ public class GuiBraceProperty extends GuiScreen {
 		this.roll = this.setTextField(this.width / 2 + 82, this.height / 2 + 60, 34, 20, "none");
 
 		int is = this.sel.getSize();
-		if(is != -1){
+		if (is != -1) {
 			this.isize = is;
 			size.setText(String.valueOf(isize));
 		}

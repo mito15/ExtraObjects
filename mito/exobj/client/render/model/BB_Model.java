@@ -1,6 +1,6 @@
 package com.mito.exobj.client.render.model;
 
-import com.mito.exobj.BraceBase.CreateVertexBufferObject;
+import com.mito.exobj.client.render.CreateVertexBufferObject;
 
 import net.minecraft.util.Vec3;
 

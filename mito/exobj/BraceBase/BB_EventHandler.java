@@ -1,6 +1,7 @@
 package com.mito.exobj.BraceBase;
 
-import com.mito.exobj.common.MyLogger;
+import com.mito.exobj.MyLogger;
+import com.mito.exobj.BraceBase.DammyWorld.BB_GUIHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -18,7 +19,7 @@ public class BB_EventHandler {
 		if (e.world.isRemote) {
 			LoadClientWorldHandler.INSTANCE.onLoadWorld(e);
 		} else {
-			LoadWorldHandler.INSTANCE.onLoadWorld(e);
+			BB_LoadWorld.INSTANCE.onLoadWorld(e);
 		}
 	}
 
@@ -27,7 +28,7 @@ public class BB_EventHandler {
 		if (e.world.isRemote) {
 			LoadClientWorldHandler.INSTANCE.onUnloadWorld(e);
 		} else {
-			LoadWorldHandler.INSTANCE.onUnloadWorld(e);
+			BB_LoadWorld.INSTANCE.onUnloadWorld(e);
 		}
 	}
 
@@ -35,7 +36,7 @@ public class BB_EventHandler {
 	public void onChunkDataSave(ChunkDataEvent.Save e) {
 		if (e.world.isRemote) {
 		} else {
-			LoadWorldHandler.INSTANCE.onChunkDataSave(e);
+			BB_LoadWorld.INSTANCE.onChunkDataSave(e);
 		}
 	}
 
@@ -43,7 +44,7 @@ public class BB_EventHandler {
 	public void onChunkDataLoad(ChunkDataEvent.Load e) {
 		if (e.world.isRemote) {
 		} else {
-			LoadWorldHandler.INSTANCE.onChunkDataLoad(e);
+			BB_LoadWorld.INSTANCE.onChunkDataLoad(e);
 		}
 
 	}
@@ -51,7 +52,7 @@ public class BB_EventHandler {
 	@SubscribeEvent
 	public void onUpdate(TickEvent.ServerTickEvent e) {
 		if (e.phase == Phase.END) {
-			LoadWorldHandler.INSTANCE.onUpdate(e);
+			BB_LoadWorld.INSTANCE.onUpdate(e);
 		}
 	}
 
@@ -66,7 +67,7 @@ public class BB_EventHandler {
 	@SubscribeEvent
 	public void onWorldTickEvent(TickEvent.WorldTickEvent e) {
 		if (e.phase == Phase.END) {
-			LoadWorldHandler.INSTANCE.onWorldTickEvent(e);
+			BB_LoadWorld.INSTANCE.onWorldTickEvent(e);
 		}
 		if (e.side == Side.CLIENT)
 			MyLogger.info("" + e.getPhase());
@@ -79,7 +80,7 @@ public class BB_EventHandler {
 		if (e.world.isRemote) {
 			LoadClientWorldHandler.INSTANCE.onChunkLoad(e);
 		} else {
-			LoadWorldHandler.INSTANCE.onChunkLoad(e);
+			BB_LoadWorld.INSTANCE.onChunkLoad(e);
 		}
 	}
 
@@ -88,7 +89,7 @@ public class BB_EventHandler {
 		if (e.world.isRemote) {
 			LoadClientWorldHandler.INSTANCE.onChunkUnload(e);
 		} else {
-			LoadWorldHandler.INSTANCE.onChunkUnload(e);
+			BB_LoadWorld.INSTANCE.onChunkUnload(e);
 		}
 	}
 

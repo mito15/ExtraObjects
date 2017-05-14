@@ -1,10 +1,9 @@
 package com.mito.exobj.BraceBase.Brace;
 
-import com.mito.exobj.client.render.exorender.BB_TypeResister;
-import com.mito.exobj.common.Main;
-import com.mito.exobj.common.item.ItemBar;
-import com.mito.exobj.common.item.ItemBrace;
-import com.mito.exobj.common.main.ResisterItem;
+import com.mito.exobj.Main;
+import com.mito.exobj.item.ItemBar;
+import com.mito.exobj.item.ItemBrace;
+import com.mito.exobj.main.ResisterItem;
 import com.mito.exobj.utilities.Line;
 
 import cpw.mods.fml.relauncher.Side;
@@ -35,7 +34,7 @@ public class RedSignalCable extends Brace {
 		this(world, pos);
 		this.line = new Line(pos, end);
 		this.texture = Blocks.redstone_block;
-		this.shape = BB_TypeResister.getFigure("square");
+		this.shape = "square";
 		this.size = 0.1;
 		this.color = 0;
 	}
@@ -125,8 +124,6 @@ public class RedSignalCable extends Brace {
 					}
 				}
 			}*/
-			if (line != null)
-				line.particle();
 		}
 	}
 
@@ -158,7 +155,7 @@ public class RedSignalCable extends Brace {
 		ItemBrace brace = (ItemBrace) ResisterItem.ItemBrace;
 		ItemStack itemstack1 = new ItemStack(ResisterItem.ItemBrace, 1, this.color);
 		brace.setSize(itemstack1, (int) (this.size * 20));
-		brace.setType(itemstack1, BB_TypeResister.getName(this.shape));
+		brace.setType(itemstack1, this.shape);
 
 		NBTTagCompound nbt = itemstack1.getTagCompound();
 		itemstack1.setTagCompound(nbt);

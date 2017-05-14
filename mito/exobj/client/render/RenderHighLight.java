@@ -312,9 +312,9 @@ public class RenderHighLight {
 
 		if (base != null && base instanceof Brace) {
 			Brace brace = (Brace) base;
-			Vec3 v1 = brace.line.getPoint(0);
+			Vec3 v1 = brace.line.getStart();
 			Vec3 v2 = end;
-			Vec3 v4 = brace.line.getPoint(1);
+			Vec3 v4 = brace.line.getEnd();
 			Vec3 v3 = end;
 			drawBezier(player, v1, v2, v3, v4, 4, partialTicks);
 		}

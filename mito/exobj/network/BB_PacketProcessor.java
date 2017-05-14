@@ -3,14 +3,14 @@ package com.mito.exobj.network;
 import java.io.IOException;
 import java.util.Iterator;
 
+import com.mito.exobj.Main;
+import com.mito.exobj.MyLogger;
 import com.mito.exobj.BraceBase.BB_DataChunk;
 import com.mito.exobj.BraceBase.BB_DataLists;
 import com.mito.exobj.BraceBase.BB_DataWorld;
 import com.mito.exobj.BraceBase.BB_ResisteredList;
 import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.BraceBase.LoadClientWorldHandler;
-import com.mito.exobj.common.Main;
-import com.mito.exobj.common.MyLogger;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -48,7 +48,7 @@ public class BB_PacketProcessor implements IMessage, IMessageHandler<BB_PacketPr
 
 	public BB_PacketProcessor() {
 	}
-	
+
 	public BB_PacketProcessor(Mode mode, int id, Vec3 coord) {
 		this.id = id;
 		this.mode = mode;
@@ -111,7 +111,7 @@ public class BB_PacketProcessor implements IMessage, IMessageHandler<BB_PacketPr
 					int i = MathHelper.floor_double(base1.pos.xCoord / 16.0D);
 					int j = MathHelper.floor_double(base1.pos.zCoord / 16.0D);
 					BB_DataChunk chunkData = BB_DataLists.getChunkData(world, i, j);
-					Iterator iterator = chunkData.braceList.iterator();
+					Iterator iterator = chunkData.exObjList.iterator();
 					boolean flag = true;
 					while (iterator.hasNext()) {
 						ExtraObject fobj = (ExtraObject) iterator.next();
@@ -161,12 +161,14 @@ public class BB_PacketProcessor implements IMessage, IMessageHandler<BB_PacketPr
 			case SYNC:
 				if (message.nbt != null) {
 					message.base = BB_ResisteredList.syncBraceBaseFromNBT(message.nbt, world, message.id);
-					if (message.base == null)
+					if (message.base == null) {
 						MyLogger.info("brace sync null");
+					} else {
+						message.base.updateRenderer();
+					}
 				} else {
 					MyLogger.info("brace sync skipped");
 				}
-				dataworld.shouldUpdateRender = true;
 				break;
 			case ADJUST:
 				ExtraObject base4 = dataworld.getBraceBaseByID(message.id);
@@ -189,7 +191,7 @@ public class BB_PacketProcessor implements IMessage, IMessageHandler<BB_PacketPr
 				break;
 			case REQUEST_CHUNK:
 				if (BB_DataLists.isChunkExist(world, message.xChunkCoord, message.zChunkCoord)) {
-					Iterator iterator = BB_DataLists.getChunkData(world, message.xChunkCoord, message.zChunkCoord).braceList.iterator();
+					Iterator iterator = BB_DataLists.getChunkData(world, message.xChunkCoord, message.zChunkCoord).exObjList.iterator();
 					while (iterator.hasNext()) {
 						ExtraObject base = (ExtraObject) iterator.next();
 						PacketHandler.INSTANCE.sendTo(new BB_PacketProcessor(Mode.ADD, base), player);
@@ -210,7 +212,7 @@ public class BB_PacketProcessor implements IMessage, IMessageHandler<BB_PacketPr
 			case SYNC:
 				if (message.nbt != null) {
 					message.base = BB_ResisteredList.syncBraceBaseFromNBT(message.nbt, world, message.id);
-					
+
 					if (message.base == null)
 						MyLogger.info("brace sync null");
 				} else {

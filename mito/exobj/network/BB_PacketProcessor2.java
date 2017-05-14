@@ -1,8 +1,8 @@
 package com.mito.exobj.network;
 
+import com.mito.exobj.Main;
 import com.mito.exobj.BraceBase.BB_DataWorld;
 import com.mito.exobj.BraceBase.LoadClientWorldHandler;
-import com.mito.exobj.common.Main;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;

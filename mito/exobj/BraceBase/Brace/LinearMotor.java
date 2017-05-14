@@ -5,10 +5,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.mito.exobj.MyLogger;
 import com.mito.exobj.BraceBase.ExtraObject;
-import com.mito.exobj.common.MyLogger;
-import com.mito.exobj.common.item.ItemBar;
-import com.mito.exobj.common.item.ItemBraceBase;
+import com.mito.exobj.item.ItemBar;
+import com.mito.exobj.item.ItemBraceBase;
 import com.mito.exobj.network.BB_PacketProcessor;
 import com.mito.exobj.network.BB_PacketProcessor.Mode;
 import com.mito.exobj.network.PacketHandler;
@@ -288,8 +288,8 @@ public class LinearMotor extends ExtraObject {
 		Line ret = null;
 		for (int n = 0; n < 4; n++) {
 			Line line = MitoMath.getLineNearPoint(set, end, this.getJunction(n));
-			if (line.getAbs() < 0.4) {
-				if (ret == null || ret.getAbs() > line.getAbs()) {
+			if (line.getLength() < 0.4) {
+				if (ret == null || ret.getLength() > line.getLength()) {
 					ret = line;
 				}
 			}

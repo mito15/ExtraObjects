@@ -155,17 +155,8 @@ public final class MitoMath {
 	}
 
 	public static Line getLineNearPoint(Vec3 s, Vec3 e, Vec3 p) {
-		Vec3 ret;
 
-		double d1 = abs2(sub_vector(s, p));
-		double d2 = abs2(sub_vector(e, p));
-		double l = abs2(sub_vector(s, e));
-
-		double k = (d1 - d2 + l) / (2 * l);
-		k = k >= 1 ? 1 : (k <= 0 ? 0 : k);
-		ret = vectorSum(vectorMul(sub_vector(e, s), k), s);
-
-		return new Line(ret, p);
+		return new Line(getNearPoint(s, e, p), p);
 	}
 
 	public static Line getDistanceLine(Vec3 s1, Vec3 e1, Vec3 s2, Vec3 e2) {

@@ -2,11 +2,11 @@ package com.mito.exobj.network;
 
 import java.util.Iterator;
 
+import com.mito.exobj.MyLogger;
 import com.mito.exobj.BraceBase.BB_DataChunk;
 import com.mito.exobj.BraceBase.BB_DataLists;
 import com.mito.exobj.BraceBase.BB_DataWorld;
 import com.mito.exobj.BraceBase.ExtraObject;
-import com.mito.exobj.common.MyLogger;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -28,7 +28,7 @@ public class BB_Packet_Add extends BB_Packet{
 			int i = MathHelper.floor_double(base1.pos.xCoord / 16.0D);
 			int j = MathHelper.floor_double(base1.pos.zCoord / 16.0D);
 			BB_DataChunk chunkData = BB_DataLists.getChunkData(world, i, j);
-			Iterator iterator = chunkData.braceList.iterator();
+			Iterator iterator = chunkData.exObjList.iterator();
 			boolean flag = true;
 			while (iterator.hasNext()) {
 				ExtraObject fobj = (ExtraObject) iterator.next();

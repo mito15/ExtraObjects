@@ -3,12 +3,12 @@ package com.mito.exobj.BraceBase.Brace;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mito.exobj.BraceBase.BB_BlockAccess;
-import com.mito.exobj.BraceBase.BB_GUIHandler;
 import com.mito.exobj.BraceBase.ExtraObject;
-import com.mito.exobj.common.item.ItemBar;
-import com.mito.exobj.common.item.ItemBraceBase;
-import com.mito.exobj.common.main.ResisterItem;
+import com.mito.exobj.BraceBase.DammyWorld.BB_BlockAccess;
+import com.mito.exobj.BraceBase.DammyWorld.BB_GUIHandler;
+import com.mito.exobj.item.ItemBar;
+import com.mito.exobj.item.ItemBraceBase;
+import com.mito.exobj.main.ResisterItem;
 import com.mito.exobj.network.BB_PacketProcessor;
 import com.mito.exobj.network.BB_PacketProcessor.Mode;
 import com.mito.exobj.network.PacketHandler;

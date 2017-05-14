@@ -13,13 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.stream.JsonReader;
-import com.mito.exobj.client.render.exorender.BB_TypeResister;
-import com.mito.exobj.common.Main;
-import com.mito.exobj.common.MyLogger;
+import com.mito.exobj.Main;
+import com.mito.exobj.MyLogger;
+import com.mito.exobj.client.render.exobj.BB_TypeResister;
 
 public class BB_LoadModel {
 
 	public static void load() {
+
 
 		File sd = Main.INSTANCE.shapesDir;
 		List<File> jsons = new ArrayList<File>();

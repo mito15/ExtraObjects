@@ -2,8 +2,8 @@ package com.mito.exobj.client.gui;
 
 import org.lwjgl.opengl.GL11;
 
+import com.mito.exobj.Main;
 import com.mito.exobj.client.BB_SelectedGroup;
-import com.mito.exobj.common.Main;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;

@@ -30,7 +30,7 @@ public class BB_DataLists {
 		if(chunk == null){
 			return false;
 		}
-		return getWorldData(chunk.worldObj).coordToDataMapping.containsItem(ChunkCoordIntPair.chunkXZ2Int(chunk.xPosition, chunk.zPosition));
+		return getWorldData(chunk.worldObj).coordToDataMapping.containsKey(ChunkCoordIntPair.chunkXZ2Int(chunk.xPosition, chunk.zPosition));
 	}
 
 	public static BB_DataChunk getChunkData(Chunk chunk) {
@@ -42,7 +42,7 @@ public class BB_DataLists {
 
 	public static BB_DataChunk getChunkData(World world, int i, int j) {
 		BB_DataChunk ret;
-		ret = (BB_DataChunk) getWorldData(world).coordToDataMapping.getValueByKey(ChunkCoordIntPair.chunkXZ2Int(i, j));
+		ret = (BB_DataChunk) getWorldData(world).coordToDataMapping.get(ChunkCoordIntPair.chunkXZ2Int(i, j));
 		if (ret == null) {
 			//world.getChunkProvider().chunkExists(i, j);
 			ret = BB_DataLists.newDataChunk(world, i, j);
@@ -66,11 +66,11 @@ public class BB_DataLists {
 
 	public static BB_DataChunk newDataChunk(World world, int i, int j) {
 		BB_DataChunk ret = new BB_DataChunk(world, i, j);
-		getWorldData(world).coordToDataMapping.add(ChunkCoordIntPair.chunkXZ2Int(i, j), ret);
+		getWorldData(world).coordToDataMapping.put(ChunkCoordIntPair.chunkXZ2Int(i, j), ret);
 		return ret;
 	}
 
 	public static boolean isChunkExist(World world, int i, int j) {
-		return BB_DataLists.getWorldData(world).coordToDataMapping.containsItem(ChunkCoordIntPair.chunkXZ2Int(i, j));
+		return BB_DataLists.getWorldData(world).coordToDataMapping.containsKey(ChunkCoordIntPair.chunkXZ2Int(i, j));
 	}
 }

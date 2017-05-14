@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mito.exobj.common.MyLogger;
+import com.mito.exobj.MyLogger;
 
 public class BB_BindHelper {
 

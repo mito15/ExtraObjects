@@ -1,6 +1,6 @@
 package com.mito.exobj.client.gui;
 
-import com.mito.exobj.common.main.ResisterItem;
+import com.mito.exobj.main.ResisterItem;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;

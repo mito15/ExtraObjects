@@ -3,14 +3,14 @@ package com.mito.exobj.network;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mito.exobj.Main;
 import com.mito.exobj.BraceBase.BB_DataLists;
 import com.mito.exobj.BraceBase.BB_DataWorld;
 import com.mito.exobj.BraceBase.BB_ResisteredList;
 import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.BraceBase.Brace.GroupObject;
-import com.mito.exobj.common.Main;
-import com.mito.exobj.common.block.TileObjects;
-import com.mito.exobj.common.main.ResisterItem;
+import com.mito.exobj.block.TileObjects;
+import com.mito.exobj.main.ResisterItem;
 import com.mito.exobj.utilities.MyUtil;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -68,16 +68,15 @@ public class GroupPacketProcessor implements IMessage, IMessageHandler<GroupPack
 		World world = DimensionManager.getWorld(player.dimension);
 		BB_DataWorld data = BB_DataLists.getWorldData(world);
 		List<ExtraObject> list = new ArrayList<ExtraObject>();
-		for (int n = 0; n < message.ids.length; n++) {
-			ExtraObject base = data.getBraceBaseByID(message.ids[n]);
+		for (int n : message.ids) {
+			ExtraObject base = data.getBraceBaseByID(n);
 			if (base != null) {
 				list.add(base);
 			}
 		}
 		switch (message.mode) {
 		case COPY:
-			for (int n = 0; n < list.size(); n++) {
-				ExtraObject base = list.get(n);
+			for (ExtraObject base : list) {
 				NBTTagCompound nbt = new NBTTagCompound();
 				base.writeToNBTOptional(nbt);
 				ExtraObject base1 = BB_ResisteredList.createExObjFromNBT(nbt, world);

@@ -1,20 +1,22 @@
 package com.mito.exobj.BraceBase;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
-import com.mito.exobj.common.MyLogger;
-import com.mito.exobj.common.entity.EntityWrapperBB;
+import com.mito.exobj.MyLogger;
+import com.mito.exobj.entity.EntityWrapperBB;
 import com.mito.exobj.network.BB_PacketProcessor;
 import com.mito.exobj.network.BB_PacketProcessor.Mode;
 import com.mito.exobj.network.PacketHandler;
 import com.mito.exobj.utilities.MitoMath;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IntHashMap;
-import net.minecraft.util.LongHashMap;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
@@ -25,14 +27,11 @@ public class BB_DataWorld {
 	public IntHashMap BBIDMap = new IntHashMap();
 	private int cooltime = 0;
 	public List<ExtraObject> braceBaseList = new ArrayList<ExtraObject>();
-	public LongHashMap coordToDataMapping = new LongHashMap();
+	public Map<Long, BB_DataChunk> coordToDataMapping = new HashMap<Long, BB_DataChunk>();
 	public World world;
 	private double MAX_ENTITY_RADIUS = 100;
 	public BB_BindHelper bindhelper = new BB_BindHelper(this);
 	private int debug;
-	public boolean shouldUpdateRender = false;
-	@SideOnly(Side.CLIENT)
-	public VBOList buffer = new VBOList();
 
 	/*public BB_DataWorld() {
 	}*/
@@ -49,7 +48,7 @@ public class BB_DataWorld {
 		if (b) {
 			int i = MathHelper.floor_double(base.pos.xCoord / 16.0D);
 			int j = MathHelper.floor_double(base.pos.zCoord / 16.0D);
-			
+
 			BB_DataChunk datachunk = BB_DataLists.getChunkData(world, i, j);
 
 			if (!this.braceBaseList.add(base)) {
@@ -60,8 +59,8 @@ public class BB_DataWorld {
 				this.braceBaseList.remove(base);
 				return false;
 			}
-			if(world.isRemote)
-			this.shouldUpdateRender = true;
+			if (world.isRemote)
+				base.updateRenderer();
 			return true;
 		} else {
 			return this.braceBaseList.add(base);
@@ -82,8 +81,8 @@ public class BB_DataWorld {
 		if (!this.world.isRemote) {
 			PacketHandler.INSTANCE.sendToAll(new BB_PacketProcessor(Mode.DELETE, base));
 		}
-		if(world.isRemote)
-			this.shouldUpdateRender = true;
+		if (world.isRemote)
+			base.updateRenderer();
 
 		return ret;
 	}
@@ -98,12 +97,12 @@ public class BB_DataWorld {
 			debug = 0;
 			MyLogger.info("number of object is " + this.braceBaseList.size());
 		}*/
-		
+
 		for (int n = 0; n < this.braceBaseList.size(); n++) {
 			ExtraObject base = this.braceBaseList.get(n);
 			base.prevPos = MitoMath.copyVec3(base.pos);
 		}
-		
+
 		for (int n = 0; n < this.braceBaseList.size(); n++) {
 			ExtraObject base = this.braceBaseList.get(n);
 			if (base.isDead) {
@@ -111,6 +110,17 @@ public class BB_DataWorld {
 				continue;
 			}
 			base.onUpdate();
+		}
+
+		List<BB_DataChunk> list = new LinkedList<BB_DataChunk>();
+		for (BB_DataChunk chunk : this.coordToDataMapping.values()) {
+			if(chunk.exObjList.isEmpty()){
+				list.add(chunk);
+			}
+		}
+		for(Iterator<BB_DataChunk> it = list.iterator(); it.hasNext();){
+			BB_DataChunk chunk = it.next();
+			this.removeDataChunk(chunk);
 		}
 	}
 
@@ -134,6 +144,11 @@ public class BB_DataWorld {
 		}
 
 		return arraylist;
+	}
+
+	public File getSaveFolder() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

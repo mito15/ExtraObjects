@@ -19,8 +19,6 @@ public interface ILineBrace {
 
 	public void move(Vec3 motion, int command);
 
-	public void readNBT(NBTTagCompound nbt);
-
 	public void writeNBT(NBTTagCompound nbt);
 
 	public boolean interactWithAABB(AxisAlignedBB boundingBox, double size);
@@ -43,8 +41,6 @@ public interface ILineBrace {
 
 	public void addCoordinate(double x, double y, double z);
 
-	public void particle();
-
 	public void addCollisionBoxesToList(World world, AxisAlignedBB aabb, List collidingBoundingBoxes, Entity entity, double size);
 
 	public void snap(MovingObjectPosition mop, boolean b);
@@ -54,5 +50,11 @@ public interface ILineBrace {
 	public double getPitch(Vec3 pos);
 
 	public Vec3 getMotion(Vec3 pos, double speed, boolean dir);
+	
+	public double getLength();
+
+	public Vec3 getStart();
+
+	public Vec3 getEnd();
 
 }
