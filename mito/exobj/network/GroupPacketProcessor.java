@@ -160,7 +160,7 @@ public class GroupPacketProcessor implements IMessage, IMessageHandler<GroupPack
 	}
 
 	public enum EnumGroupMode {
-		GUI, COPY, DELETE, GROUPING, SETBLOCK;
+		GUI, COPY, DELETE, GROUPING, SETBLOCK, MOVE;
 	}
 
 }

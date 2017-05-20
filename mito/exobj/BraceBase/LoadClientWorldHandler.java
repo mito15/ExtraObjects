@@ -50,13 +50,14 @@ public class LoadClientWorldHandler {
 		if (!BB_DataLists.existChunkData(e.getChunk())) {
 			return;
 		}
-		BB_DataChunk chunkData = BB_DataLists.getChunkData(e.getChunk());
+		BB_DataChunk chunkData = BB_DataLists.getChunkDataNew(e.getChunk());
 		Iterator iterator = chunkData.exObjList.iterator();
 		while (iterator.hasNext()) {
 			ExtraObject fobj = (ExtraObject) iterator.next();
 			fobj.datachunk = null;
 			fobj.removeFromWorld();
 		}
+		chunkData.buffer.delete();
 		data.removeDataChunk(chunkData);
 	}
 

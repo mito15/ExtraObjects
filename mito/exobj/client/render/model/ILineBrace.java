@@ -57,4 +57,10 @@ public interface ILineBrace {
 
 	public Vec3 getEnd();
 
+	public int getAccuracy();
+	
+	public Vec3 secondTan(double d);
+	
+	public LineWithDirection[] getDrawLine();
+
 }

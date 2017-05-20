@@ -1,14 +1,12 @@
 package com.mito.exobj.item;
 
 import com.mito.exobj.Main;
-import com.mito.exobj.MyLogger;
 import com.mito.exobj.BraceBase.Brace.Brace;
 import com.mito.exobj.client.BB_Key;
 import com.mito.exobj.entity.EntityWrapperBB;
 import com.mito.exobj.network.BB_PacketProcessor;
 import com.mito.exobj.network.BB_PacketProcessor.Mode;
 import com.mito.exobj.network.PacketHandler;
-import com.mito.exobj.utilities.MitoMath;
 import com.mito.exobj.utilities.MyUtil;
 
 import net.minecraft.client.Minecraft;
@@ -16,7 +14,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 public class ItemBar extends ItemBraceBase {
@@ -47,87 +44,6 @@ public class ItemBar extends ItemBraceBase {
 	}
 
 	public void RightClick(ItemStack itemstack, World world, EntityPlayer player, BB_Key key, boolean p_77663_5_) {
-
-		MyLogger.info("cul! x : " + MitoMath.rot(Vec3.createVectorHelper(0, 1, 0), 30, Vec3.createVectorHelper(0, 0, 1)));
-		/*NBTTagCompound nbt = itemstack.getTagCompound();
-
-		if (nbt == null) {
-			nbt = new NBTTagCompound();
-			itemstack.setTagCompound(nbt);
-			nbt.setInteger("selectNum", 0);
-		}
-
-		if (!world.isRemote) {
-
-			Vec3 coord;
-			boolean canAir = false;
-			boolean hitEntity = false;
-			MovingObjectPosition movingOP;
-
-			boolean cKey = key.isControlPressed();
-
-			if (key.isAltPressed()) {
-
-				movingOP = MitoUtil.rayTraceIncludeBrace(player, 3.0, 1.0f, cKey);
-				coord = movingOP.hitVec;
-				canAir = true;
-
-			} else {
-
-				movingOP = MitoUtil.rayTraceIncludeBrace(player, 5.0, 1.0f, cKey);
-				coord = movingOP.hitVec;
-				canAir = (movingOP.typeOfHit == MovingObjectType.ENTITY);
-			}
-			hitEntity = (movingOP.typeOfHit == MovingObjectType.ENTITY);
-
-			if (canAir || !player.worldObj.isAirBlock(movingOP.blockX, movingOP.blockY, movingOP.blockZ)) {
-
-				//吸着
-				if (!cKey && !hitEntity) {
-
-					coord = MitoUtil.conversionByControlKey(player, coord);
-				}
-
-				double size = sizeArray[this.getDamage(itemstack)];
-				boolean onlyOne = (this.getDamage(itemstack) == 3);
-				boolean onlySizex1 = (this.getDamage(itemstack) == 4);
-				if (this.getDamage(itemstack) >= sizeArray.length) {
-					size = sizeArray[0];
-				} else {
-					size = sizeArray[this.getDamage(itemstack)];
-				}
-
-				//world.getBlock(movingOP.blockX, movingOP.blockY, movingOP.blockZ).setLightLevel(1.0f);
-
-				List list = world.getEntitiesWithinAABBExcludingEntity((Entity) null, MitoUtil.createAabbBySize(coord, size));
-				List<EntityFake> list1 = new ArrayList<EntityFake>();
-
-				for (int n = 0; n < list.size(); n++) {
-
-					if (list.get(n) instanceof EntityFake) {
-
-						EntityFake ent = (EntityFake) list.get(n);
-						if (!ent.isRuler) {
-							if (onlyOne) {
-								list1.add(ent);
-							} else if (onlySizex1) {
-								if (ent.size == 0.05) {
-									ent.delete(!player.capabilities.isCreativeMode);
-								}
-							} else {
-								ent.delete(!player.capabilities.isCreativeMode);
-							}
-						}
-
-					}
-				}
-				if (list1.size() > 0) {
-					list1.get(nbt.getInteger("selectNum") % list1.size()).delete(!player.capabilities.isCreativeMode);
-				}
-			}
-
-		}*/
-
 	}
 
 	public void onUpdate(ItemStack itemstack, World world, Entity entity, int meta, boolean p_77663_5_) {

@@ -47,7 +47,7 @@ public class ItemSelectTool extends ItemBraceBase {
 			//移動モードのとき
 			if (sel.modeMove) {
 				//シフトクリックでモード解除
-				if (player.isSneaking() || key.isControlPressed()) {
+				if (key.isShiftPressed() || key.isControlPressed()) {
 					sel.delete();
 					//移動処理
 				} else {
@@ -64,7 +64,7 @@ public class ItemSelectTool extends ItemBraceBase {
 				//コピーモードのとき
 			} else if (sel.modeCopy()) {
 				//シフトクリックでモード解除
-				if (player.isSneaking() || key.isControlPressed()) {
+				if (key.isShiftPressed() || key.isControlPressed()) {
 					sel.delete();
 					//コピー処理
 				} else {
@@ -74,12 +74,14 @@ public class ItemSelectTool extends ItemBraceBase {
 						PacketHandler.INSTANCE.sendToServer(new GroupPacketProcessor(EnumGroupMode.COPY, sel.getList(), pos, yaw));
 					}
 				}
-				sel.setcopy(false);
-				sel.activated = false;
+				if (!key.isAltPressed()) {
+					sel.setcopy(false);
+					sel.activated = false;
+				}
 				//ブロック化モードのとき
 			} else if (sel.modeBlock) {
 				//解除
-				if (player.isSneaking() || key.isControlPressed()) {
+				if (key.isShiftPressed() || key.isControlPressed()) {
 					sel.delete();
 					//ブロック化処理
 				} else {
@@ -103,7 +105,7 @@ public class ItemSelectTool extends ItemBraceBase {
 						AxisAlignedBB aabb = MyUtil.createAABBByVec3(sel.set, set);
 						List<ExtraObject> list = BB_DataLists.getWorldData(world).getExtraObjectWithAABB(aabb);
 						//シフト同時押しでセレクト追加
-						if (player.isSneaking() || key.isControlPressed()) {
+						if (key.isShiftPressed() || key.isControlPressed()) {
 							sel.addShift(list);
 						} else {
 							sel.replace(list);
@@ -115,7 +117,7 @@ public class ItemSelectTool extends ItemBraceBase {
 					if (flag) {
 						ExtraObject base = ((EntityWrapperBB) movingOP.entityHit).base;
 						//シフト同時押しでセレクト追加
-						if (player.isSneaking() || key.isControlPressed()) {
+						if (key.isShiftPressed() || key.isControlPressed()) {
 							sel.addShift(base);
 							//GUIを開く
 						} else {
@@ -127,7 +129,7 @@ public class ItemSelectTool extends ItemBraceBase {
 									//PacketHandler.INSTANCE.sendToServer(new GroupPacketProcessor(EnumGroupMode.COPY, sel.getList()));
 								} else {
 									sel.set = mop.hitVec;
-									PacketHandler.INSTANCE.sendToServer(new GroupPacketProcessor(EnumGroupMode.GUI, sel.getList()));
+									PacketHandler.INSTANCE.sendToServer(new GroupPacketProcessor(EnumGroupMode.GUI));
 								}
 							} else {
 								sel.replace(base);
@@ -136,7 +138,7 @@ public class ItemSelectTool extends ItemBraceBase {
 						sel.activated = false;
 						//ブレース以外をクリック
 					} else {
-						if (player.isSneaking() || key.isControlPressed()) {
+						if (key.isShiftPressed() || key.isControlPressed()) {
 							sel.delete();
 						} else {
 							Vec3 set = mop.hitVec;

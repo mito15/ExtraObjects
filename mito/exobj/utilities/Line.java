@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mito.exobj.client.render.model.ILineBrace;
+import com.mito.exobj.client.render.model.LineWithDirection;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
@@ -208,20 +209,20 @@ public class Line implements ILineBrace {
 		if (dir) {
 			v2 = end;
 			v3 = start;
-			if(pos.distanceTo(this.end) < 0.0001){
+			if (pos.distanceTo(this.end) < 0.0001) {
 				return null;
 			}
 		} else {
 			v2 = start;
 			v3 = end;
-			if(pos.distanceTo(this.start) < 0.0001){
+			if (pos.distanceTo(this.start) < 0.0001) {
 				return null;
 			}
 		}
 		v1 = MitoMath.getNearPoint(start, end, pos);
 		Vec3 unit = MitoMath.sub_vector(v2, v3).normalize();
 		Vec3 moved = MitoMath.vectorSum(v1, MitoMath.vectorMul(unit, speed));
-		if(MitoMath.subAbs2(v1, moved) > MitoMath.subAbs2(v1, v2)){
+		if (MitoMath.subAbs2(v1, moved) > MitoMath.subAbs2(v1, v2)) {
 			moved = v2;
 		}
 		return MitoMath.sub_vector(moved, pos);
@@ -246,6 +247,29 @@ public class Line implements ILineBrace {
 	@Override
 	public Vec3 getEnd() {
 		return MitoMath.copyVec3(this.end);
+	}
+
+	@Override
+	public Vec3 secondTan(double d) {
+		return Vec3.createVectorHelper(0, -1, 0);
+	}
+
+	public LineWithDirection getODrawLine() {
+		Vec3 s = this.start;
+		Vec3 e = this.end;
+		Vec3 sn = this.getTangent(0);
+		Vec3 ms = Vec3.createVectorHelper(0, -1, 0);
+		return new LineWithDirection(s, e, sn, sn, ms, ms);
+	}
+
+	@Override
+	public LineWithDirection[] getDrawLine() {
+		return new LineWithDirection[] { getODrawLine() };
+	}
+
+	@Override
+	public int getAccuracy() {
+		return 1;
 	}
 
 }

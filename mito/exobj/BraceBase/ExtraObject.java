@@ -155,6 +155,11 @@ public abstract class ExtraObject {
 	public boolean removeFromWorld() {
 		if (this.group != null) {
 			this.group.remove(this);
+			MyLogger.info("remove from world " + this.BBID);
+		}
+		if(this.datachunk != null){
+			if(datachunk.exObjList.isEmpty())
+			dataworld.removeDataChunk(datachunk);
 		}
 		for (int i = 0; i < this.bindBraces.size(); i++) {
 			if (this.bindBraces.get(i).bindBraces != null)
@@ -265,6 +270,7 @@ public abstract class ExtraObject {
 	}
 
 	public boolean writeToNBTOptional(NBTTagCompound p_70039_1_) {
+		//MyLogger.info("write opt brace id " + this.BBID);
 		String s = BB_ResisteredList.getBraceBaseString(this);
 
 		if (!this.isDead && s != null) {
@@ -525,8 +531,6 @@ public abstract class ExtraObject {
 	}
 
 	public void resize(Vec3 c, double d) {
-		// TODO 自動生成されたメソッド・スタブ
-
 	}
 
 	public void sendConnect() {

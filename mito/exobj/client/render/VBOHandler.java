@@ -1,7 +1,6 @@
 package com.mito.exobj.client.render;
 
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
+import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
@@ -53,23 +52,25 @@ public class VBOHandler {
 
 	}
 
-	public void updateBrightness(ExtraObject base, float partick) {
-		if (brightness != 0) {
-			int i = base.getBrightnessForRender(partick);
-			int j = i % 65536;
-			int k = i / 65536;
-			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, this.brightness);
-			ByteBuffer buffer = GL15.glMapBuffer(GL15.GL_ARRAY_BUFFER, GL15.GL_READ_WRITE, null);
-			if (buffer != null) {
-				FloatBuffer floatBuffer = buffer.asFloatBuffer();
-				for (int n = 0; n < this.size; n++) {
-					floatBuffer.put((float) j / 1.0F);
-					floatBuffer.put((float) k / 1.0F);
+	public void updateBrightness(List<ExtraObject> list, float partick) {
+		/*if (brightness != 0) {
+			for (ExtraObject eo : list) {
+				int i = eo.getBrightnessForRender(partick);
+				int j = i % 65536;
+				int k = i / 65536;
+				GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, this.brightness);
+				ByteBuffer buffer = GL15.glMapBuffer(GL15.GL_ARRAY_BUFFER, GL15.GL_READ_WRITE, null);
+				if (buffer != null) {
+					FloatBuffer floatBuffer = buffer.asFloatBuffer();
+					for (int n = 0; n < this.size; n++) {
+						floatBuffer.put((float) j / 1.0F);
+						floatBuffer.put((float) k / 1.0F);
+					}
 				}
+				GL15.glUnmapBuffer(GL15.GL_ARRAY_BUFFER);
+				GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 			}
-			GL15.glUnmapBuffer(GL15.GL_ARRAY_BUFFER);
-			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-		}
+		}*/
 	}
 
 	public void delete() {

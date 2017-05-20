@@ -5,10 +5,11 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 
-import com.mito.exobj.MyLogger;
+import com.mito.exobj.Main;
 import com.mito.exobj.client.render.CreateVertexBufferObject;
 import com.mito.exobj.client.render.VBOHandler;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.culling.ICamera;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -16,10 +17,25 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.event.RenderWorldEvent;
 
 public class BB_RenderHandler {
 
 	public BB_RenderHandler() {
+	}
+	
+	@SubscribeEvent
+	public void onRenderWorld(RenderWorldEvent.Post e) {
+		int i = e.renderer.posX;
+		int j = e.renderer.posY;
+		int k = e.renderer.posZ;
+		if (!BB_DataLists.existChunkData(Main.proxy.getClientWorld(), i / 16, k / 16)) {
+			return;
+		}
+		BB_DataChunk ret = (BB_DataChunk) BB_DataLists.getChunkDataNew(e.renderer.worldObj, i / 16, k / 16);
+		if (ret != null) {
+			ret.updateRenderer();
+		}
 	}
 
 	public static void enableClient() {
@@ -90,7 +106,6 @@ public class BB_RenderHandler {
 						CreateVertexBufferObject c = CreateVertexBufferObject.INSTANCE;
 						ExtraObject base1 = list.get(0);
 						Vec3 v = Vec3.createVectorHelper(-chunk.xPosition * 16.0, -base1.pos.yCoord, -chunk.zPosition * 16.0);
-						MyLogger.info(base1.pos.xCoord, RenderManager.renderPosX);
 						c.beginRegist(GL15.GL_STATIC_DRAW, GL11.GL_TRIANGLES);
 						c.translate(v);
 						c.setColor(1.0F, 1.0F, 1.0F, 1.0F);

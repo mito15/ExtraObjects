@@ -21,7 +21,7 @@ public class BB_DataGroup extends BB_GroupBase {
 
 	public BB_DataGroup(World w, Chunk c) {
 		this.world = w;
-		this.datachunk = BB_DataLists.getChunkData(c);
+		this.datachunk = BB_DataLists.getChunkDataNew(c);
 	}
 
 	public BB_DataGroup(World w, BB_DataChunk d, boolean b) {

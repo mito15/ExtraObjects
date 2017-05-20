@@ -87,8 +87,8 @@ public class BezierCurve implements ILineBrace {
 		List<Vec3> list = this.getLine();
 		Line line = MitoMath.getDistanceLine(s, e, list.get(0), list.get(1));
 		for (int n = 1; n < list.size() - 1; n++) {
-			Line line2 = MitoMath.getDistanceLine(s, e, list.get(n), list.get(n+1));
-			if(line.getLength() > line2.getLength()){
+			Line line2 = MitoMath.getDistanceLine(s, e, list.get(n), list.get(n + 1));
+			if (line.getLength() > line2.getLength()) {
 				line = line2;
 			}
 		}
@@ -138,13 +138,13 @@ public class BezierCurve implements ILineBrace {
 		}
 		return ret;
 	}
-	
+
 	public List<Line> getSegments() {
 		List<Line> ret = new LinkedList<Line>();
 		int nm = this.getAccuracy();
-		for (int n = 0; n < nm-1; n++) {
+		for (int n = 0; n < nm - 1; n++) {
 			Vec3 v = this.getPoint((double) n / (double) nm);
-			Vec3 v1 = this.getPoint((double) (n+1) / (double) nm);
+			Vec3 v1 = this.getPoint((double) (n + 1) / (double) nm);
 			ret.add(new Line(v, v1));
 		}
 		return ret;
@@ -186,8 +186,8 @@ public class BezierCurve implements ILineBrace {
 	public boolean interactWithAABB(AxisAlignedBB aabb, double size) {
 		boolean ret = false;
 		List<Line> list = this.getSegments();
-		for(Line line : list){
-			if(line.interactWithAABB(aabb, size)){
+		for (Line line : list) {
+			if (line.interactWithAABB(aabb, size)) {
 				ret = true;
 			}
 		}
@@ -204,10 +204,10 @@ public class BezierCurve implements ILineBrace {
 		}
 		Line line = null;
 		List<Line> list = this.getSegments();
-		for(Line l : list){
+		for (Line l : list) {
 			Line line2 = MitoMath.getDistanceLine(set, end, l.start, l.end);
 			if (line2.getLength() < size / 1.5 && !(MyUtil.isVecEqual(line2.end, this.points[0]) || MyUtil.isVecEqual(line2.end, this.points[3]))) {
-				if(line == null || line2.end.distanceTo(set) < line.end.distanceTo(set)){
+				if (line == null || line2.end.distanceTo(set) < line.end.distanceTo(set)) {
 					line = line2;
 				}
 			}
@@ -218,7 +218,7 @@ public class BezierCurve implements ILineBrace {
 	@Override
 	public void addCollisionBoxesToList(World world, AxisAlignedBB aabb, List collidingBoundingBoxes, Entity entity, double size) {
 		List<Line> list = this.getSegments();
-		for(Line line : list){
+		for (Line line : list) {
 			line.addCollisionBoxesToList(world, aabb, collidingBoundingBoxes, entity, size);
 		}
 		/*Vec3 v3 = MitoMath.sub_vector(this.end, this.start);
@@ -285,7 +285,6 @@ public class BezierCurve implements ILineBrace {
 
 	@Override
 	public Vec3 getMotion(Vec3 pos, double speed, boolean dir) {
-		// TODO 自動生成されたメソッド・スタブ
 		return Vec3.createVectorHelper(0, 0, 0);
 	}
 
@@ -298,7 +297,7 @@ public class BezierCurve implements ILineBrace {
 	public double getLength() {
 		double ret = 0;
 		List<Line> list = this.getSegments();
-		for(Line line : list){
+		for (Line line : list) {
 			ret += line.getLength();
 		}
 		return ret;
@@ -312,6 +311,26 @@ public class BezierCurve implements ILineBrace {
 	@Override
 	public Vec3 getEnd() {
 		return this.points[3];
+	}
+
+	@Override
+	public LineWithDirection[] getDrawLine() {
+		int nmax = this.getAccuracy();
+		LineWithDirection[] ret = new LineWithDirection[nmax];
+		Vec3 s = this.getPoint(0);
+		Vec3 sn = this.getTangent(0);
+		Vec3 ms = this.secondTan(0);
+		for (int n = 0; n < nmax; n++) {
+			double t1 = (double) (n + 1) / (double) nmax;
+			Vec3 e = this.getPoint(t1);
+			Vec3 en = this.getTangent(t1);
+			Vec3 me = this.secondTan(t1);
+			ret[n] = new LineWithDirection(s, e, sn, en, ms, me);
+			s = MitoMath.copyVec3(e);
+			sn = MitoMath.copyVec3(en);
+			ms = MitoMath.copyVec3(me);
+		}
+		return ret;
 	}
 
 }

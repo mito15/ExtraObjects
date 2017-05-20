@@ -60,7 +60,7 @@ public class ItemBender extends ItemSet {
 			Vec3 set = mop.hitVec;
 			Brace brace = (Brace) ((EntityWrapperBB) mop.entityHit).base;
 			if (key.isShiftPressed()) {
-				if(brace.line instanceof BezierCurve){
+				if (brace.line instanceof BezierCurve) {
 					BezierCurve b = (BezierCurve) brace.line;
 					brace.line = new Line(b.points[0], b.points[3]);
 					PacketHandler.INSTANCE.sendToAll(new BendPacketProcessor(brace));
@@ -82,6 +82,12 @@ public class ItemBender extends ItemSet {
 		ExtraObject base = BB_DataLists.getWorldData(world).getBraceBaseByID(nbt.getInteger("brace"));
 		if (base != null && base.isStatic && base instanceof Brace) {
 			Brace brace = (Brace) base;
+			/*if (brace.line instanceof Line) {
+				brace.line = new LineLoop(brace.line.getStart(), end, brace.line.getEnd());
+			} else if (brace.line instanceof LineLoop) {
+				((LineLoop) brace.line).line.add(end);
+			}
+			PacketHandler.INSTANCE.sendToAll(new BB_PacketProcessor(Mode.SYNC, brace));*/
 			if (nbt.getBoolean("isPos")) {
 				if (brace.line instanceof Line) {
 					brace.line = new BezierCurve(brace.line.getStart(), end, MitoMath.ratio_vector(brace.line.getEnd(), end, 0.8), brace.line.getEnd());

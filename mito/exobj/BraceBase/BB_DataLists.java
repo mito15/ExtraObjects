@@ -33,14 +33,21 @@ public class BB_DataLists {
 		return getWorldData(chunk.worldObj).coordToDataMapping.containsKey(ChunkCoordIntPair.chunkXZ2Int(chunk.xPosition, chunk.zPosition));
 	}
 
-	public static BB_DataChunk getChunkData(Chunk chunk) {
+	public static boolean existChunkData(World world, int i, int j) {
+		if(world == null){
+			return false;
+		}
+		return getWorldData(world).coordToDataMapping.containsKey(ChunkCoordIntPair.chunkXZ2Int(i, j));
+	}
+
+	public static BB_DataChunk getChunkDataNew(Chunk chunk) {
 		if(chunk == null){
 			return null;
 		}
-		return BB_DataLists.getChunkData(chunk.worldObj, chunk.xPosition, chunk.zPosition);
+		return BB_DataLists.getChunkDataNew(chunk.worldObj, chunk.xPosition, chunk.zPosition);
 	}
 
-	public static BB_DataChunk getChunkData(World world, int i, int j) {
+	public static BB_DataChunk getChunkDataNew(World world, int i, int j) {
 		BB_DataChunk ret;
 		ret = (BB_DataChunk) getWorldData(world).coordToDataMapping.get(ChunkCoordIntPair.chunkXZ2Int(i, j));
 		if (ret == null) {

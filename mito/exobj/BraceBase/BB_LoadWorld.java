@@ -55,60 +55,61 @@ public class BB_LoadWorld {
 			worldData = new BB_DataWorld(world);
 			this.getMap().put(e.world, worldData);
 		}
-		BB_DataChunk chunkData = BB_DataLists.getChunkData(chunk);
-
-		if (chunkData.groupList.size() == 0 || (chunkData.groupList.size() == 1 && chunkData.groupList.get(0).isEmpty())) {
-			return;
-		}
-
-		NBTTagCompound nbt1;
-		Iterator iterator1;
-		Iterator iterator2;
-
-		NBTTagList taglistGroups = new NBTTagList();
-
-		iterator1 = chunkData.groupList.iterator();
-
-		while (iterator1.hasNext()) {
-			BB_DataGroup group = (BB_DataGroup) iterator1.next();
-
-			nbt1 = new NBTTagCompound();
-
-			try {
-				if (group.writeToNBTOptional(nbt1)) {
-					NBTTagList taglistGroup = new NBTTagList();
-					Map<ExtraObject, Integer> BraceBaseToIntMapping = new HashMap<ExtraObject, Integer>();
-
-					for (int n = 0; n < group.list.size(); n++) {
-						ExtraObject exObj = group.list.get(n);
-						BraceBaseToIntMapping.put(exObj, new Integer(n));
-						//MyLogger.info("nbt associate(save) " + n + " : " + BB_ResisteredList.classToStringMapping.get(exObj.getClass()));
-					}
-
-					for (int n = 0; n < group.list.size(); n++) {
-						ExtraObject exObj1 = group.list.get(n);
-						NBTTagCompound nbt2 = new NBTTagCompound();
-						nbt2.setInteger("exObjNumber", n + 1);
-						if (exObj1.writeToNBTOptional(nbt2)) {
-							taglistGroup.appendTag(nbt2);
-							exObj1.writeNBTAssociate(nbt2, BraceBaseToIntMapping);
-						}
-						if (chunkData.isDead) {
-							exObj1.removeFromWorld();
-						}
-					}
-					nbt1.setTag("BB_Group", taglistGroup);
-
-					taglistGroups.appendTag(nbt1);
-				}
-			} catch (Exception ex) {
-				MyLogger.warn("chunk save error on Braces&Oscillators\n");
-				ex.printStackTrace();
-			}
-		}
-
+		BB_DataChunk chunkData = BB_DataLists.getChunkDataNew(chunk);
 		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setTag("BB_Groups", taglistGroups);
+
+		if (!(chunkData.groupList.size() == 0 || (chunkData.groupList.size() == 1 && chunkData.groupList.get(0).isEmpty()))) {
+			NBTTagCompound nbt1;
+			Iterator iterator1;
+
+			NBTTagList taglistGroups = new NBTTagList();
+
+			iterator1 = chunkData.groupList.iterator();
+
+			while (iterator1.hasNext()) {
+				BB_DataGroup group = (BB_DataGroup) iterator1.next();
+
+				nbt1 = new NBTTagCompound();
+
+				try {
+					if (group.writeToNBTOptional(nbt1)) {
+						//MyLogger.info("save group " + group.list.size());
+						NBTTagList taglistGroup = new NBTTagList();
+						Map<ExtraObject, Integer> BraceBaseToIntMapping = new HashMap<ExtraObject, Integer>();
+
+						for (int n = 0; n < group.list.size(); n++) {
+							ExtraObject exObj = group.list.get(n);
+							MyLogger.info("save exobj id " + exObj.BBID);
+							BraceBaseToIntMapping.put(exObj, new Integer(n));
+							//MyLogger.info("nbt associate(save) " + n + " : " + BB_ResisteredList.classToStringMapping.get(exObj.getClass()));
+						}
+
+						//MyLogger.info("save group2 " + group.list.size());
+						for (int n = 0; n < group.list.size(); n++) {
+							ExtraObject exObj = group.list.get(n);
+							NBTTagCompound nbt2 = new NBTTagCompound();
+							MyLogger.info("save exobj id2 " + exObj.BBID);
+							if (exObj.writeToNBTOptional(nbt2)) {
+								taglistGroup.appendTag(nbt2);
+								exObj.writeNBTAssociate(nbt2, BraceBaseToIntMapping);
+							}
+							/*if (chunkData.isDead) {
+								exObj1.removeFromWorld();
+							}*/
+							nbt2.setInteger("exObjNumber", n + 1);
+						}
+						nbt1.setTag("BB_Group", taglistGroup);
+
+						taglistGroups.appendTag(nbt1);
+					}
+				} catch (Exception ex) {
+					MyLogger.warn("chunk save error on Braces&Oscillators\n");
+					ex.printStackTrace();
+				}
+			}
+
+			nbt.setTag("BB_Groups", taglistGroups);
+		}
 
 		if (/*chunkData.isDead*/!e.getChunk().isChunkLoaded) {
 			Iterator iterator = chunkData.exObjList.iterator();
@@ -234,7 +235,7 @@ public class BB_LoadWorld {
 		if (!BB_DataLists.existChunkData(e.getChunk())) {
 			return;
 		}
-		BB_DataChunk datachunk = BB_DataLists.getChunkData(e.getChunk());
+		BB_DataChunk datachunk = BB_DataLists.getChunkDataNew(e.getChunk());
 		datachunk.setDead();
 	}
 

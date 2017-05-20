@@ -146,6 +146,8 @@ public class BB_ResisteredList {
 		ExtraObject base = BB_DataLists.getWorldData(world).getBraceBaseByID(id);
 		if (base != null) {
 			base.readFromNBT(nbt);
+			if (base.datachunk != null)
+				base.datachunk.modified();
 		} else {
 			PacketHandler.INSTANCE.sendToAll(new BB_PacketProcessor(Mode.DELETE, base));
 			MyLogger.warn("Skipping Entity with id " + nbt.getString("id"));

@@ -8,7 +8,7 @@ import net.minecraft.util.Vec3;
 public final class MitoMath {
 
 	public static Vec3 ratio_vector(Vec3 set, Vec3 end, double r) {
-		Vec3 ret = vectorSum(vectorMul(end, r), vectorMul(set, 1 - r));
+		Vec3 ret = vectorSum(vectorMul(end, r), vectorMul(set, 1.0 - r));
 		return ret;
 	}
 

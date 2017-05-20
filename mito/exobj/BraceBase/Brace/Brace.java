@@ -104,7 +104,6 @@ public class Brace extends ExtraObject {
 	@Override
 	public void readExtraObjectFromNBT(NBTTagCompound nbt) {
 		//this.line.readNBT(nbt);
-
 		if (nbt.hasKey("line")) {
 			switch (nbt.getInteger("line")) {
 			case 0:
@@ -121,20 +120,34 @@ public class Brace extends ExtraObject {
 				break;
 			case 2:
 				NBTTagList nbtList = nbt.getTagList("line_list", 10);
-				Vec3[] vs = new Vec3[nbtList.tagCount()];
-				for (int l = 0; l < nbtList.tagCount(); ++l) {
-					NBTTagCompound nbt1 = nbtList.getCompoundTagAt(l);
-					vs[l] = getVec3(nbt1, "line_list");
+				MyLogger.info("brace read line loop " + nbtList.tagCount());
+				if (nbtList.tagCount() > 1) {
+					Vec3[] vs = new Vec3[nbtList.tagCount()];
+					for (int l = 0; l < nbtList.tagCount(); ++l) {
+						NBTTagCompound nbt1 = nbtList.getCompoundTagAt(l);
+						vs[l] = getVec3(nbt1, "vec");
+					}
+					line = new LineLoop(vs);
+				} else {
+					this.setDead();
+					line = new Line(Vec3.createVectorHelper(0, 0, 0), Vec3.createVectorHelper(0, 0, 0));
 				}
-				line = new LineLoop(vs);
 				break;
 			default:
+				this.setDead();
 				line = new Line(Vec3.createVectorHelper(0, 0, 0), Vec3.createVectorHelper(0, 0, 0));
 				break;
 			}
 		} else {
-			Vec3 end = getVec3(nbt, "end");
-			line = new Line(pos, end);
+			if (nbt.getBoolean("hasCP")) {
+				Vec3 v1 = getVec3(nbt, "cp1");
+				Vec3 v2 = getVec3(nbt, "cp2");
+				Vec3 end = getVec3(nbt, "end");
+				line = new BezierCurve(pos, v1, v2, end);
+			} else {
+				Vec3 end = getVec3(nbt, "end");
+				line = new Line(pos, end);
+			}
 		}
 		this.shape = nbt.getString("shape");
 		this.joint = nbt.getString("joint");
@@ -160,6 +173,7 @@ public class Brace extends ExtraObject {
 
 	@Override
 	public void writeExtraObjectToNBT(NBTTagCompound nbt) {
+		//MyLogger.info("save brace id " + this.BBID);
 		if (line != null && shape != null) {
 			line.writeNBT(nbt);
 			nbt.setString("shape", this.shape);
@@ -173,12 +187,6 @@ public class Brace extends ExtraObject {
 	@Override
 	public boolean interactWithAABB(AxisAlignedBB boundingBox) {
 		return line == null ? false : line.interactWithAABB(boundingBox, size);
-		/*boolean ret = false;
-		if (boundingBox.expand(this.size, this.size, this.size).calculateIntercept(this.pos, this.end) != null
-				|| (boundingBox.expand(this.size, this.size, this.size).isVecInside(this.pos) && boundingBox.expand(this.size, this.size, this.size).isVecInside(this.end))) {
-			ret = true;
-		}
-		return ret;*/
 	}
 
 	@Override
@@ -186,25 +194,8 @@ public class Brace extends ExtraObject {
 		return line == null ? null : line.interactWithLine(s, e);
 	}
 
-	/*public Vec3 getUnit() {
-		if (this.unitVector == null) {
-			this.unitVector = MitoMath.vectorSub(this.end, this.pos).normalize();
-		}
-		return this.unitVector;
-	}*/
-
 	@Override
 	public Line interactWithRay(Vec3 set, Vec3 end) {
-		/*if (this.pos.distanceTo(this.end) < 0.01) {
-			Vec3 ve = MitoMath.getNearPoint(set, end, this.pos);
-			if (ve.distanceTo(this.pos) < this.size / 1.5) {
-				return new Line(ve, this.pos);
-			}
-		}
-		Line line = MitoMath.getDistanceLine(set, end, this.pos, this.end);
-		if (line.getAbs() < this.size / 1.5 && !(MitoUtil.isVecEqual(line.end, this.pos) || MitoUtil.isVecEqual(line.end, this.end))) {
-			return line;
-		}*/
 		return line == null ? null : line.interactWithRay(set, end, size);
 	}
 
@@ -213,11 +204,7 @@ public class Brace extends ExtraObject {
 			if (!player.capabilities.isCreativeMode) {
 				this.dropItem();
 			}
-
 			this.setDead();
-			/*for (int n = 0; n < this.bindBraces.size(); n++) {
-				this.bindBraces.get(n).setDead();
-			}*/
 		} else {
 			Main.proxy.playSound(new ResourceLocation(this.texture.stepSound.getBreakSound()), this.texture.stepSound.volume, this.texture.stepSound.getPitch(), (float) pos.xCoord, (float) pos.yCoord, (float) pos.zCoord);
 			Main.proxy.particle(this);
@@ -230,7 +217,7 @@ public class Brace extends ExtraObject {
 		int b0 = (int) (this.size * 3) + 1;
 		Vec3 center = this.line.getPoint(0.5);
 		int div = (int) (this.line.getLength() * 3) + 1;
-		MyLogger.info(this.line.getLength());
+		//MyLogger.info(this.line.getLength());
 
 		for (int i1 = 0; i1 < b0; ++i1) {
 			for (int j1 = 0; j1 < b0; ++j1) {
@@ -263,7 +250,7 @@ public class Brace extends ExtraObject {
 			this.breakBrace(player);
 			return true;
 		} else if (player.isSneaking() && itemstack != null && Block.getBlockFromItem(itemstack.getItem()) != Blocks.air) {
-			MyLogger.info("brace " + texture.getLocalizedName());
+			//MyLogger.info("brace " + texture.getLocalizedName());
 			this.texture = Block.getBlockFromItem(itemstack.getItem());
 			this.color = itemstack.getItemDamage() % 16;
 			updateRenderer();

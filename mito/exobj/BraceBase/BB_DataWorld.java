@@ -3,8 +3,6 @@ package com.mito.exobj.BraceBase;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +11,6 @@ import com.mito.exobj.entity.EntityWrapperBB;
 import com.mito.exobj.network.BB_PacketProcessor;
 import com.mito.exobj.network.BB_PacketProcessor.Mode;
 import com.mito.exobj.network.PacketHandler;
-import com.mito.exobj.utilities.MitoMath;
 
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IntHashMap;
@@ -49,7 +46,7 @@ public class BB_DataWorld {
 			int i = MathHelper.floor_double(base.pos.xCoord / 16.0D);
 			int j = MathHelper.floor_double(base.pos.zCoord / 16.0D);
 
-			BB_DataChunk datachunk = BB_DataLists.getChunkData(world, i, j);
+			BB_DataChunk datachunk = BB_DataLists.getChunkDataNew(world, i, j);
 
 			if (!this.braceBaseList.add(base)) {
 				MyLogger.info("can not add worldlist");
@@ -70,19 +67,12 @@ public class BB_DataWorld {
 	public boolean removeBrace(ExtraObject base) {
 		this.BBIDMap.removeObject(base.BBID);
 		if (base.datachunk != null) {
-			int i = MathHelper.floor_double(base.pos.xCoord / 16.0D);
-			int j = MathHelper.floor_double(base.pos.zCoord / 16.0D);
-			BB_DataChunk chunkdata = base.datachunk;
-			if (chunkdata != null) {
-				chunkdata.removeBrace(base);
-			}
+			base.datachunk.removeBrace(base);
 		}
 		boolean ret = braceBaseList.remove(base);
 		if (!this.world.isRemote) {
 			PacketHandler.INSTANCE.sendToAll(new BB_PacketProcessor(Mode.DELETE, base));
 		}
-		if (world.isRemote)
-			base.updateRenderer();
 
 		return ret;
 	}
@@ -98,10 +88,10 @@ public class BB_DataWorld {
 			MyLogger.info("number of object is " + this.braceBaseList.size());
 		}*/
 
-		for (int n = 0; n < this.braceBaseList.size(); n++) {
+		/*for (int n = 0; n < this.braceBaseList.size(); n++) {
 			ExtraObject base = this.braceBaseList.get(n);
 			base.prevPos = MitoMath.copyVec3(base.pos);
-		}
+		}*/
 
 		for (int n = 0; n < this.braceBaseList.size(); n++) {
 			ExtraObject base = this.braceBaseList.get(n);
@@ -112,16 +102,17 @@ public class BB_DataWorld {
 			base.onUpdate();
 		}
 
-		List<BB_DataChunk> list = new LinkedList<BB_DataChunk>();
+		/*List<BB_DataChunk> list = new LinkedList<BB_DataChunk>();
 		for (BB_DataChunk chunk : this.coordToDataMapping.values()) {
 			if(chunk.exObjList.isEmpty()){
 				list.add(chunk);
+				MyLogger.info("over chunk");
 			}
 		}
 		for(Iterator<BB_DataChunk> it = list.iterator(); it.hasNext();){
 			BB_DataChunk chunk = it.next();
 			this.removeDataChunk(chunk);
-		}
+		}*/
 	}
 
 	public void removeDataChunk(BB_DataChunk d) {
@@ -138,7 +129,7 @@ public class BB_DataWorld {
 		for (int i1 = i; i1 <= j; ++i1) {
 			for (int j1 = k; j1 <= l; ++j1) {
 				if (BB_DataLists.isChunkExist(world, i1, j1)) {
-					BB_DataLists.getChunkData(world, i1, j1).getEntitiesWithinAABBForEntity(boundingBox, arraylist);
+					BB_DataLists.getChunkDataNew(world, i1, j1).getEntitiesWithinAABBForEntity(boundingBox, arraylist);
 				}
 			}
 		}

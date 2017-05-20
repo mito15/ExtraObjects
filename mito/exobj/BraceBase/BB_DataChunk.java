@@ -19,7 +19,7 @@ public class BB_DataChunk {
 	public boolean isDead = false;
 	public final int xPosition;
 	public final int zPosition;
-	
+
 	private boolean shouldUpdateRender = false;
 	public VBOList buffer = new VBOList();
 
@@ -35,13 +35,17 @@ public class BB_DataChunk {
 		this.zPosition = j;
 	}
 
-	public void modified(){
-		if(this.world.getChunkProvider().chunkExists(this.xPosition, this.zPosition)){
-			this.world.getChunkFromChunkCoords(xPosition, zPosition).setChunkModified();;
+	public void modified() {
+		if (world.isRemote) {
+			this.updateRenderer();
+		}
+		if (this.chunkExist()) {
+			this.world.getChunkFromChunkCoords(xPosition, zPosition).setChunkModified();
+			MyLogger.info("data chunk#modified");
 		}
 	}
-	
-	public void updateRenderer(){
+
+	public void updateRenderer() {
 		setShouldUpdateRender(true);
 	}
 
@@ -119,6 +123,10 @@ public class BB_DataChunk {
 
 	public void setShouldUpdateRender(boolean shouldUpdateRender) {
 		this.shouldUpdateRender = shouldUpdateRender;
+	}
+
+	public boolean chunkExist() {
+		return this.world.getChunkProvider().chunkExists(this.xPosition, this.zPosition);
 	}
 
 }

@@ -110,7 +110,7 @@ public class BB_PacketProcessor implements IMessage, IMessageHandler<BB_PacketPr
 				if (base1 != null) {
 					int i = MathHelper.floor_double(base1.pos.xCoord / 16.0D);
 					int j = MathHelper.floor_double(base1.pos.zCoord / 16.0D);
-					BB_DataChunk chunkData = BB_DataLists.getChunkData(world, i, j);
+					BB_DataChunk chunkData = BB_DataLists.getChunkDataNew(world, i, j);
 					Iterator iterator = chunkData.exObjList.iterator();
 					boolean flag = true;
 					while (iterator.hasNext()) {
@@ -191,7 +191,7 @@ public class BB_PacketProcessor implements IMessage, IMessageHandler<BB_PacketPr
 				break;
 			case REQUEST_CHUNK:
 				if (BB_DataLists.isChunkExist(world, message.xChunkCoord, message.zChunkCoord)) {
-					Iterator iterator = BB_DataLists.getChunkData(world, message.xChunkCoord, message.zChunkCoord).exObjList.iterator();
+					Iterator iterator = BB_DataLists.getChunkDataNew(world, message.xChunkCoord, message.zChunkCoord).exObjList.iterator();
 					while (iterator.hasNext()) {
 						ExtraObject base = (ExtraObject) iterator.next();
 						PacketHandler.INSTANCE.sendTo(new BB_PacketProcessor(Mode.ADD, base), player);

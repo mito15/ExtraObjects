@@ -41,7 +41,7 @@ public class VBOList {
 		this.array.add(vbo);
 	}
 
-	public void updateBrightness(ExtraObject base, float f) {
+	public void updateBrightness(List<ExtraObject> base, float f) {
 		for (int n = 0; n < array.size(); n++) {
 			array.get(n).updateBrightness(base, f);
 		}

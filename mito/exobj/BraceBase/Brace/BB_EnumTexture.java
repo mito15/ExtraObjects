@@ -4,7 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 
 public enum BB_EnumTexture {
-	IRON("exobj:textures/blocks/brace_", ".png", "iron", Blocks.stained_hardened_clay),
+	IRON("exobj:textures/blocks/brace_", ".png", "iron", Blocks.wool),
 	STONE("textures/blocks/stone.png", "stone", Blocks.stone),
 	COBBLESTONE("textures/blocks/cobblestone.png", "cobblestone", Blocks.cobblestone),
 	WOOD_OAK("textures/blocks/planks_oak.png", "oak", Blocks.planks),

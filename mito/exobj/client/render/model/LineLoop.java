@@ -1,7 +1,6 @@
 package com.mito.exobj.client.render.model;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.mito.exobj.utilities.Line;
@@ -23,6 +22,7 @@ public class LineLoop implements ILineBrace {
 	public LineLoop(Vec3... list) {
 		for (Vec3 v : list) {
 			line.add(v);
+			//MyLogger.info("lineloop on create " + v.xCoord);
 		}
 	}
 
@@ -32,7 +32,7 @@ public class LineLoop implements ILineBrace {
 		double cl = 0;
 		List<Line> lines = this.getSegments();
 		for (Line l : lines) {
-			cl = +l.getLength();
+			cl += l.getLength();
 			if (cl > sep) {
 				double l1 = l.getLength();
 				double l2 = cl - sep;
@@ -40,7 +40,7 @@ public class LineLoop implements ILineBrace {
 				return l.getPoint(d);
 			}
 		}
-		return null;
+		return Vec3.createVectorHelper(0, 0, 0);
 	}
 
 	public int getSegNum(double t) {
@@ -49,12 +49,12 @@ public class LineLoop implements ILineBrace {
 		double cl = 0;
 		List<Line> lines = this.getSegments();
 		for (Line l : lines) {
-			cl = +l.getLength();
+			cl += l.getLength();
 			if (cl > sep) {
 				return lines.indexOf(l);
 			}
 		}
-		return -1;
+		return 0;
 	}
 
 	public Vec3 getTangent(double t) {
@@ -82,13 +82,14 @@ public class LineLoop implements ILineBrace {
 
 	@Override
 	public void writeNBT(NBTTagCompound nbt) {
+		//MyLogger.info("brace read line loop " + line.size());
 		NBTTagList taglistGroups = new NBTTagList();
 		for (Vec3 v : line) {
 			NBTTagCompound nbt1 = new NBTTagCompound();
 			setVec3(nbt1, "vec", v);
 			taglistGroups.appendTag(nbt1);
 		}
-		nbt.setTag("line_ list", taglistGroups);
+		nbt.setTag("line_list", taglistGroups);
 		nbt.setInteger("line", 2);
 	}
 
@@ -138,7 +139,7 @@ public class LineLoop implements ILineBrace {
 	}
 
 	public List<Line> getSegments() {
-		List<Line> ret = new LinkedList<Line>();
+		List<Line> ret = new ArrayList<Line>();
 		for (int n = 0; n < line.size() - 1; n++) {
 			Vec3 v = MitoMath.copyVec3(line.get(n));
 			Vec3 v1 = MitoMath.copyVec3(line.get(n + 1));
@@ -195,8 +196,10 @@ public class LineLoop implements ILineBrace {
 		List<Line> list = this.getSegments();
 		for (Line l : list) {
 			Line line2 = l.interactWithRay(set, end, size);
-			if (line == null || line2.end.distanceTo(set) < line.end.distanceTo(set)) {
-				line = line2;
+			if (line2 != null) {
+				if (line == null || line2.end.distanceTo(set) < line.end.distanceTo(set)) {
+					line = line2;
+				}
 			}
 		}
 		return line;
@@ -249,12 +252,59 @@ public class LineLoop implements ILineBrace {
 
 	@Override
 	public Vec3 getStart() {
+		/*if (this.line.isEmpty()) {
+			return Vec3.createVectorHelper(0, 0, 0);
+		}*/
 		return this.line.get(0);
 	}
 
 	@Override
 	public Vec3 getEnd() {
+		/*if (this.line.isEmpty()) {
+			return Vec3.createVectorHelper(0, 0, 0);
+		}*/
 		return this.line.get(line.size() - 1);
+	}
+
+	@Override
+	public Vec3 secondTan(double d) {
+		return Vec3.createVectorHelper(0, -1, 0);
+	}
+
+	@Override
+	public LineWithDirection[] getDrawLine() {
+		int acc = this.getAccuracy();
+		List<Line> list = this.getSegments();
+		int num = acc * (list.size() - 1) + list.size();
+		LineWithDirection[] ret = new LineWithDirection[num];
+		int num1 = 0;
+		//MyLogger.info("line loop a " + num);
+		for (Line l : list) {
+			//MyLogger.info("line loop " + num1);
+			ret[num1] = l.getODrawLine();
+			//Vec3 a = Vec3.createVectorHelper(0, 0, 0);
+			//ret[num1] = new LineWithDirection(a, a, a, a, a, a);
+			num1 = num1 + acc + 1;
+		}
+		Vec3 ms = Vec3.createVectorHelper(0, -1, 0);
+		for (int n = 0; n < list.size() - 1; n++) {
+			Vec3 s = list.get(n).getEnd();
+			Vec3 sn = list.get(n).getTangent(1.0);
+			Vec3 en = list.get(n + 1).getTangent(0.0);
+			for (int n1 = 0; n1 < acc; n1++) {
+				double t = (double) n / (double) acc;
+				double t1 = (double) (n + 1) / (double) acc;
+				/*Vec3 sn1 = MitoMath.ratio_vector(sn, en, t).normalize();
+				Vec3 sn2 = MitoMath.ratio_vector(sn, en, t1).normalize();*/
+				//MyLogger.info("line loop " + (n * 6 + n1 + 1));
+				ret[n * (acc + 1) + n1 + 1] = new LineWithDirection(s, s, sn, en, ms, ms);
+			}
+		}
+		return ret;
+	}
+
+	public int getAccuracy() {
+		return 1;
 	}
 
 }

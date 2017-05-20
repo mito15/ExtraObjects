@@ -19,11 +19,12 @@ import net.minecraft.world.World;
 public class BraceCoreHooks {
 
 	public static void getCollisionHook(World world, AxisAlignedBB aabb, List collidingBoundingBoxes, Entity entity) {
-		double d0 = 0.25D;
-		List<ExtraObject> list = BB_DataLists.getWorldData(world).getExtraObjectWithAABB(aabb);
-		for (ExtraObject base : list) {
-			base.addCollisionBoxesToList(world, aabb, collidingBoundingBoxes, entity);
-		}
+		/*List<ExtraObject> list = BB_DataLists.getWorldData(world).getExtraObjectWithAABB(aabb);
+		if (list.size() < 100) {
+			for (ExtraObject base : list) {
+				base.addCollisionBoxesToList(world, aabb, collidingBoundingBoxes, entity);
+			}
+		}*/
 	}
 
 	public static void rayTrace(float partialticks) {

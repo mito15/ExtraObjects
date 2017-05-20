@@ -45,6 +45,7 @@ public class BB_SelectedGroup extends BB_GroupBase {
 	public void initNum() {
 		size = 100;
 		rot = 0;
+		this.updateHighLight();
 	}
 
 	public void addShift(ExtraObject... bases) {
@@ -97,8 +98,12 @@ public class BB_SelectedGroup extends BB_GroupBase {
 	}
 	
 
-	public Object key = null;
-	public VBOList buffer = new VBOList();
+	private boolean shouldUpdateHighLight = true;
+	private VBOList buffer = new VBOList();
+	
+	public void updateHighLight(){
+		this.shouldUpdateHighLight = true;
+	}
 
 	public boolean drawHighLightGroup(EntityPlayer player, float partialticks) {
 		if (this.list.isEmpty()) {
@@ -111,7 +116,7 @@ public class BB_SelectedGroup extends BB_GroupBase {
 				-(player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialticks));
 		float size = 2.0F;
 
-		if (key == null || !key.equals(this)) {
+		if (shouldUpdateHighLight) {
 			buffer.delete();
 			CreateVertexBufferObject c = CreateVertexBufferObject.INSTANCE;
 			c.beginRegist(GL15.GL_STATIC_DRAW, GL11.GL_TRIANGLES);
@@ -120,9 +125,9 @@ public class BB_SelectedGroup extends BB_GroupBase {
 				BB_Render render = BB_ResisteredList.getBraceBaseRender(base);
 				render.updateRender(c, base);
 			}
-			key = this;
 			VBOHandler vbo = c.end();
 			buffer.add(vbo);
+			shouldUpdateHighLight = false;
 		}
 
 		GL11.glPushMatrix();
@@ -146,21 +151,11 @@ public class BB_SelectedGroup extends BB_GroupBase {
 	}
 
 	public boolean drawHighLightCopy(EntityPlayer player, float partialticks, MovingObjectPosition mop) {
-		if (this.list.isEmpty()) {
-			return false;
-		}
-		for (int n = 0; n < this.list.size(); n++) {
-			GL11.glMatrixMode(GL11.GL_MODELVIEW);
-			GL11.glPushMatrix();
-			GL11.glTranslated(-(player.lastTickPosX + (player.posX - player.lastTickPosX) * partialticks),
-					-(player.lastTickPosY + (player.posY - player.lastTickPosY) * partialticks),
-					-(player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialticks));
-			Vec3 pos = this.getDistance(mop);
-			GL11.glTranslated(pos.xCoord, pos.yCoord, pos.zCoord);
-			BB_Render render = BB_ResisteredList.getBraceBaseRender(this.list.get(n));
-			render.drawHighLight(this.list.get(n), partialticks);//4.0F
-			GL11.glPopMatrix();
-		}
+		GL11.glPushMatrix();
+		Vec3 pos = this.getDistance(mop);
+		GL11.glTranslated(pos.xCoord, pos.yCoord, pos.zCoord);
+		this.drawHighLightGroup(player, partialticks);
+		GL11.glPopMatrix();
 		return true;
 	}
 
@@ -201,6 +196,12 @@ public class BB_SelectedGroup extends BB_GroupBase {
 		Vec3 c = getCenter();
 		return mop.hitVec.addVector(-c.xCoord, -c.yCoord, -c.zCoord);
 	}
+	
+	private void update(ExtraObject exo){
+		exo.updateRenderer();
+		this.updateHighLight();
+		PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, exo));
+	}
 
 	public void applyProperty(Block tex, int color, String shape) {
 		for (int n = 0; n < this.list.size(); n++) {
@@ -219,8 +220,7 @@ public class BB_SelectedGroup extends BB_GroupBase {
 				} else {
 					brace.color = 0;
 				}
-				brace.updateRenderer();
-				PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, this.list.get(n)));
+				update(brace);
 			}
 		}
 	}
@@ -236,8 +236,7 @@ public class BB_SelectedGroup extends BB_GroupBase {
 				} else {
 					brace.color = 0;
 				}
-				brace.updateRenderer();
-				PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, this.list.get(n)));
+				update(brace);
 			}
 		}
 	}
@@ -254,8 +253,7 @@ public class BB_SelectedGroup extends BB_GroupBase {
 			if (this.list.get(n) instanceof Brace) {
 				Brace brace = ((Brace) this.list.get(n));
 				brace.size = (double) isize * 0.05;
-				brace.updateRenderer();
-				PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, this.list.get(n)));
+				update(brace);
 			}
 		}
 	}
@@ -284,8 +282,7 @@ public class BB_SelectedGroup extends BB_GroupBase {
 			if (this.list.get(n) instanceof Brace) {
 				Brace brace = ((Brace) this.list.get(n));
 				brace.setRoll(iroll);
-				brace.updateRenderer();
-				PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, this.list.get(n)));
+				update(brace);
 			}
 		}
 	}
@@ -295,8 +292,7 @@ public class BB_SelectedGroup extends BB_GroupBase {
 		for (int n = 0; n < this.list.size(); n++) {
 			ExtraObject brace = this.list.get(n);
 			brace.resize(c, (double) isize / this.size);
-			brace.updateRenderer();
-			PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, this.list.get(n)));
+			update(brace);
 
 		}
 		this.size = isize;
@@ -307,8 +303,7 @@ public class BB_SelectedGroup extends BB_GroupBase {
 		for (int n = 0; n < this.list.size(); n++) {
 			ExtraObject brace = this.list.get(n);
 			brace.rotation(c, -this.rot + irot);
-			brace.updateRenderer();
-			PacketHandler.INSTANCE.sendToServer(new BB_PacketProcessor(Mode.SYNC, this.list.get(n)));
+			update(brace);
 
 		}
 		this.rot = irot;
@@ -328,6 +323,7 @@ public class BB_SelectedGroup extends BB_GroupBase {
 			ExtraObject base = getList().get(n);
 			base.breakBrace(Main.proxy.getClientPlayer());
 		}*/
+		this.updateHighLight();
 		PacketHandler.INSTANCE.sendToServer(new GroupPacketProcessor(EnumGroupMode.DELETE, getList()));
 	}
 

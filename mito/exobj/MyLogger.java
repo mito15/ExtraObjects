@@ -12,7 +12,8 @@ public class MyLogger {
 	}
 
 	public static void info(String msg) {
-		if(Main.debug)logger.info(msg);
+		if (Main.debug)
+			logger.info(msg);
 	}
 
 	public static void warn(String msg) {

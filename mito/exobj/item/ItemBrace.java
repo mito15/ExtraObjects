@@ -215,14 +215,19 @@ public class ItemBrace extends ItemSet {
 		return true;
 	}
 
+	//on server 
 	public void onActiveClick(World world, EntityPlayer player, ItemStack itemstack, MovingObjectPosition mop, Vec3 set, Vec3 end, NBTTagCompound nbt) {
+		ExtraObject[] obs = new ExtraObject[] { MyUtil.getBrace(mop), BB_DataLists.getWorldData(world).getBraceBaseByID(nbt.getInteger("brace")) };
+		/*if (obs[1] != null) {
+			if(obs[1] instanceof )
+			return;
+		}*/
 		int color = this.getColor(itemstack);
 		Brace brace = new Brace(world, set, end, this.getType(itemstack), getJoint(itemstack), this.getMaterial(itemstack), this.getColor(itemstack), this.getRealSize(itemstack));
 		brace.addToWorld();
 
-		ExtraObject[] obs = new ExtraObject[]{MyUtil.getBrace(mop), BB_DataLists.getWorldData(world).getBraceBaseByID(nbt.getInteger("brace"))};
-		for(ExtraObject base : obs){
-			if(base != null && base.isStatic && base.isBind(brace)){
+		for (ExtraObject base : obs) {
+			if (base != null && base.isStatic && base.isBind(brace)) {
 				brace.connectBrace(base);
 			}
 		}

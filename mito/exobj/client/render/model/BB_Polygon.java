@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.mito.exobj.BraceBase.Brace.Brace;
 import com.mito.exobj.client.render.CreateVertexBufferObject;
-import com.mito.exobj.utilities.Line;
 import com.mito.exobj.utilities.MitoMath;
 import com.mito.exobj.utilities.MyUtil;
 
@@ -87,129 +86,154 @@ public class BB_Polygon implements IDrawBrace {
 		return false;
 	}
 
+	public List<BB_Model> getPolygons(Brace brace) {
+		/*double size = brace.size;
+		double roll = brace.getRoll();
+
+		ILineBrace bc = brace.line;
+		List<Triangle> ts = MyUtil.decomposeTexture(getTriangles(size));
+		if (ts != null) {
+			c.pushMatrix();
+			c.translate(bc.getStart());
+			c.transform(MyUtil.getRotationMatrix(bc.getTangent(0.0), bc.secondTan(0.0)));
+			c.rpyRotate(roll, 0, 0);
+			for (Triangle t0 : ts) {
+				t0.drawIconR(c, iicon);
+			}
+			c.popMatrix();
+
+			c.pushMatrix();
+			c.translate(bc.getEnd());
+			c.transform(MyUtil.getRotationMatrix(bc.getTangent(1.0), bc.secondTan(1.0)));
+			c.rpyRotate(roll, 0, 0);
+			for (Triangle t0 : ts) {
+				t0.drawIcon(c, iicon);
+			}
+			c.popMatrix();
+		}
+		double v = 0.0D;
+		LineWithDirection[] ls = bc.getDrawLine();
+		for (LineWithDirection lwd : ls) {
+			Vec3 s = MitoMath.sub_vector(lwd.list[0], brace.pos);
+			Vec3 e = MitoMath.sub_vector(lwd.list[1], brace.pos);
+			Vec3 sn = lwd.list[2];
+			Vec3 en = lwd.list[3];
+			Mat4 ms = MyUtil.getRotationMatrix(sn, lwd.list[4]);
+			Mat4 me = MyUtil.getRotationMatrix(en, lwd.list[5]);
+			double usum = 0.0D;
+			double vofst = MitoMath.subAbs(s, e);
+			for (int n1 = 0; n1 < getSize(size); n1++) {
+				Vec3 v1 = getVec3(n1 - 1, size);
+				Vec3 v2 = getVec3(n1, size);
+				Vec3 vs1 = MitoMath.vectorSum(ms.transformNormal(MitoMath.rotZ(v1, roll)), s);
+				Vec3 vs2 = MitoMath.vectorSum(ms.transformNormal(MitoMath.rotZ(v2, roll)), s);
+				Vec3 ven1 = MitoMath.vectorSum(me.transformNormal(MitoMath.rotZ(v1, roll)), e);
+				Vec3 ven2 = MitoMath.vectorSum(me.transformNormal(MitoMath.rotZ(v2, roll)), e);
+				Vec3 norm = MitoMath.unitVector(Vec3.createVectorHelper(v2.yCoord - v1.yCoord, v1.xCoord - v2.xCoord, 0.0D));
+				Vec3 norm1 = ms.transformNormal(MitoMath.rotZ(norm, roll));
+				Vec3 norm2 = me.transformNormal(MitoMath.rotZ(norm, roll));
+				double uofst = MitoMath.subAbs(v1, v2);
+				double zofst = v1.zCoord - v2.zCoord;
+				Vertex ve1 = new Vertex(vs1, v, usum, norm1);
+				Vertex ve2 = new Vertex(vs2, v + zofst, uofst + usum, norm1);
+				Vertex ve3 = new Vertex(ven2, v + vofst + zofst, uofst + usum, norm2);
+				Vertex ve4 = new Vertex(ven1, v + vofst, usum, norm2);
+				BB_Polygon square = new BB_Polygon(ve1, ve2, ve3, ve4);
+				List<Triangle> arrayTriangle = MyUtil.decomposeTexture(square);
+				for (Triangle triangle : arrayTriangle) {
+					triangle.drawIcon(c, iicon);
+				}
+				usum += uofst;
+			}
+			v += vofst;
+		}
+		c.popMatrix();*/
+		return null;
+	}
+
 	@Override
 	public void drawBracewithVBO(CreateVertexBufferObject c, Brace brace) {
 		//double rofst = (brace.pos.xCoord + brace.pos.yCoord + brace.pos.zCoord) % 1.0D;
 		IIcon iicon = brace.getIIcon(brace.color);
 		double size = brace.size;
 		double roll = brace.getRoll();
-		if (brace.line instanceof BezierCurve) {
-			BezierCurve bc = (BezierCurve) brace.line;
-			c.pushMatrix();
-			List<Triangle> ts = MyUtil.decomposeTexture(getTriangles(size));
-			if (ts != null) {
-				c.pushMatrix();
-				c.translate(brace.line.getStart());
-				c.transform(MyUtil.getRotationMatrix(brace.line.getTangent(0.0), bc.secondTan(0.0)));
-				c.rpyRotate(roll, 0, 0);
-				for (Triangle t0 : ts) {
-					t0.drawIconR(c, iicon);
-				}
-				c.popMatrix();
 
-				c.pushMatrix();
-				c.translate(brace.line.getEnd());
-				c.transform(MyUtil.getRotationMatrix(brace.line.getTangent(1.0), bc.secondTan(1.0)));
-				c.rpyRotate(roll, 0, 0);
-				for (Triangle t0 : ts) {
-					t0.drawIcon(c, iicon);
-				}
-				c.popMatrix();
-			}
-			c.popMatrix();
+		ILineBrace bc = brace.line;
+		c.pushMatrix();
+		List<Triangle> ts = MyUtil.decomposeTexture(getTriangles(size));
+		if (ts != null) {
 			c.pushMatrix();
-			c.translate(brace.pos);
-			int acc = bc.getAccuracy();
-			double v = 0.0D;
-			Vec3 setNormal = bc.getTangent(0.0D);
-			for (int n = 0; n < acc; n++) {
-				double t = (double) n / (double) acc;
-				double t1 = (double) (n + 1) / (double) acc;
-				Vec3 s = MitoMath.sub_vector(bc.getPoint(t), brace.pos);
-				Vec3 e = MitoMath.sub_vector(bc.getPoint(t1), brace.pos);
-				Vec3 sn = bc.getTangent(t);
-				Vec3 en = bc.getTangent(t1);
-				Mat4 ms = MyUtil.getRotationMatrix(sn, bc.secondTan(t));
-				Mat4 me = MyUtil.getRotationMatrix(en, bc.secondTan(t1));
-				double usum = 0.0D;
-				double vofst = MitoMath.subAbs(s, e);
-				for (int n1 = 0; n1 < getSize(size); n1++) {
-					Vec3 v1 = getVec3(n1 - 1, size);
-					Vec3 v2 = getVec3(n1, size);
-					Vec3 vs1 = MitoMath.vectorSum(ms.transformNormal(MitoMath.rotZ(v1, roll)), s);
-					Vec3 vs2 = MitoMath.vectorSum(ms.transformNormal(MitoMath.rotZ(v2, roll)), s);
-					Vec3 ven1 = MitoMath.vectorSum(me.transformNormal(MitoMath.rotZ(v1, roll)), e);
-					Vec3 ven2 = MitoMath.vectorSum(me.transformNormal(MitoMath.rotZ(v2, roll)), e);
-					Vec3 norm = MitoMath.unitVector(Vec3.createVectorHelper(v2.yCoord - v1.yCoord, v1.xCoord - v2.xCoord, 0.0D));
-					Vec3 norm1 = ms.transformNormal(MitoMath.rotZ(norm, roll));
-					Vec3 norm2 = me.transformNormal(MitoMath.rotZ(norm, roll));
-					double uofst = MitoMath.subAbs(v1, v2);
-					double zofst = v1.zCoord - v2.zCoord;
-					Vertex ve1 = new Vertex(vs1, v, usum, norm1);
-					Vertex ve2 = new Vertex(vs2, v + zofst, uofst + usum, norm1);
-					Vertex ve3 = new Vertex(ven2, v + vofst + zofst, uofst + usum, norm2);
-					Vertex ve4 = new Vertex(ven1, v + vofst, usum, norm2);
-					BB_Polygon square = new BB_Polygon(ve1, ve2, ve3, ve4);
-					List<Triangle> arrayTriangle = MyUtil.decomposeTexture(square);
-					for (Triangle triangle : arrayTriangle) {
-						triangle.drawIcon(c, iicon);
-					}
-					usum += uofst;
-				}
-				v += vofst;
-			}
-			c.popMatrix();
-		} else if (brace.line instanceof Line) {
-			c.pushMatrix();
-			List<Triangle> ts = MyUtil.decomposeTexture(getTriangles(size));
-			if (ts != null) {
-				c.pushMatrix();
-				c.translate(brace.line.getStart());
-				c.transform(MyUtil.getRotationMatrix(brace.line.getTangent(0.0)));
-				c.rpyRotate(roll, 0, 0);
-				for (Triangle t0 : ts) {
-					t0.drawIconR(c, iicon);
-				}
-				c.popMatrix();
-
-				c.pushMatrix();
-				c.translate(brace.line.getEnd());
-				c.transform(MyUtil.getRotationMatrix(brace.line.getTangent(1.0)));
-				c.rpyRotate(roll, 0, 0);
-				for (Triangle t0 : ts) {
-					t0.drawIcon(c, iicon);
-				}
-				c.popMatrix();
-			}
-			c.popMatrix();
-
-			iicon = brace.getIIcon(1);
-			Line line = (Line) brace.line;
-			double l = MitoMath.subAbs(line.start, line.end);
-			c.pushMatrix();
-			c.translate(brace.pos);
-			c.transform(MyUtil.getRotationMatrix(line.getTangent(0).normalize()));
+			c.translate(bc.getStart());
+			c.transform(MyUtil.getRotationMatrix(bc.getTangent(0.0), bc.secondTan(0.0)));
 			c.rpyRotate(roll, 0, 0);
-			double vofst = 0;
+			for (Triangle t0 : ts) {
+				t0.drawIconR(c, iicon);
+			}
+			c.popMatrix();
+
+			c.pushMatrix();
+			c.translate(bc.getEnd());
+			c.transform(MyUtil.getRotationMatrix(bc.getTangent(1.0), bc.secondTan(1.0)));
+			c.rpyRotate(roll, 0, 0);
+			for (Triangle t0 : ts) {
+				t0.drawIcon(c, iicon);
+			}
+			c.popMatrix();
+		}
+		c.popMatrix();
+
+		c.pushMatrix();
+		c.translate(brace.pos);
+		double v = 0.0D;
+		LineWithDirection[] ls = bc.getDrawLine();
+		int acc = bc.getAccuracy();
+		for (int n = 0; n < acc; n++) {
+		//for (LineWithDirection lwd : ls) {
+			double t = (double) n / (double) acc;
+			double t1 = (double) (n + 1) / (double) acc;
+			Vec3 s = MitoMath.sub_vector(bc.getPoint(t), brace.pos);
+			Vec3 e = MitoMath.sub_vector(bc.getPoint(t1), brace.pos);
+			Vec3 sn = bc.getTangent(t);
+			Vec3 en = bc.getTangent(t1);
+			Mat4 ms = MyUtil.getRotationMatrix(sn, bc.secondTan(t));
+			Mat4 me = MyUtil.getRotationMatrix(en, bc.secondTan(t1));
+			/*Vec3 s = MitoMath.sub_vector(lwd.list[0], brace.pos);
+			Vec3 e = MitoMath.sub_vector(lwd.list[1], brace.pos);
+			Vec3 sn = lwd.list[2];
+			Vec3 en = lwd.list[3];
+			Mat4 ms = MyUtil.getRotationMatrix(sn, lwd.list[4]);
+			Mat4 me = MyUtil.getRotationMatrix(en, lwd.list[5]);*/
+			double usum = 0.0D;
+			double vofst = MitoMath.subAbs(s, e);
 			for (int n1 = 0; n1 < getSize(size); n1++) {
 				Vec3 v1 = getVec3(n1 - 1, size);
 				Vec3 v2 = getVec3(n1, size);
-				Vec3 norm = getNorm2(v1, v2);
-				double r = v1.distanceTo(v2);
-				Vertex ve1 = new Vertex(v1, 0, vofst, norm);
-				Vertex ve2 = new Vertex(v2, 0, vofst + r, norm);
-				Vertex ve3 = new Vertex(v2.addVector(0, 0, l), l, vofst + r, norm);
-				Vertex ve4 = new Vertex(v1.addVector(0, 0, l), l, vofst, norm);
+				Vec3 vs1 = MitoMath.vectorSum(ms.transformNormal(MitoMath.rotZ(v1, roll)), s);
+				Vec3 vs2 = MitoMath.vectorSum(ms.transformNormal(MitoMath.rotZ(v2, roll)), s);
+				Vec3 ven1 = MitoMath.vectorSum(me.transformNormal(MitoMath.rotZ(v1, roll)), e);
+				Vec3 ven2 = MitoMath.vectorSum(me.transformNormal(MitoMath.rotZ(v2, roll)), e);
+				Vec3 norm = MitoMath.unitVector(Vec3.createVectorHelper(v2.yCoord - v1.yCoord, v1.xCoord - v2.xCoord, 0.0D));
+				Vec3 norm1 = ms.transformNormal(MitoMath.rotZ(norm, roll));
+				Vec3 norm2 = me.transformNormal(MitoMath.rotZ(norm, roll));
+				double uofst = MitoMath.subAbs(v1, v2);
+				double zofst = v1.zCoord - v2.zCoord;
+				Vertex ve1 = new Vertex(vs1, v, usum, norm1);
+				Vertex ve2 = new Vertex(vs2, v + zofst, uofst + usum, norm1);
+				Vertex ve3 = new Vertex(ven2, v + vofst + zofst, uofst + usum, norm2);
+				Vertex ve4 = new Vertex(ven1, v + vofst, usum, norm2);
 				BB_Polygon square = new BB_Polygon(ve1, ve2, ve3, ve4);
 				List<Triangle> arrayTriangle = MyUtil.decomposeTexture(square);
+				/*Triangle t1 = new Triangle(ve1, ve2, ve3);
+				Triangle t2 = new Triangle(ve3, ve4, ve1);
+				Triangle[] arrayTriangle = new Triangle[]{t1, t2};*/
 				for (Triangle triangle : arrayTriangle) {
 					triangle.drawIcon(c, iicon);
 				}
-				vofst = vofst + r;
+				usum += uofst;
 			}
-			c.popMatrix();
-
+			v += vofst;
 		}
+		c.popMatrix();
 	}
 
 	private List<Triangle> getTriangles(double size) {
@@ -266,5 +290,4 @@ public class BB_Polygon implements IDrawBrace {
 
 	}
 
-	
 }
