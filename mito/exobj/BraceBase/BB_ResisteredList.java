@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 
-import com.mito.exobj.MyLogger;
 import com.mito.exobj.BraceBase.Brace.Brace;
 import com.mito.exobj.BraceBase.Brace.FakeBlock;
 import com.mito.exobj.BraceBase.Brace.GroupObject;
@@ -22,6 +21,7 @@ import com.mito.exobj.client.render.exobj.RenderMotor;
 import com.mito.exobj.client.render.exobj.RenderTofu;
 import com.mito.exobj.network.BB_PacketProcessor;
 import com.mito.exobj.network.BB_PacketProcessor.Mode;
+import com.mito.exobj.utilities.MyLogger;
 import com.mito.exobj.network.PacketHandler;
 
 import cpw.mods.fml.common.FMLLog;

@@ -1,7 +1,6 @@
 package com.mito.exobj.item;
 
 import com.mito.exobj.Main;
-import com.mito.exobj.MyLogger;
 import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.BraceBase.Brace.Brace;
 import com.mito.exobj.BraceBase.Brace.FakeBlock;
@@ -9,6 +8,7 @@ import com.mito.exobj.client.BB_Key;
 import com.mito.exobj.client.render.RenderHighLight;
 import com.mito.exobj.entity.EntityWrapperBB;
 import com.mito.exobj.utilities.MitoMath;
+import com.mito.exobj.utilities.MyLogger;
 import com.mito.exobj.utilities.MyUtil;
 
 import net.minecraft.block.Block;

@@ -6,12 +6,12 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
-import com.mito.exobj.MyLogger;
 import com.mito.exobj.network.BB_PacketProcessor;
 import com.mito.exobj.network.BB_PacketProcessor.Mode;
 import com.mito.exobj.network.PacketHandler;
 import com.mito.exobj.utilities.Line;
 import com.mito.exobj.utilities.MitoMath;
+import com.mito.exobj.utilities.MyLogger;
 import com.mito.exobj.utilities.MyUtil;
 
 import cpw.mods.fml.relauncher.Side;
@@ -155,7 +155,7 @@ public abstract class ExtraObject {
 	public boolean removeFromWorld() {
 		if (this.group != null) {
 			this.group.remove(this);
-			MyLogger.info("remove from world " + this.BBID);
+			//MyLogger.info("remove from world " + this.BBID);
 		}
 		if(this.datachunk != null){
 			if(datachunk.exObjList.isEmpty())

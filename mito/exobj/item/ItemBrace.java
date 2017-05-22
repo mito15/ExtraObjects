@@ -4,11 +4,11 @@ import java.util.List;
 
 import com.mito.exobj.Main;
 import com.mito.exobj.BraceBase.BB_DataLists;
+import com.mito.exobj.BraceBase.BB_TypeResister;
 import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.BraceBase.Brace.Brace;
 import com.mito.exobj.client.BB_Key;
 import com.mito.exobj.client.render.RenderHighLight;
-import com.mito.exobj.client.render.exobj.BB_TypeResister;
 import com.mito.exobj.entity.EntityWrapperBB;
 import com.mito.exobj.main.ResisterItem;
 import com.mito.exobj.utilities.MyUtil;

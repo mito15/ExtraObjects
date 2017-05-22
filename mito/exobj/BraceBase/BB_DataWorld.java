@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mito.exobj.MyLogger;
 import com.mito.exobj.entity.EntityWrapperBB;
 import com.mito.exobj.network.BB_PacketProcessor;
 import com.mito.exobj.network.BB_PacketProcessor.Mode;
 import com.mito.exobj.network.PacketHandler;
+import com.mito.exobj.utilities.MyLogger;
 
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IntHashMap;

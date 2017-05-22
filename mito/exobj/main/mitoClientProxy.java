@@ -7,15 +7,14 @@ import com.mito.exobj.Main;
 import com.mito.exobj.BraceBase.BB_RenderHandler;
 import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.block.TileObjects;
+import com.mito.exobj.client.BB_HighLightHandler;
 import com.mito.exobj.client.BB_Key;
 import com.mito.exobj.client.BB_KeyBinding;
 import com.mito.exobj.client.BB_SelectedGroup;
-import com.mito.exobj.client.BB_HighLightHandler;
 import com.mito.exobj.client.ScrollWheelHandler;
 import com.mito.exobj.client.render.RenderBlockObjects;
 import com.mito.exobj.client.render.RenderItemBrace;
 import com.mito.exobj.client.render.TileObjectsRenderer;
-import com.mito.exobj.client.render.exobj.BB_TypeResister;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -98,7 +97,6 @@ public class mitoClientProxy extends mitoCommonProxy {
 
 	@Override
 	public void init() {
-		BB_TypeResister.loadModels();
 		//entity render resist
 
 

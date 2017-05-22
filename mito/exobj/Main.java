@@ -11,6 +11,7 @@ import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 
 import com.mito.exobj.BraceBase.BB_EventHandler;
+import com.mito.exobj.BraceBase.BB_TypeResister;
 import com.mito.exobj.client.gui.GuiHandler;
 import com.mito.exobj.entity.EntityWrapperBB;
 import com.mito.exobj.main.ResisterItem;
@@ -61,15 +62,13 @@ public class Main {
 	//configuration
 	public File modelDir;
 	public File shapesDir;
-	//public File GroupsDir;
-	//public File ObjsDir;
+	public File GroupsDir;
+	public File ObjsDir;
 	public File source;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		if (event.getSide() == Side.CLIENT) {
-			resisterFiles(event);
-		}
+		resisterFiles(event);
 		proxy.preInit();
 		ResisterItem.preinit();
 		PacketHandler.init();
@@ -78,6 +77,7 @@ public class Main {
 
 	@EventHandler
 	public void Init(FMLInitializationEvent e) {
+		BB_TypeResister.loadModels();
 		resisterEvent();
 		proxy.init();
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
@@ -128,8 +128,8 @@ public class Main {
 			modelDir = new File(mcDir, "brace-models");
 			modelDir.mkdir();
 			shapesDir = new File(modelDir, "shapes");
+			shapesDir.mkdir();
 			if (shapesDir.listFiles() == null || shapesDir.listFiles().length < 2) {
-				shapesDir.mkdir();
 				//File sd2 = new File(sourceDir, "/assets/exobj/jsons");
 				if (!debug) {
 					try {
@@ -187,10 +187,10 @@ public class Main {
 					}
 				}
 			}
-			/*GroupsDir = new File(modelDir, "groups");
+			GroupsDir = new File(modelDir, "groups");
 			GroupsDir.mkdir();
 			ObjsDir = new File(modelDir, "objects");
-			ObjsDir.mkdir();*/
+			ObjsDir.mkdir();
 		} finally
 
 		{

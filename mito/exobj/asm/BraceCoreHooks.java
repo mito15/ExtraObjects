@@ -11,6 +11,7 @@ import com.mito.exobj.utilities.MyUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -19,12 +20,14 @@ import net.minecraft.world.World;
 public class BraceCoreHooks {
 
 	public static void getCollisionHook(World world, AxisAlignedBB aabb, List collidingBoundingBoxes, Entity entity) {
-		/*List<ExtraObject> list = BB_DataLists.getWorldData(world).getExtraObjectWithAABB(aabb);
-		if (list.size() < 100) {
-			for (ExtraObject base : list) {
-				base.addCollisionBoxesToList(world, aabb, collidingBoundingBoxes, entity);
+		if (entity instanceof EntityPlayer) {
+			List<ExtraObject> list = BB_DataLists.getWorldData(world).getExtraObjectWithAABB(aabb);
+			if (list.size() < 100) {
+				for (ExtraObject base : list) {
+					base.addCollisionBoxesToList(world, aabb, collidingBoundingBoxes, entity);
+				}
 			}
-		}*/
+		}
 	}
 
 	public static void rayTrace(float partialticks) {

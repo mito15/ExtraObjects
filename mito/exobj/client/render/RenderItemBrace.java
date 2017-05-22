@@ -2,8 +2,8 @@ package com.mito.exobj.client.render;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mito.exobj.MyLogger;
 import com.mito.exobj.item.ItemBrace;
+import com.mito.exobj.utilities.MyLogger;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;

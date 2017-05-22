@@ -1,6 +1,5 @@
 package com.mito.exobj.BraceBase;
 
-import com.mito.exobj.MyLogger;
 import com.mito.exobj.BraceBase.DammyWorld.BB_GUIHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -59,8 +58,9 @@ public class BB_EventHandler {
 	@SubscribeEvent
 	public void onUpdate(TickEvent.PlayerTickEvent e) {
 		if (e.phase == Phase.END) {
-			if (e.player.worldObj.isRemote)
+			if (e.player.worldObj.isRemote) {
 				LoadClientWorldHandler.INSTANCE.onUpdate(e);
+			}
 		}
 	}
 
@@ -69,8 +69,9 @@ public class BB_EventHandler {
 		if (e.phase == Phase.END) {
 			BB_LoadWorld.INSTANCE.onWorldTickEvent(e);
 		}
-		if (e.side == Side.CLIENT)
-			MyLogger.info("" + e.getPhase());
+		if (e.side == Side.CLIENT) {
+			//MyLogger.info("" + e.getPhase());
+		}
 	}
 
 	// 重複については未処理  unload -> save
@@ -92,31 +93,6 @@ public class BB_EventHandler {
 			BB_LoadWorld.INSTANCE.onChunkUnload(e);
 		}
 	}
-
-	/*@SubscribeEvent
-	public void PlayerInteractEvent(PlayerInteractEvent e) {
-		if (e.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR || e.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
-			BB_MovingObjectPosition m2 = MitoUtil.rayTraceIncl(e.entityPlayer, 5.0, 1.0f);
-			if (m2 != null) {
-				if (m2.typeOfHit == BB_MovingObjectPosition.MovingObjectType.BRACEBASE) {
-					if (m2.braceHit.rightClick(e.entityPlayer, m2.hitVec, e.entityPlayer.getCurrentEquippedItem())) {
-						e.setCanceled(true);
-					}
-					PacketHandler.INSTANCE.sendToServer(new BB_ClickPacketProcessor(BB_ClickPacketProcessor.Mode.CLICK_RIGHT, m2.braceHit.BBID, m2.hitVec));
-				}
-			}
-		} else if (e.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
-			BB_MovingObjectPosition m2 = MitoUtil.rayTraceIncl(e.entityPlayer, 5.0, 1.0f);
-			if (m2 != null) {
-				if (m2.typeOfHit == BB_MovingObjectPosition.MovingObjectType.BRACEBASE) {
-					if (m2.braceHit.leftClick(e.entityPlayer, m2.hitVec, e.entityPlayer.getCurrentEquippedItem())) {
-						e.setCanceled(true);
-					}
-					PacketHandler.INSTANCE.sendToServer(new BB_ClickPacketProcessor(BB_ClickPacketProcessor.Mode.CLICK_LEFT, m2.braceHit.BBID, m2.hitVec));
-				}
-			}
-		}
-	}*/
 
 	/*@SubscribeEvent
 	//@SideOnly(Side.CLIENT)

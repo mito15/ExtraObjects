@@ -2,9 +2,9 @@ package com.mito.exobj.client.render.exobj;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mito.exobj.MyLogger;
 import com.mito.exobj.BraceBase.BB_Render;
 import com.mito.exobj.BraceBase.ExtraObject;
+import com.mito.exobj.utilities.MyLogger;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;

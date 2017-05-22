@@ -22,7 +22,7 @@ public class CreativeTabMito extends CreativeTabs {
 	@SideOnly(Side.CLIENT)
 	public String getTranslatedTabLabel()
 	{
-		return "Braces&Oscillators";
+		return "Extra Objects";
 	}
 
 

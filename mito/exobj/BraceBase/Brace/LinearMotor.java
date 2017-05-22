@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.mito.exobj.MyLogger;
 import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.item.ItemBar;
 import com.mito.exobj.item.ItemBraceBase;
@@ -14,6 +13,7 @@ import com.mito.exobj.network.BB_PacketProcessor.Mode;
 import com.mito.exobj.network.PacketHandler;
 import com.mito.exobj.utilities.Line;
 import com.mito.exobj.utilities.MitoMath;
+import com.mito.exobj.utilities.MyLogger;
 
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;

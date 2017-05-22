@@ -1,19 +1,19 @@
-package com.mito.exobj.client.render.exobj;
+package com.mito.exobj.BraceBase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mito.exobj.MyLogger;
 import com.mito.exobj.BraceBase.Brace.CubeJoint;
-import com.mito.exobj.client.render.model.BB_LoadModel;
+import com.mito.exobj.client.render.exobj.IJoint;
 import com.mito.exobj.client.render.model.BB_Model;
 import com.mito.exobj.client.render.model.BB_Polygon;
 import com.mito.exobj.client.render.model.D_Ellipse;
 import com.mito.exobj.client.render.model.IDrawBrace;
 import com.mito.exobj.client.render.model.Pattern;
 import com.mito.exobj.client.render.model.Vertex;
+import com.mito.exobj.utilities.MyLogger;
 
 import cpw.mods.fml.common.Loader;
 import net.minecraft.util.Vec3;

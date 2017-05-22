@@ -9,9 +9,9 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL15;
 
-import com.mito.exobj.MyLogger;
 import com.mito.exobj.client.render.model.Mat4;
 import com.mito.exobj.client.render.model.Vertex;
+import com.mito.exobj.utilities.MyLogger;
 
 import net.minecraft.util.Vec3;
 

@@ -2,6 +2,7 @@ package com.mito.exobj;
 
 import com.mito.exobj.item.ItemBrace;
 import com.mito.exobj.main.ResisterItem;
+import com.mito.exobj.utilities.MyLogger;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;

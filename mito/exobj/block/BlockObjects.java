@@ -66,6 +66,8 @@ public class BlockObjects extends BlockContainer {
 		return true;
 	}
 
+	@Override
+	@SideOnly(Side.CLIENT)
 	public int getRenderType() {
 		return Main.RenderType_Objects;
 	}

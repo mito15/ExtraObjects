@@ -3,7 +3,6 @@ package com.mito.exobj.BraceBase.Brace;
 import java.util.List;
 
 import com.mito.exobj.Main;
-import com.mito.exobj.MyLogger;
 import com.mito.exobj.BraceBase.ExtraObject;
 import com.mito.exobj.client.render.model.BezierCurve;
 import com.mito.exobj.client.render.model.ILineBrace;
@@ -16,6 +15,7 @@ import com.mito.exobj.network.BB_PacketProcessor.Mode;
 import com.mito.exobj.network.PacketHandler;
 import com.mito.exobj.utilities.Line;
 import com.mito.exobj.utilities.MitoMath;
+import com.mito.exobj.utilities.MyLogger;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -112,6 +112,7 @@ public class Brace extends ExtraObject {
 				line = new Line(start, end);
 				break;
 			case 1:
+
 				Vec3 v1 = getVec3(nbt, "bezier1");
 				Vec3 v2 = getVec3(nbt, "bezier2");
 				Vec3 v3 = getVec3(nbt, "bezier3");
@@ -139,15 +140,8 @@ public class Brace extends ExtraObject {
 				break;
 			}
 		} else {
-			if (nbt.getBoolean("hasCP")) {
-				Vec3 v1 = getVec3(nbt, "cp1");
-				Vec3 v2 = getVec3(nbt, "cp2");
-				Vec3 end = getVec3(nbt, "end");
-				line = new BezierCurve(pos, v1, v2, end);
-			} else {
-				Vec3 end = getVec3(nbt, "end");
-				line = new Line(pos, end);
-			}
+			Vec3 end = getVec3(nbt, "end");
+			line = new Line(pos, end);
 		}
 		this.shape = nbt.getString("shape");
 		this.joint = nbt.getString("joint");

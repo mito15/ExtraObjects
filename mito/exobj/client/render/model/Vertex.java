@@ -6,10 +6,10 @@ import net.minecraft.util.Vec3;
 
 public class Vertex {
 
-	public Vec3 pos;
-	public double u;
-	public double v;
-	public Vec3 norm;
+	public final Vec3 pos;
+	public final double u;
+	public final double v;
+	public final Vec3 norm;
 
 	public Vertex(double x, double y) {
 		this(x, y, 0);
@@ -43,7 +43,7 @@ public class Vertex {
 	}
 
 	public Vertex resize(double size) {
-		return new Vertex(MitoMath.vectorMul(this.pos, size), this.u * size, this.v * size);
+		return new Vertex(MitoMath.vectorMul(this.pos, size), this.u * size + 0.5, this.v * size + 0.5);
 	}
 
 	public Vertex addVector(double i, double j, double l) {
@@ -59,14 +59,12 @@ public class Vertex {
 		return new Vertex(MitoMath.rot(this.pos, roll, pitch, yaw), this.u, this.v);
 	}
 
-	public Vertex transTexUV() {
-		this.u += 0.5;
-		this.v += 0.5;
-		return this;
-	}
-
 	public Vertex copy() {
 		return new Vertex(pos, u, v, norm);
+	}
+
+	public Vertex transform(Mat4 mat) {
+		return new Vertex(mat.transformVec3(pos), u, v, mat.transformVec3(norm));
 	}
 
 }

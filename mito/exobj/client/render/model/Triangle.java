@@ -4,10 +4,11 @@ import com.mito.exobj.client.render.CreateVertexBufferObject;
 import com.mito.exobj.utilities.MitoMath;
 
 import net.minecraft.util.IIcon;
+import net.minecraft.util.Vec3;
 
 public class Triangle {
 
-	public Vertex[] vertexs = new Vertex[3];
+	public final Vertex[] vertexs = new Vertex[3];
 
 	public Triangle(Vertex v1, Vertex v2, Vertex v3) {
 		this.vertexs[0] = v1;
@@ -95,6 +96,19 @@ public class Triangle {
 			c.setNormal(vertexs[2].norm);
 			c.registVertexWithUV(vertexs[2].pos, (vertexs[2].u - osu) * du + mu, mv + (vertexs[2].v - osv) * dv);
 		}
+	}
+
+	public Triangle transform(Mat4 mat) {
+		return new Triangle(this.vertexs[0].transform(mat), this.vertexs[1].transform(mat), this.vertexs[2].transform(mat));
+	}
+
+	public Triangle translate(Vec3 start) {
+		return new Triangle(this.vertexs[0].addVector(start), this.vertexs[1].addVector(start), this.vertexs[2].addVector(start));
+		
+	}
+
+	public Triangle copy() {
+		return new Triangle(this.vertexs[0].copy(), this.vertexs[1].copy(), this.vertexs[2].copy());
 	}
 
 }

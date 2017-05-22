@@ -198,7 +198,7 @@ public class Mat4 {
 		this.transMat(ro);
 	}
 	
-	private void init() {
+	void init() {
 		val[15] = 1;
 		val[14] = 0;
 		val[13] = 0;

@@ -1,4 +1,4 @@
-package com.mito.exobj.client.render.model;
+package com.mito.exobj.BraceBase;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,8 +14,12 @@ import java.util.List;
 
 import com.google.gson.stream.JsonReader;
 import com.mito.exobj.Main;
-import com.mito.exobj.MyLogger;
-import com.mito.exobj.client.render.exobj.BB_TypeResister;
+import com.mito.exobj.client.render.model.BB_Polygon;
+import com.mito.exobj.client.render.model.BraceShapes;
+import com.mito.exobj.client.render.model.D_Ellipse;
+import com.mito.exobj.client.render.model.IDrawBrace;
+import com.mito.exobj.client.render.model.Vertex;
+import com.mito.exobj.utilities.MyLogger;
 
 public class BB_LoadModel {
 
@@ -70,7 +74,7 @@ public class BB_LoadModel {
 	}
 
 	public static void loadJson(File file, List<File> list) {
-		if (file.isDirectory()) {
+		if (file != null&& file.isDirectory()) {
 			File[] files = file.listFiles();
 			for (int n = 0; n < files.length; n++) {
 				if (files[n] != null && files[n].canRead() && files[n].isFile() && files[n].getPath().endsWith(".json")) {

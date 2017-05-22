@@ -28,6 +28,10 @@ public class D_Ellipse extends BB_Polygon {
 	private Vec3 getNorm1(Vec3 v1, Vec3 v2) {
 		return MitoMath.unitVector(v1);
 	}
+	
+	private BB_Polygon copy() {
+		return new D_Ellipse(MitoMath.copyVec3(pos), MitoMath.copyVec3(normalRotation), axisX, axisY);
+	}
 
 	private Vec3 getNorm2(Vec3 v1, Vec3 v2) {
 		return MitoMath.unitVector(v2);

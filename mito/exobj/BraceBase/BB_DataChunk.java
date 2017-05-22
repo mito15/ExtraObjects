@@ -3,8 +3,8 @@ package com.mito.exobj.BraceBase;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mito.exobj.MyLogger;
 import com.mito.exobj.client.render.VBOList;
+import com.mito.exobj.utilities.MyLogger;
 
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
@@ -41,7 +41,7 @@ public class BB_DataChunk {
 		}
 		if (this.chunkExist()) {
 			this.world.getChunkFromChunkCoords(xPosition, zPosition).setChunkModified();
-			MyLogger.info("data chunk#modified");
+			//MyLogger.info("data chunk#modified");
 		}
 	}
 
@@ -96,13 +96,11 @@ public class BB_DataChunk {
 	}
 
 	public void getEntitiesWithinAABBForEntity(AxisAlignedBB boundingBox, ArrayList arraylist) {
-
 		for (ExtraObject base : exObjList) {
 			if (base.interactWithAABB(boundingBox)) {
 				arraylist.add(base);
 			}
 		}
-
 	}
 
 	public void addGroup(BB_DataGroup group) {

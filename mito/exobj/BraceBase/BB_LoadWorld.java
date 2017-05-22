@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.mito.exobj.MyLogger;
+import com.mito.exobj.utilities.MyLogger;
 
 import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -79,7 +79,7 @@ public class BB_LoadWorld {
 
 						for (int n = 0; n < group.list.size(); n++) {
 							ExtraObject exObj = group.list.get(n);
-							MyLogger.info("save exobj id " + exObj.BBID);
+							//MyLogger.info("save exobj id " + exObj.BBID);
 							BraceBaseToIntMapping.put(exObj, new Integer(n));
 							//MyLogger.info("nbt associate(save) " + n + " : " + BB_ResisteredList.classToStringMapping.get(exObj.getClass()));
 						}
@@ -88,7 +88,7 @@ public class BB_LoadWorld {
 						for (int n = 0; n < group.list.size(); n++) {
 							ExtraObject exObj = group.list.get(n);
 							NBTTagCompound nbt2 = new NBTTagCompound();
-							MyLogger.info("save exobj id2 " + exObj.BBID);
+							//MyLogger.info("save exobj id2 " + exObj.BBID);
 							if (exObj.writeToNBTOptional(nbt2)) {
 								taglistGroup.appendTag(nbt2);
 								exObj.writeNBTAssociate(nbt2, BraceBaseToIntMapping);
@@ -111,7 +111,7 @@ public class BB_LoadWorld {
 			nbt.setTag("BB_Groups", taglistGroups);
 		}
 
-		if (/*chunkData.isDead*/!e.getChunk().isChunkLoaded) {
+		/*if (chunkData.isDead!e.getChunk().isChunkLoaded) {
 			Iterator iterator = chunkData.exObjList.iterator();
 			while (iterator.hasNext()) {
 				ExtraObject base = (ExtraObject) iterator.next();
@@ -119,7 +119,7 @@ public class BB_LoadWorld {
 				base.removeFromWorld();
 			}
 			worldData.removeDataChunk(chunkData);
-		}
+		}*/
 
 		try {
 			nbtSave(e.world, e.getChunk(), nbt);
