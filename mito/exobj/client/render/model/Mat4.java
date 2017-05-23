@@ -216,4 +216,13 @@ public class Mat4 {
 		return null;
 	}
 
+	public Mat4 rotZ(double roll) {
+		double phi = roll * 2 * Math.PI / 360;
+		Mat4 ro = createMat4(Math.cos(phi),- Math.sin(phi), 0,
+				Math.sin(phi), Math.cos(phi), 0,
+				0, 0, 1);
+		ro.init();
+		return this.matrixProduct(ro);
+	}
+
 }

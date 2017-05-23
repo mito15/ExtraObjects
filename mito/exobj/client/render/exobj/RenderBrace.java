@@ -13,8 +13,11 @@ import com.mito.exobj.BraceBase.Brace.Brace;
 import com.mito.exobj.client.BB_HighLightHandler;
 import com.mito.exobj.client.render.CreateVertexBufferObject;
 import com.mito.exobj.client.render.VBOHandler;
+import com.mito.exobj.client.render.model.BB_Model;
 import com.mito.exobj.client.render.model.IDrawBrace;
 import com.mito.exobj.main.mitoClientProxy;
+
+import net.minecraft.util.IIcon;
 
 public class RenderBrace extends BB_Render {
 
@@ -38,27 +41,16 @@ public class RenderBrace extends BB_Render {
 			data.buffer.add(vbo);
 		}
 
-		GL11.glPushMatrix();
-
-		GL11.glLineWidth(size);
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_ONE_MINUS_DST_COLOR, GL11.GL_ZERO);
 		BB_RenderHandler.enableClient();
 		data.buffer.draw(GL11.GL_LINE_LOOP);
 		BB_RenderHandler.disableClient();
 
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glPopMatrix();
 	}
 
 	public void doRender(ExtraObject base, float x, float y, float z, float partialTickTime) {
 		Brace brace = (Brace) base;
 		GL11.glTranslated(brace.rand.xCoord, brace.rand.yCoord, brace.rand.zCoord);
-		BB_TypeResister.getFigure(brace.shape).drawBraceTessellator(brace, partialTickTime);
+		//BB_TypeResister.getFigure(brace.shape).drawBraceTessellator(brace, partialTickTime);
 	}
 
 	public void updateRender(CreateVertexBufferObject c, ExtraObject base) {
@@ -69,18 +61,20 @@ public class RenderBrace extends BB_Render {
 		int i = base.getBrightnessForRender(0, x, y, z);
 
 		Brace brace = (Brace) base;
-		if (brace.shape == null)
-			return;
 		c.setBrightness(i);
 		int j = brace.texture.getRenderColor(brace.color);
-		float f = (float)(j >> 16 & 255) / 255.0F;
-		float g = (float)(j >> 8 & 255) / 255.0F;
-		float h = (float)(j & 255) / 255.0F;;
-		c.setColor(f, g, h);
+		c.setColor(j);
 		c.pushMatrix();
 		IDrawBrace id = BB_TypeResister.getFigure(brace.shape);
-		if (id != null)
-			id.drawBracewithVBO(c, brace);
+		if (id != null){
+			IIcon iicon = brace.getIIcon(brace.color);
+			c.pushMatrix();
+			c.translate(brace.pos);
+			BB_Model model = id.getModel(brace);
+			model.drawVBOIIcon(c, iicon);
+			
+			c.popMatrix();
+		}
 		IJoint ij = BB_TypeResister.getJoint(brace.joint);
 		if (ij != null)
 			ij.drawJointwithVBO(c, brace);

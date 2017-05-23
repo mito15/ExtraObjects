@@ -5,12 +5,12 @@ import java.util.List;
 
 import com.mito.exobj.client.render.CreateVertexBufferObject;
 
+import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 
-public class BB_Model {
+public class BB_Model implements IDrawable {
 
 	public List<BB_Polygon> planes = new ArrayList<BB_Polygon>();
-	public boolean smoothShading = false;
 
 	public BB_Model(BB_Polygon... list) {
 		for (BB_Polygon poly : list)
@@ -21,6 +21,12 @@ public class BB_Model {
 	}
 
 	public void drawWithVBO(CreateVertexBufferObject c, Vec3 offset, double roll, double pitch, double yaw, double size) {
+	}
+
+	public void drawVBOIIcon(CreateVertexBufferObject c, IIcon iicon) {
+		for(BB_Polygon p : this.planes){
+			p.drawVBOIIcon(c, iicon);
+		}
 	}
 
 }

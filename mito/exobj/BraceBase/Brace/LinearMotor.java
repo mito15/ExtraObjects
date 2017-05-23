@@ -86,7 +86,7 @@ public class LinearMotor extends ExtraObject {
 	}
 
 	public void moveLinearMotor() {
-		Vec3 motion = this.railBrace.line.getMotion(this.pos, this.speed, this.direction);
+		/*Vec3 motion = this.railBrace.line.getMotion(this.pos, this.speed, this.direction);
 
 		if (motion == null) {
 			direction = !direction;
@@ -96,7 +96,7 @@ public class LinearMotor extends ExtraObject {
 		Vec3 motion1 = this.moveRequest(motion, command++, list);
 		this.moveEntity(motion1, list);
 		//this.move(motion1, command++);
-	}
+*/	}
 
 	public void moveEntity(Vec3 m, List<ExtraObject> objs) {
 		List<Entity> list = new ArrayList<Entity>();
@@ -250,7 +250,7 @@ public class LinearMotor extends ExtraObject {
 	@Override
 	public double getYaw() {
 		if (this.railBrace != null && this.railBrace.line != null) {
-			this.rotationYaw = this.railBrace.line.getYaw(this.pos);
+			//this.rotationYaw = this.railBrace.line.getYaw(this.pos);
 		}
 		return this.rotationYaw;
 	}
@@ -258,7 +258,7 @@ public class LinearMotor extends ExtraObject {
 	@Override
 	public double getPitch() {
 		if (this.railBrace != null) {
-			this.rotationPitch = this.railBrace.line.getPitch(this.pos);
+			//this.rotationPitch = this.railBrace.line.getPitch(this.pos);
 		}
 		return this.rotationPitch;
 	}

@@ -559,25 +559,25 @@ public class MyUtil {
 		return list;
 	}
 
-	public static void decomposeTexture(BB_Polygon tri, List<Triangle> list) {
+	public static void decomposeTexture(BB_Polygon p, List<Triangle> list) {
 		List<BB_Polygon> polys = new ArrayList<BB_Polygon>();
-		polys.add(tri);
-		for (int lineU = (int) Math.floor(tri.minU()) + 1; lineU <= tri.maxU(); lineU++) {
+		polys.add(p);
+		for (int lineU = (int) Math.floor(minU(p)) + 1; lineU <= maxU(p); lineU++) {
 			List<BB_Polygon> polys2 = new ArrayList<BB_Polygon>();
-			for (BB_Polygon p : polys) {
-				decomposeLineU(p, lineU, polys2);
+			for (BB_Polygon p1 : polys) {
+				decomposeLineU(p1, lineU, polys2);
 			}
 			polys = polys2;
 		}
-		for (int lineV = (int) Math.floor(tri.minV()) + 1; lineV <= tri.maxV(); lineV++) {
+		for (int lineV = (int) Math.floor(minV(p)) + 1; lineV <= maxV(p); lineV++) {
 			List<BB_Polygon> polys2 = new ArrayList<BB_Polygon>();
-			for (BB_Polygon p : polys) {
-				decomposeLineV(p, lineV, polys2);
+			for (BB_Polygon p1 : polys) {
+				decomposeLineV(p1, lineV, polys2);
 			}
 			polys = polys2;
 		}
-		for (BB_Polygon p : polys) {
-			list.addAll(MyUtil.decomposePolygon(p.line));
+		for (BB_Polygon p1 : polys) {
+			list.addAll(MyUtil.decomposePolygon(p1.getLine()));
 		}
 	}
 
@@ -587,10 +587,10 @@ public class MyUtil {
 		double d1 = 0;
 		double d2 = 0;
 		boolean flag = true;
-		if (v < p.maxV() && v > p.minV()) {
-			for (int n = 0; n < p.line.size(); n++) {
-				Vertex v1 = p.line.get(n);
-				Vertex v2 = p.line.get((n + 1) % p.line.size());
+		if (v < maxV(p) && v > minV(p)) {
+			for (int n = 0; n < p.getLine().size(); n++) {
+				Vertex v1 = p.getLine().get(n);
+				Vertex v2 = p.getLine().get((n + 1) % p.getLine().size());
 				if (!(v1.v <= v ^ v2.v > v)) {
 					if (flag) {
 						n1 = n;
@@ -605,24 +605,24 @@ public class MyUtil {
 			}
 			if (n1 != -1 && n2 != -1) {
 
-				Vertex v1 = splitVertex(p.line.get(n1), p.line.get((n1 + 1) % p.line.size()), d1);
-				Vertex v2 = splitVertex(p.line.get(n2), p.line.get((n2 + 1) % p.line.size()), d2);
+				Vertex v1 = splitVertex(p.getLine().get(n1), p.getLine().get((n1 + 1) % p.getLine().size()), d1);
+				Vertex v2 = splitVertex(p.getLine().get(n2), p.getLine().get((n2 + 1) % p.getLine().size()), d2);
 				BB_Polygon p1 = new BB_Polygon(), p2 = new BB_Polygon();
-				for (int i = 0; i < p.line.size(); i++) {
-					p1.line.add(p.line.get(i));
+				for (int i = 0; i < p.getLine().size(); i++) {
+					p1.getLine().add(p.getLine().get(i));
 					if (i == n1) {
-						if (p.line.get(i).v != v1.v)
-							p1.line.add(v1.copy());
-						p1.line.add(v2.copy());
+						if (p.getLine().get(i).v != v1.v)
+							p1.getLine().add(v1.copy());
+						p1.getLine().add(v2.copy());
 						i = n2;
 					}
 				}
 				for (int i = n1 + 1; i < n2 + 1; i++) {
-					p2.line.add(p.line.get(i));
+					p2.getLine().add(p.getLine().get(i));
 					if (i == n2) {
-						if (p.line.get(i).v != v2.v)
-							p2.line.add(v2.copy());
-						p2.line.add(v1.copy());
+						if (p.getLine().get(i).v != v2.v)
+							p2.getLine().add(v2.copy());
+						p2.getLine().add(v1.copy());
 					}
 				}
 				ap.add(p1);
@@ -639,10 +639,10 @@ public class MyUtil {
 		double d1 = 0;
 		double d2 = 0;
 		boolean flag = true;
-		if (u < p.maxU() && u > p.minU()) {
-			for (int n = 0; n < p.line.size(); n++) {
-				Vertex v1 = p.line.get(n);
-				Vertex v2 = p.line.get((n + 1) % p.line.size());
+		if (u < maxU(p) && u > minU(p)) {
+			for (int n = 0; n < p.getLine().size(); n++) {
+				Vertex v1 = p.getLine().get(n);
+				Vertex v2 = p.getLine().get((n + 1) % p.getLine().size());
 				if (!(v1.u <= u ^ v2.u > u)) {
 					if (flag) {
 						n1 = n;
@@ -657,24 +657,24 @@ public class MyUtil {
 			}
 			if (n1 != -1 && n2 != -1) {
 
-				Vertex v1 = splitVertex(p.line.get(n1), p.line.get((n1 + 1) % p.line.size()), d1);
-				Vertex v2 = splitVertex(p.line.get(n2), p.line.get((n2 + 1) % p.line.size()), d2);
+				Vertex v1 = splitVertex(p.getLine().get(n1), p.getLine().get((n1 + 1) % p.getLine().size()), d1);
+				Vertex v2 = splitVertex(p.getLine().get(n2), p.getLine().get((n2 + 1) % p.getLine().size()), d2);
 				BB_Polygon p1 = new BB_Polygon(), p2 = new BB_Polygon();
-				for (int i = 0; i < p.line.size(); i++) {
-					p1.line.add(p.line.get(i));
+				for (int i = 0; i < p.getLine().size(); i++) {
+					p1.getLine().add(p.getLine().get(i));
 					if (i == n1) {
-						if (p.line.get(i).u != v1.u)
-							p1.line.add(v1.copy());
-						p1.line.add(v2.copy());
+						if (p.getLine().get(i).u != v1.u)
+							p1.getLine().add(v1.copy());
+						p1.getLine().add(v2.copy());
 						i = n2;
 					}
 				}
 				for (int i = n1 + 1; i < n2 + 1; i++) {
-					p2.line.add(p.line.get(i));
+					p2.getLine().add(p.getLine().get(i));
 					if (i == n2) {
-						if (p.line.get(i).u != v2.u)
-							p2.line.add(v2.copy());
-						p2.line.add(v1.copy());
+						if (p.getLine().get(i).u != v2.u)
+							p2.getLine().add(v2.copy());
+						p2.getLine().add(v1.copy());
 					}
 				}
 				ap.add(p1);
@@ -683,6 +683,46 @@ public class MyUtil {
 			}
 		}
 		ap.add(p);
+	}
+	
+	public static double maxU(BB_Polygon p) {
+		double maxu = Double.MIN_VALUE;
+		for (Vertex v : p.getLine()) {
+			if (v.u > maxu) {
+				maxu = v.u;
+			}
+		}
+		return maxu;
+	}
+
+	public static double maxV(BB_Polygon p) {
+		double maxv = Double.MIN_VALUE;
+		for (Vertex v : p.getLine()) {
+			if (v.v > maxv) {
+				maxv = v.v;
+			}
+		}
+		return maxv;
+	}
+
+	public static double minU(BB_Polygon p) {
+		double maxu = Double.MAX_VALUE;
+		for (Vertex v : p.getLine()) {
+			if (v.u < maxu) {
+				maxu = v.u;
+			}
+		}
+		return maxu;
+	}
+
+	public static double minV(BB_Polygon p) {
+		double maxu = Double.MAX_VALUE;
+		for (Vertex v : p.getLine()) {
+			if (v.v < maxu) {
+				maxu = v.v;
+			}
+		}
+		return maxu;
 	}
 
 	private static Vertex splitVertex(Vertex v1, Vertex v2, double d) {

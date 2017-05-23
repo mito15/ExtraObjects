@@ -17,14 +17,14 @@ public class Motor extends LinearMotor {
 	}
 
 	public void moveLinearMotor() {
-		Vec3 motion = this.railBrace.line.getMotion(this.pos, this.speed, this.direction);
+		/*Vec3 motion = this.railBrace.line.getMotion(this.pos, this.speed, this.direction);
 
 		if(motion == null){
 			direction = !direction;
 			return;
 		}
 		//this.moveRequest(motion, command++, );
-		this.move(motion, command++);
+		this.move(motion, command++);*/
 	}
 
 	@Override

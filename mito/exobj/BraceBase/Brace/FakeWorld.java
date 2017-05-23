@@ -147,15 +147,6 @@ public class FakeWorld extends ExtraObject {
 	}
 
 	@Override
-	public Vec3 interactWithLine(Vec3 s, Vec3 e) {
-		AxisAlignedBB aabb = contain.getCollisionBoundingBoxFromPool(access, 0, 0, 0);
-		if (aabb != null) {
-			return aabb.getOffsetBoundingBox(pos.xCoord - 0.5, pos.yCoord - 0.5, pos.zCoord - 0.5).calculateIntercept(s, e).hitVec;
-		}
-		return null;
-	}
-
-	@Override
 	public Line interactWithRay(Vec3 set, Vec3 end) {
 		AxisAlignedBB aabb = contain.getCollisionBoundingBoxFromPool(access, 0, 0, 0);
 		if (aabb != null) {

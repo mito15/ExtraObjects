@@ -83,10 +83,10 @@ public class BB_TypeResister {
 
 	static public BB_Polygon createSquare(double width, double height, double x, double y) {
 		BB_Polygon ret = new BB_Polygon();
-		ret.line.add(new Vertex(x + width / 2, y + height / 2, 0, x + width / 2, y - height / 2));
-		ret.line.add(new Vertex(x - width / 2, y + height / 2, 0, x - width / 2, y - height / 2));
-		ret.line.add(new Vertex(x - width / 2, y - height / 2, 0, x - width / 2, y + height / 2));
-		ret.line.add(new Vertex(x + width / 2, y - height / 2, 0, x + width / 2, y + height / 2));
+		ret.getLine().add(new Vertex(x + width / 2, y + height / 2, 0, x + width / 2, y - height / 2));
+		ret.getLine().add(new Vertex(x - width / 2, y + height / 2, 0, x - width / 2, y - height / 2));
+		ret.getLine().add(new Vertex(x - width / 2, y - height / 2, 0, x - width / 2, y + height / 2));
+		ret.getLine().add(new Vertex(x + width / 2, y - height / 2, 0, x + width / 2, y + height / 2));
 		return ret;
 	}
 
@@ -97,7 +97,7 @@ public class BB_TypeResister {
 		BB_Polygon ret = new BB_Polygon();
 		for (int n = 0; n < array.length / 2; n++) {
 			Vertex v = new Vertex(array[2 * n], array[2 * n + 1]);
-			ret.line.add(v);
+			ret.getLine().add(v);
 		}
 		return ret;
 	}

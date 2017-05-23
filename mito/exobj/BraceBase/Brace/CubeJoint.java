@@ -6,6 +6,7 @@ import com.mito.exobj.client.render.CreateVertexBufferObject;
 import com.mito.exobj.client.render.exobj.IJoint;
 import com.mito.exobj.client.render.model.BB_Polygon;
 import com.mito.exobj.client.render.model.Triangle;
+import com.mito.exobj.client.render.model.Triangle.EnumFace;
 import com.mito.exobj.client.render.model.Vertex;
 import com.mito.exobj.utilities.MyUtil;
 
@@ -47,7 +48,7 @@ public class CubeJoint implements IJoint {
 		for (int n = 0; n < 6; n++) {
 			rotateCube(c, n);
 			for (Triangle triangle : arrayTriangle) {
-				triangle.drawIcon(c, brace.texture.getIcon(2, brace.color));
+				triangle.drawIcon(c, brace.texture.getIcon(2, brace.color), EnumFace.OBVERSE);
 			}
 		}
 	}

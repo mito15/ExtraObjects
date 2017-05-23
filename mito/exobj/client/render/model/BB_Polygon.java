@@ -5,41 +5,42 @@ import java.util.List;
 
 import com.mito.exobj.BraceBase.Brace.Brace;
 import com.mito.exobj.client.render.CreateVertexBufferObject;
+import com.mito.exobj.client.render.model.Triangle.EnumFace;
 import com.mito.exobj.utilities.MitoMath;
 import com.mito.exobj.utilities.MyUtil;
 
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 
-public class BB_Polygon implements IDrawBrace {
+public class BB_Polygon implements IDrawBrace, IDrawable {
 
-	public List<Vertex> line = new ArrayList();
+	private List<Vertex> line = new ArrayList();
+	public boolean smoothShading = false;
 
 	public BB_Polygon() {
 	}
 
 	public BB_Polygon(Vertex... list) {
 		for (int n = 0; n < list.length; n++) {
-			this.line.add(list[n]);
+			this.getLine().add(list[n]);
 		}
 	}
 
 	public BB_Polygon(double... list) {
 		for (int n = 0; n < list.length / 3; n++) {
 			Vertex v = new Vertex(list[(3 * n)], list[(3 * n + 1)], list[(3 * n + 2)], 0.0D, 0.0D);
-			this.line.add(v);
+			this.getLine().add(v);
 		}
 	}
 
 	public BB_Polygon(Triangle tri) {
 		for (Vertex v : tri.vertexs) {
-			line.add(v.copy());
+			getLine().add(v.copy());
 		}
-	}
+	}/*
 
 	public int getSize(double size) {
-		return this.line.size();
+		return this.getLine().size();
 	}
 
 	public Vec3 getVec3(int n, double size) {
@@ -49,7 +50,7 @@ public class BB_Polygon implements IDrawBrace {
 				n += getSize(size);
 			}
 		}
-		return MitoMath.vectorMul(((Vertex) this.line.get(n)).pos, size);
+		return MitoMath.vectorMul(((Vertex) this.getLine().get(n)).pos, size);
 	}
 
 	public Vertex getVertex(int n, double size) {
@@ -59,36 +60,21 @@ public class BB_Polygon implements IDrawBrace {
 				n += getSize(size);
 			}
 		}
-		return ((Vertex) this.line.get(n)).resize(size);
-	}
+		return ((Vertex) this.getLine().get(n)).resize(size);
+	}*/
 
-	public void tessVertex(Tessellator t, Vertex v) {
-		t.addVertexWithUV(v.pos.xCoord, v.pos.yCoord, v.pos.zCoord, v.u, v.v);
-	}
-
-	public boolean hasNull() {
-		if (this.line.size() == 0) {
-			return true;
-		}
-		for (int n = 0; n < this.line.size(); n++) {
-			if (this.line.get(n) == null) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	public BB_Polygon transform(Mat4 mat) {
-		for(Vertex v : this.line){
-			v.transform(mat);
+		Vertex[] ret = new Vertex[this.getLine().size()];
+		for (int n = 0; n < getLine().size(); n++) {
+			ret[n] = this.getLine().get(n).transform(mat);
 		}
-		return this;
+		return new BB_Polygon(ret);
 	}
 
 	private BB_Polygon copy() {
-		Vertex[] ret = new Vertex[this.line.size()];
-		for(int n = 0; n < line.size(); n++){
-			ret[n] = this.line.get(n).copy();
+		Vertex[] ret = new Vertex[this.getLine().size()];
+		for (int n = 0; n < getLine().size(); n++) {
+			ret[n] = this.getLine().get(n).copy();
 		}
 		return new BB_Polygon(ret);
 	}
@@ -99,36 +85,37 @@ public class BB_Polygon implements IDrawBrace {
 		BB_Model ret = new BB_Model();
 
 		ILineBrace bc = brace.line;
-		BB_Polygon p = this.resize(size);
-				Mat4 mat = Mat4.createMat4();
-				mat.addCoord(MitoMath.sub_vector(bc.getStart(), brace.pos));
-				mat.matrixProduct(MyUtil.getRotationMatrix(bc.getTangent(0.0), bc.secondTan(0.0)));
-				mat.rpyRotation(roll, 0, 0);
-				ret.planes.add(p.copy().transform(mat));
-				mat = Mat4.createMat4();
-				mat.addCoord(MitoMath.sub_vector(bc.getEnd(), brace.pos));
-				mat.matrixProduct(MyUtil.getRotationMatrix(bc.getTangent(1.0), bc.secondTan(1.0)));
-				mat.rpyRotation(roll, 0, 0);
-				ret.planes.add(p.copy().transform(mat));
-		double v = 0.0D;
 		LineWithDirection[] ls = bc.getDrawLine();
+		if (ls.length < 1) {
+			return ret;
+		}
+		BB_Polygon p = this.resize(size);
+		Mat4 mat = Mat4.createMat4();
+		mat.addCoord(MitoMath.sub_vector(bc.getStart(), brace.pos));
+		mat.transMat(ls[0].mat1);
+		mat.rpyRotation(roll, 0, 0);
+		ret.planes.add(p.reverse().transform(mat));
+		mat = Mat4.createMat4();
+		mat.addCoord(MitoMath.sub_vector(bc.getEnd(), brace.pos));
+		mat.transMat(ls[ls.length - 1].mat2);
+		mat.rpyRotation(roll, 0, 0);
+		ret.planes.add(p.transform(mat));
+		double v = 0.0D;
 		for (LineWithDirection lwd : ls) {
-			Vec3 s = MitoMath.sub_vector(lwd.list[0], brace.pos);
-			Vec3 e = MitoMath.sub_vector(lwd.list[1], brace.pos);
-			Mat4 ms = MyUtil.getRotationMatrix(lwd.list[2], lwd.list[4]);
-			Mat4 me = MyUtil.getRotationMatrix(lwd.list[3], lwd.list[5]);
+			Vec3 s = MitoMath.sub_vector(lwd.start, brace.pos);
+			Vec3 e = MitoMath.sub_vector(lwd.end, brace.pos);
 			double usum = 0.0D;
 			double vofst = MitoMath.subAbs(s, e);
 			for (int n1 = 0; n1 < getSize(size); n1++) {
 				Vec3 v1 = getVec3(n1 - 1, size);
 				Vec3 v2 = getVec3(n1, size);
-				Vec3 vs1 = MitoMath.vectorSum(ms.transformNormal(MitoMath.rotZ(v1, roll)), s);
-				Vec3 vs2 = MitoMath.vectorSum(ms.transformNormal(MitoMath.rotZ(v2, roll)), s);
-				Vec3 ven1 = MitoMath.vectorSum(me.transformNormal(MitoMath.rotZ(v1, roll)), e);
-				Vec3 ven2 = MitoMath.vectorSum(me.transformNormal(MitoMath.rotZ(v2, roll)), e);
+				Vec3 vs1 = MitoMath.vectorSum(lwd.mat1.transformNormal(MitoMath.rotZ(v1, roll)), s);
+				Vec3 vs2 = MitoMath.vectorSum(lwd.mat1.transformNormal(MitoMath.rotZ(v2, roll)), s);
+				Vec3 ven1 = MitoMath.vectorSum(lwd.mat2.transformNormal(MitoMath.rotZ(v1, roll)), e);
+				Vec3 ven2 = MitoMath.vectorSum(lwd.mat2.transformNormal(MitoMath.rotZ(v2, roll)), e);
 				Vec3 norm = MitoMath.unitVector(Vec3.createVectorHelper(v2.yCoord - v1.yCoord, v1.xCoord - v2.xCoord, 0.0D));
-				Vec3 norm1 = ms.transformNormal(MitoMath.rotZ(norm, roll));
-				Vec3 norm2 = me.transformNormal(MitoMath.rotZ(norm, roll));
+				Vec3 norm1 = lwd.mat1.transformNormal(MitoMath.rotZ(norm, roll));
+				Vec3 norm2 = lwd.mat2.transformNormal(MitoMath.rotZ(norm, roll));
 				double uofst = MitoMath.subAbs(v1, v2);
 				double zofst = v1.zCoord - v2.zCoord;
 				Vertex ve1 = new Vertex(vs1, v, usum, norm1);
@@ -144,32 +131,21 @@ public class BB_Polygon implements IDrawBrace {
 		return ret;
 	}
 
+	private BB_Polygon reverse() {
+		Vertex[] ret = new Vertex[this.getLine().size()];
+		int nmax = getLine().size();
+		for (int n = 0; n < nmax; n++) {
+			ret[nmax - n - 1] = this.getLine().get(n).copy();
+		}
+		return new BB_Polygon(ret);
+	}
+
 	private BB_Polygon resize(double size) {
 		Vertex[] ret = new Vertex[getSize(size)];
 		for (int n1 = 0; n1 < getSize(size); n1++) {
 			ret[n1] = getVertex(n1, size);
 		}
 		return new BB_Polygon(ret);
-	}
-
-	@Override
-	public void drawBracewithVBO(CreateVertexBufferObject c, Brace brace) {
-		//double rofst = (brace.pos.xCoord + brace.pos.yCoord + brace.pos.zCoord) % 1.0D;
-		IIcon iicon = brace.getIIcon(brace.color);
-		double size = brace.size;
-		double roll = brace.getRoll();
-
-		ILineBrace bc = brace.line;
-		c.pushMatrix();
-		c.translate(brace.pos);
-		BB_Model model = this.getModel(brace);
-		for(BB_Polygon p : model.planes){
-			List<Triangle> arrayTriangle = MyUtil.decomposeTexture(p);
-			for (Triangle triangle : arrayTriangle) {
-				triangle.drawIcon(c, iicon);
-			}
-		}
-		c.popMatrix();
 	}
 
 	private List<Triangle> getTriangles(double size) {
@@ -180,50 +156,28 @@ public class BB_Polygon implements IDrawBrace {
 		return MyUtil.decomposePolygon(ret);
 	}
 
-	public double maxU() {
-		double maxu = Double.MIN_VALUE;
-		for (Vertex v : line) {
-			if (v.u > maxu) {
-				maxu = v.u;
-			}
-		}
-		return maxu;
-	}
-
-	public double maxV() {
-		double maxv = Double.MIN_VALUE;
-		for (Vertex v : line) {
-			if (v.v > maxv) {
-				maxv = v.v;
-			}
-		}
-		return maxv;
-	}
-
-	public double minU() {
-		double maxu = Double.MAX_VALUE;
-		for (Vertex v : line) {
-			if (v.u < maxu) {
-				maxu = v.u;
-			}
-		}
-		return maxu;
-	}
-
-	public double minV() {
-		double maxu = Double.MAX_VALUE;
-		for (Vertex v : line) {
-			if (v.v < maxu) {
-				maxu = v.v;
-			}
-		}
-		return maxu;
+	public List<Vertex> getLine() {
+		return line;
 	}
 
 	@Override
-	public void drawBraceTessellator(Brace brace, float partialTickTime) {
+	public void drawWithTessellator(Vec3 offset, double roll, double pitch, double yaw, double size, float partialTickTime) {
 		// TODO Auto-generated method stub
+		
+	}
 
+	@Override
+	public void drawWithVBO(CreateVertexBufferObject c, Vec3 offset, double roll, double pitch, double yaw, double size) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void drawVBOIIcon(CreateVertexBufferObject c, IIcon iicon) {
+		List<Triangle> arrayTriangle = MyUtil.decomposeTexture(this);
+		for (Triangle triangle : arrayTriangle) {
+			triangle.drawIcon(c, iicon, EnumFace.OBVERSE);
+		}
 	}
 
 }

@@ -16,6 +16,7 @@ import com.mito.exobj.client.render.CreateVertexBufferObject;
 import com.mito.exobj.client.render.VBOHandler;
 import com.mito.exobj.client.render.model.BB_Polygon;
 import com.mito.exobj.client.render.model.Triangle;
+import com.mito.exobj.client.render.model.Triangle.EnumFace;
 import com.mito.exobj.client.render.model.Vertex;
 import com.mito.exobj.main.mitoClientProxy;
 import com.mito.exobj.utilities.MyUtil;
@@ -43,19 +44,10 @@ public class RenderTofu extends BB_Render {
 			VBOHandler vbo = c.end();
 			data.buffer.add(vbo);
 		}
-
-		GL11.glPushMatrix();
-
-		GL11.glLineWidth(size);
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		BB_RenderHandler.enableClient();
 		data.buffer.draw(GL11.GL_LINE_LOOP);
 		BB_RenderHandler.disableClient();
-
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glPopMatrix();
 	}
 
 	public void doRender(ExtraObject base, float x, float y, float z, float partialTickTime) {
@@ -125,7 +117,7 @@ public class RenderTofu extends BB_Render {
 		BB_Polygon square = new BB_Polygon(v1, v2, v3, v4);
 		List<Triangle> arrayTriangle = MyUtil.decomposeTexture(square);
 		for (Triangle triangle : arrayTriangle) {
-			triangle.drawIcon(c, iicon);
+			triangle.drawIcon(c, iicon, EnumFace.OBVERSE);
 		}
 	}
 	

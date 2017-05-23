@@ -2,9 +2,10 @@ package com.mito.exobj.client.render.model;
 
 import com.mito.exobj.client.render.CreateVertexBufferObject;
 
+import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 
-public class BB_ModelGroup extends BB_Model {
+public class BB_ModelGroup implements IDrawable {
 	
 	public BB_Model[] models;
 
@@ -22,6 +23,12 @@ public class BB_ModelGroup extends BB_Model {
 		for(int i = 0; i < models.length; i++){
 			models[i].drawWithVBO(c, offset, roll, pitch, yaw, size);
 		}
+	}
+
+	@Override
+	public void drawVBOIIcon(CreateVertexBufferObject c, IIcon iicon) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

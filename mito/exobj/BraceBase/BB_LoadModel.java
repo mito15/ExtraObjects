@@ -109,7 +109,7 @@ public class BB_LoadModel {
 				} else if (name.equals("class")) {
 					if (load_type != null && typename != null) {
 						IDrawBrace add = loadClass(reader);
-						if (add != null && !add.hasNull()) {
+						if (add != null) {
 							if (author == null || author.equals("")) {
 								BB_TypeResister.addMapping(add, typename);
 							} else {

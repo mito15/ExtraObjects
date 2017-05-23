@@ -123,11 +123,6 @@ public class Tofu extends ExtraObject {
 	}
 
 	@Override
-	public Vec3 interactWithLine(Vec3 s, Vec3 e) {
-		return aabb.calculateIntercept(s, e).hitVec;
-	}
-
-	@Override
 	public Line interactWithRay(Vec3 set, Vec3 end) {
 		MovingObjectPosition v = aabb.calculateIntercept(set, end);
 		if(v != null && v.hitVec != null){

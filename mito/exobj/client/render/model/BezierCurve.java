@@ -5,14 +5,10 @@ import java.util.List;
 
 import com.mito.exobj.utilities.Line;
 import com.mito.exobj.utilities.MitoMath;
-import com.mito.exobj.utilities.MyUtil;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
 
 public class BezierCurve implements ILineBrace {
 
@@ -83,19 +79,6 @@ public class BezierCurve implements ILineBrace {
 	}
 
 	@Override
-	public Vec3 interactWithLine(Vec3 s, Vec3 e) {
-		List<Vec3> list = this.getLine();
-		Line line = MitoMath.getDistanceLine(s, e, list.get(0), list.get(1));
-		for (int n = 1; n < list.size() - 1; n++) {
-			Line line2 = MitoMath.getDistanceLine(s, e, list.get(n), list.get(n + 1));
-			if (line.getLength() > line2.getLength()) {
-				line = line2;
-			}
-		}
-		return line.end;
-	}
-
-	@Override
 	public void rotation(Vec3 cent, double yaw) {
 		for (Vec3 v : points) {
 			v = MitoMath.vectorSum(MitoMath.rotY(MitoMath.sub_vector(v, cent), yaw), cent);
@@ -109,7 +92,7 @@ public class BezierCurve implements ILineBrace {
 		}
 	}
 
-	@Override
+	/*@Override
 	public AxisAlignedBB getBoundingBox(double size) {
 		double maxX = Double.MIN_VALUE;
 		double maxY = Double.MIN_VALUE;
@@ -127,7 +110,7 @@ public class BezierCurve implements ILineBrace {
 			minZ = minZ < v.zCoord ? minZ : v.zCoord;
 		}
 		return AxisAlignedBB.getBoundingBox(minX, minY, minZ, maxX, maxY, maxZ).expand(size, size, size);
-	}
+	}*/
 
 	public List<Vec3> getLine() {
 		List<Vec3> ret = new LinkedList<Vec3>();
@@ -150,7 +133,7 @@ public class BezierCurve implements ILineBrace {
 		return ret;
 	}
 
-	@Override
+	/*@Override
 	public double getMinY() {
 		double minY = Double.MAX_VALUE;
 		List<Vec3> list = this.getLine();
@@ -173,7 +156,7 @@ public class BezierCurve implements ILineBrace {
 	@Override
 	public Vec3 getPos() {
 		return this.getPoint(0.5);
-	}
+	}*/
 
 	@Override
 	public void addCoordinate(double x, double y, double z) {
@@ -182,7 +165,7 @@ public class BezierCurve implements ILineBrace {
 		}
 	}
 
-	@Override
+	/*@Override
 	public boolean interactWithAABB(AxisAlignedBB aabb, double size) {
 		boolean ret = false;
 		List<Line> list = this.getSegments();
@@ -214,7 +197,6 @@ public class BezierCurve implements ILineBrace {
 		}
 		return line;
 	}
-
 	@Override
 	public void addCollisionBoxesToList(World world, AxisAlignedBB aabb, List collidingBoundingBoxes, Entity entity, double size) {
 		List<Line> list = this.getSegments();
@@ -233,8 +215,9 @@ public class BezierCurve implements ILineBrace {
 				//list.add(aabb1);
 				collidingBoundingBoxes.add(aabb1);
 			}
-		}*/
-	}
+		}
+	}*/
+
 
 	@Override
 	public void snap(MovingObjectPosition mop, boolean b) {
@@ -273,7 +256,7 @@ public class BezierCurve implements ILineBrace {
 		}
 	}
 
-	@Override
+	/*@Override
 	public double getYaw(Vec3 pos) {
 		return 0;
 	}
@@ -286,7 +269,7 @@ public class BezierCurve implements ILineBrace {
 	@Override
 	public Vec3 getMotion(Vec3 pos, double speed, boolean dir) {
 		return Vec3.createVectorHelper(0, 0, 0);
-	}
+	}*/
 
 	public int getAccuracy() {
 		int i = (int) (points[0].distanceTo(points[1]) + points[1].distanceTo(points[2]) + points[2].distanceTo(points[3]) * 5.0);

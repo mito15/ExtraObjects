@@ -189,6 +189,13 @@ public class CreateVertexBufferObject {
 		this.colorArray[2] = h;
 		this.colorArray[3] = 1.0f;
 	}
+	
+	public void setColor(int j){
+		float f = (float)(j >> 16 & 255) / 255.0F;
+		float g = (float)(j >> 8 & 255) / 255.0F;
+		float h = (float)(j & 255) / 255.0F;;
+		setColor(f, g, h);
+	}
 
 	public void setScale(double size) {
 		this.scale = size;

@@ -55,14 +55,14 @@ public class BendPacketProcessor implements IMessage, IMessageHandler<BendPacket
 				Vec3 end = Vec3.createVectorHelper(message.x, message.y, message.z);
 				if (message.isSetCP) {
 					if (brace.line instanceof Line) {
-						brace.line = new BezierCurve(brace.line.getPoint(0.0), end, MitoMath.ratio_vector(brace.line.getEnd(), end, 0.8), brace.line.getPoint(1.0));
+						brace.line = new BezierCurve(brace.line.getStart(), end, MitoMath.ratio_vector(brace.line.getEnd(), end, 0.8), brace.line.getEnd());
 					} else if (brace.line instanceof BezierCurve) {
 						BezierCurve b = (BezierCurve) brace.line;
 						b.points[1] = end;
 					}
 				} else {
 					if (brace.line instanceof Line) {
-						brace.line = new BezierCurve(brace.line.getPoint(0.0), MitoMath.ratio_vector(brace.line.getStart(), end, 0.8), end, brace.line.getPoint(1.0));
+						brace.line = new BezierCurve(brace.line.getStart(), MitoMath.ratio_vector(brace.line.getStart(), end, 0.8), end, brace.line.getEnd());
 					} else if (brace.line instanceof BezierCurve) {
 						BezierCurve b = (BezierCurve) brace.line;
 						b.points[2] = end;

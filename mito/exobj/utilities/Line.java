@@ -1,6 +1,7 @@
 package com.mito.exobj.utilities;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.mito.exobj.client.render.model.ILineBrace;
@@ -50,7 +51,6 @@ public class Line implements ILineBrace {
 		nbt.setInteger("line", 0);
 	}
 
-	@Override
 	public boolean interactWithAABB(AxisAlignedBB aabb, double size) {
 		boolean ret = false;
 		if (aabb.expand(size, size, size).calculateIntercept(start, this.end) != null
@@ -58,20 +58,6 @@ public class Line implements ILineBrace {
 			ret = true;
 		}
 		return ret;
-		/*Vec3 v1 = start.subtract(end);
-		Vec3 v2 = MitoMath.vectorMul(v1.crossProduct(Vec3.createVectorHelper(0, 1, 0)).normalize(), size);
-		Vec3 v3 = MitoMath.vectorMul(v1.crossProduct(v2).normalize(), size);
-		AxisAlignedBB aabb1 = OrientedBoundingBox.getBoundingBox(MitoMath.vectorMul(MitoMath.vectorSum(end, start), 0.5), v1, v2, v3);
-		if (aabb1 != null && aabb1.intersectsWith(aabb)) {
-			return true;
-		}
-		return false;*/
-	}
-
-	@Override
-	public Vec3 interactWithLine(Vec3 s, Vec3 e) {
-		Line line = MitoMath.getDistanceLine(s, e, this.start, this.end);
-		return line.end;
 	}
 
 	@Override
@@ -88,7 +74,7 @@ public class Line implements ILineBrace {
 
 	}
 
-	@Override
+	/*@Override
 	public Line interactWithRay(Vec3 set, Vec3 end, double size) {
 		if (this.start.distanceTo(this.end) < 0.01) {
 			Vec3 ve = MitoMath.getNearPoint(set, end, this.start);
@@ -102,7 +88,7 @@ public class Line implements ILineBrace {
 		}
 		return null;
 	}
-
+	
 	@Override
 	public AxisAlignedBB getBoundingBox(double size) {
 		double maxX = Math.max(this.start.xCoord, this.end.xCoord);
@@ -112,22 +98,22 @@ public class Line implements ILineBrace {
 		double minY = Math.min(this.start.yCoord, this.end.yCoord);
 		double minZ = Math.min(this.start.zCoord, this.end.zCoord);
 		return AxisAlignedBB.getBoundingBox(minX, minY, minZ, maxX, maxY, maxZ).expand(size, size, size);
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public double getMinY() {
 		return Math.min(start.yCoord, end.yCoord);
 	}
-
+	
 	@Override
 	public double getMaxY() {
 		return Math.max(start.yCoord, end.yCoord);
 	}
-
+	
 	@Override
 	public Vec3 getPos() {
 		return MitoMath.ratio_vector(start, end, 0.5);
-	}
+	}*/
 
 	@Override
 	public void addCoordinate(double x, double y, double z) {
@@ -136,7 +122,6 @@ public class Line implements ILineBrace {
 
 	}
 
-	@Override
 	public void addCollisionBoxesToList(World world, AxisAlignedBB aabb, List collidingBoundingBoxes, Entity entity, double size) {
 		Vec3 v3 = MitoMath.sub_vector(this.end, this.start);
 		int div = size > 0 ? (int) Math.floor(MitoMath.abs(v3) / size) + 1 : 1;
@@ -151,13 +136,6 @@ public class Line implements ILineBrace {
 				collidingBoundingBoxes.add(aabb1);
 			}
 		}
-		/*Vec3 v1 = start.subtract(end);
-		Vec3 v2 = MitoMath.vectorMul(v1.crossProduct(Vec3.createVectorHelper(0, 1, 0)).normalize(), size);
-		Vec3 v3 = MitoMath.vectorMul(v1.crossProduct(v2).normalize(), size);
-		AxisAlignedBB aabb1 = OrientedBoundingBox.getBoundingBox(MitoMath.vectorMul(MitoMath.vectorSum(end, start), 0.5), v1, v2, v3);
-		if (aabb1 != null && aabb1.intersectsWith(aabb)) {
-			collidingBoundingBoxes.add(aabb1);
-		}*/
 	}
 
 	@Override
@@ -193,16 +171,16 @@ public class Line implements ILineBrace {
 		}
 	}
 
-	@Override
+	/*@Override
 	public double getYaw(Vec3 pos) {
 		return MitoMath.getYaw(this.start, this.end);
 	}
-
+	
 	@Override
 	public double getPitch(Vec3 pos) {
 		return MitoMath.getPitch(this.start, this.end);
 	}
-
+	
 	@Override
 	public Vec3 getMotion(Vec3 pos, double speed, boolean dir) {
 		Vec3 v1, v2, v3;
@@ -226,18 +204,18 @@ public class Line implements ILineBrace {
 			moved = v2;
 		}
 		return MitoMath.sub_vector(moved, pos);
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public Vec3 getPoint(double d) {
 		Vec3 ret = MitoMath.ratio_vector(start, end, d);
 		return ret;
 	}
-
+	
 	@Override
 	public Vec3 getTangent(double t) {
 		return start.subtract(end).normalize();
-	}
+	}*/
 
 	@Override
 	public Vec3 getStart() {
@@ -249,15 +227,15 @@ public class Line implements ILineBrace {
 		return MitoMath.copyVec3(this.end);
 	}
 
-	@Override
+	/*@Override
 	public Vec3 secondTan(double d) {
 		return Vec3.createVectorHelper(0, -1, 0);
-	}
+	}*/
 
 	public LineWithDirection getODrawLine() {
 		Vec3 s = this.start;
 		Vec3 e = this.end;
-		Vec3 sn = this.getTangent(0);
+		Vec3 sn = start.subtract(end).normalize();
 		Vec3 ms = Vec3.createVectorHelper(0, -1, 0);
 		return new LineWithDirection(s, e, sn, sn, ms, ms);
 	}
@@ -268,8 +246,18 @@ public class Line implements ILineBrace {
 	}
 
 	@Override
-	public int getAccuracy() {
-		return 1;
+	public List<Line> getSegments() {
+		List<Line> ret = new ArrayList<Line>();
+		ret.add(this);
+		return ret;
+	}
+
+	@Override
+	public List<Vec3> getLine() {
+		List<Vec3> ret = new LinkedList<Vec3>();
+		ret.add(start);
+		ret.add(end);
+		return ret;
 	}
 
 }

@@ -47,6 +47,7 @@ public class RenderFakeBlock extends BB_Render {
 
 		GL11.glLineWidth(1.0F);
 		GL11.glColor4f(0.0F, 0.0F, 0.0F, 1.0F);
+		GL11.glDisable(GL11.GL_BLEND);
 
 		RenderHighLight rh = RenderHighLight.INSTANCE;
 		rh.renderBox(1.0, false);

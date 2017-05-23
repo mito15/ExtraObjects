@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+import com.mito.exobj.client.render.model.BB_Model;
 import com.mito.exobj.network.BB_PacketProcessor;
 import com.mito.exobj.network.BB_PacketProcessor.Mode;
 import com.mito.exobj.network.PacketHandler;
@@ -157,9 +158,9 @@ public abstract class ExtraObject {
 			this.group.remove(this);
 			//MyLogger.info("remove from world " + this.BBID);
 		}
-		if(this.datachunk != null){
-			if(datachunk.exObjList.isEmpty())
-			dataworld.removeDataChunk(datachunk);
+		if (this.datachunk != null) {
+			if (datachunk.exObjList.isEmpty())
+				dataworld.removeDataChunk(datachunk);
 		}
 		for (int i = 0; i < this.bindBraces.size(); i++) {
 			if (this.bindBraces.get(i).bindBraces != null)
@@ -442,10 +443,6 @@ public abstract class ExtraObject {
 		return this.rotationRoll;
 	}
 
-	public Vec3 interactWithLine(Vec3 s, Vec3 e) {
-		return null;
-	}
-
 	//RayTrace
 	public Line interactWithRay(Vec3 set, Vec3 end) {
 		return null;
@@ -457,10 +454,10 @@ public abstract class ExtraObject {
 		}
 		return false;
 	}
-	
-	public void updateRenderer(){
-		if(datachunk != null)
-		this.datachunk.updateRenderer();
+
+	public void updateRenderer() {
+		if (datachunk != null)
+			this.datachunk.updateRenderer();
 	}
 
 	public boolean leftClick(EntityPlayer player, ItemStack itemStack) {
@@ -565,6 +562,10 @@ public abstract class ExtraObject {
 
 	public boolean isBind(ExtraObject brace) {
 		return true;
+	}
+
+	public BB_Model getModel() {
+		return null;
 	}
 
 }

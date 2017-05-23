@@ -6,13 +6,10 @@ import java.util.List;
 import com.mito.exobj.utilities.Line;
 import com.mito.exobj.utilities.MitoMath;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
 
 public class LineLoop implements ILineBrace {
 
@@ -26,7 +23,7 @@ public class LineLoop implements ILineBrace {
 		}
 	}
 
-	public Vec3 getPoint(double t) {
+	/*public Vec3 getPoint(double t) {
 		double len = this.getLength();
 		double sep = t * len;
 		double cl = 0;
@@ -61,7 +58,7 @@ public class LineLoop implements ILineBrace {
 		int i = getSegNum(t);
 		Line line = this.getSegments().get(i);
 		return line.getTangent(0.5);
-	}
+	}*/
 
 	@Override
 	public void move(Vec3 motion, int command) {
@@ -94,18 +91,6 @@ public class LineLoop implements ILineBrace {
 	}
 
 	@Override
-	public Vec3 interactWithLine(Vec3 s, Vec3 e) {
-		List<Line> list = this.getSegments();
-		Line l1 = list.get(0);
-		for (Line l : list) {
-			if (l1.getLength() > l.getLength()) {
-				l1 = l;
-			}
-		}
-		return l1.end;
-	}
-
-	@Override
 	public void rotation(Vec3 cent, double yaw) {
 		for (Vec3 v : line) {
 			v = MitoMath.vectorSum(MitoMath.rotY(MitoMath.sub_vector(v, cent), yaw), cent);
@@ -119,7 +104,7 @@ public class LineLoop implements ILineBrace {
 		}
 	}
 
-	@Override
+	/*@Override
 	public AxisAlignedBB getBoundingBox(double size) {
 		double maxX = Double.MIN_VALUE;
 		double maxY = Double.MIN_VALUE;
@@ -136,8 +121,9 @@ public class LineLoop implements ILineBrace {
 			minZ = minZ < v.zCoord ? minZ : v.zCoord;
 		}
 		return AxisAlignedBB.getBoundingBox(minX, minY, minZ, maxX, maxY, maxZ).expand(size, size, size);
-	}
+	}*/
 
+	@Override
 	public List<Line> getSegments() {
 		List<Line> ret = new ArrayList<Line>();
 		for (int n = 0; n < line.size() - 1; n++) {
@@ -148,7 +134,7 @@ public class LineLoop implements ILineBrace {
 		return ret;
 	}
 
-	@Override
+	/*@Override
 	public double getMinY() {
 		double minY = Double.MAX_VALUE;
 		for (Vec3 v : line) {
@@ -169,7 +155,7 @@ public class LineLoop implements ILineBrace {
 	@Override
 	public Vec3 getPos() {
 		return this.getPoint(0.5);
-	}
+	}*/
 
 	@Override
 	public void addCoordinate(double x, double y, double z) {
@@ -178,7 +164,7 @@ public class LineLoop implements ILineBrace {
 		}
 	}
 
-	@Override
+	/*@Override
 	public boolean interactWithAABB(AxisAlignedBB aabb, double size) {
 		boolean ret = false;
 		List<Line> list = this.getSegments();
@@ -203,15 +189,15 @@ public class LineLoop implements ILineBrace {
 			}
 		}
 		return line;
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public void addCollisionBoxesToList(World world, AxisAlignedBB aabb, List collidingBoundingBoxes, Entity entity, double size) {
 		List<Line> list = this.getSegments();
 		for (Line line : list) {
 			line.addCollisionBoxesToList(world, aabb, collidingBoundingBoxes, entity, size);
 		}
-	}
+	}*/
 
 	@Override
 	public void snap(MovingObjectPosition mop, boolean b) {
@@ -224,7 +210,7 @@ public class LineLoop implements ILineBrace {
 		}
 	}
 
-	@Override
+	/*@Override
 	public double getYaw(Vec3 pos) {
 		return 0;
 	}
@@ -238,7 +224,7 @@ public class LineLoop implements ILineBrace {
 	public Vec3 getMotion(Vec3 pos, double speed, boolean dir) {
 		// TODO 自動生成されたメソッド・スタブ
 		return Vec3.createVectorHelper(0, 0, 0);
-	}
+	}*/
 
 	@Override
 	public double getLength() {
@@ -266,10 +252,10 @@ public class LineLoop implements ILineBrace {
 		return this.line.get(line.size() - 1);
 	}
 
-	@Override
+	/*@Override
 	public Vec3 secondTan(double d) {
 		return Vec3.createVectorHelper(0, -1, 0);
-	}
+	}*/
 
 	@Override
 	public LineWithDirection[] getDrawLine() {
@@ -288,9 +274,11 @@ public class LineLoop implements ILineBrace {
 		}
 		Vec3 ms = Vec3.createVectorHelper(0, -1, 0);
 		for (int n = 0; n < list.size() - 1; n++) {
-			Vec3 s = list.get(n).getEnd();
-			Vec3 sn = list.get(n).getTangent(1.0);
-			Vec3 en = list.get(n + 1).getTangent(0.0);
+			Line l1 = list.get(n);
+			Line l2 = list.get(n + 1);
+			Vec3 s = l1.getEnd();
+			Vec3 sn = l1.start.subtract(l1.end).normalize();
+			Vec3 en = l2.start.subtract(l2.end).normalize();
 			for (int n1 = 0; n1 < acc; n1++) {
 				double t = (double) n / (double) acc;
 				double t1 = (double) (n + 1) / (double) acc;
@@ -305,6 +293,11 @@ public class LineLoop implements ILineBrace {
 
 	public int getAccuracy() {
 		return 1;
+	}
+
+	@Override
+	public List<Vec3> getLine() {
+		return line;
 	}
 
 }

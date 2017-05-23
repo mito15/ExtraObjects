@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import com.mito.exobj.Main;
+import com.mito.exobj.client.render.CreateVertexBufferObject;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -23,12 +24,13 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public class NGTOWrapper extends BB_Model {
+public class NGTOWrapper implements IDrawable {
 
 	@SideOnly(Side.CLIENT)
 	public World dummyWorld;
@@ -135,6 +137,18 @@ public class NGTOWrapper extends BB_Model {
 		GL11.glTranslated(0, -this.ngto.ySize / 2 * getMinimizeRate(), 0);
 		renderMiniatureAt(partialTickTime);
 		GL11.glPopMatrix();
+	}
+
+	@Override
+	public void drawWithVBO(CreateVertexBufferObject c, Vec3 offset, double roll, double pitch, double yaw, double size) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void drawVBOIIcon(CreateVertexBufferObject c, IIcon iicon) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

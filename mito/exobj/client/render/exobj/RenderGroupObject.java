@@ -2,48 +2,16 @@ package com.mito.exobj.client.render.exobj;
 
 import com.mito.exobj.BraceBase.BB_Render;
 import com.mito.exobj.BraceBase.ExtraObject;
-import com.mito.exobj.BraceBase.Brace.Brace;
-import com.mito.exobj.BraceBase.Brace.GroupObject;
-
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.Vec3;
 
 public class RenderGroupObject extends BB_Render {
 
 	@Override
 	public void drawHighLight(ExtraObject base, float partialticks) {
-		/*float size = 2.0F;
-		GL11.glPushMatrix();
-		if (base.isStatic) {
-			GL11.glTranslated(base.pos.xCoord, base.pos.yCoord, base.pos.zCoord);
-		} else {
-			double x = base.prevPos.xCoord + (base.pos.xCoord - base.prevPos.xCoord) * (double) partialticks;
-			double y = base.prevPos.yCoord + (base.pos.yCoord - base.prevPos.yCoord) * (double) partialticks;
-			double z = base.prevPos.zCoord + (base.pos.zCoord - base.prevPos.zCoord) * (double) partialticks;
-			GL11.glTranslated(x, y, z);
-		}
-		GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-		GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
-		GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-		GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);
-		
-		GL11.glLineWidth(size);
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		if (base.buffer != null)
-			base.buffer.draw(GL11.GL_LINE_LOOP);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glPopMatrix();
-		GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
-		GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
-		GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-		GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);*/
 	}
 
 	public void doRender(ExtraObject base, float x, float y, float z, float partialTickTime) {
 		
-		GroupObject go = (GroupObject)base;
+		/*GroupObject go = (GroupObject)base;
 		
 		Tessellator t = Tessellator.instance;
 
@@ -59,7 +27,7 @@ public class RenderGroupObject extends BB_Render {
 			t.addVertex(a.xCoord, a.yCoord, a.zCoord);
 			t.addVertex(b.xCoord, b.yCoord, b.zCoord);
 		}
-		t.draw();
+		t.draw();*/
 
 	/*BB_RenderHandler.enableClient();
 	Brace brace = (Brace) base;

@@ -3,7 +3,9 @@ package com.mito.exobj.BraceBase.Brace;
 import java.util.List;
 
 import com.mito.exobj.Main;
+import com.mito.exobj.BraceBase.BB_TypeResister;
 import com.mito.exobj.BraceBase.ExtraObject;
+import com.mito.exobj.client.render.model.BB_Model;
 import com.mito.exobj.client.render.model.BezierCurve;
 import com.mito.exobj.client.render.model.ILineBrace;
 import com.mito.exobj.client.render.model.LineLoop;
@@ -16,6 +18,7 @@ import com.mito.exobj.network.PacketHandler;
 import com.mito.exobj.utilities.Line;
 import com.mito.exobj.utilities.MitoMath;
 import com.mito.exobj.utilities.MyLogger;
+import com.mito.exobj.utilities.MyUtil;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -179,18 +182,42 @@ public class Brace extends ExtraObject {
 	}
 
 	@Override
-	public boolean interactWithAABB(AxisAlignedBB boundingBox) {
-		return line == null ? false : line.interactWithAABB(boundingBox, size);
-	}
-
-	@Override
-	public Vec3 interactWithLine(Vec3 s, Vec3 e) {
-		return line == null ? null : line.interactWithLine(s, e);
+	public boolean interactWithAABB(AxisAlignedBB aabb) {
+		if(line == null){
+			return false;
+		}
+		boolean ret = false;
+		List<Line> la = line.getSegments();
+		for (Line line : la) {
+			if (line.interactWithAABB(aabb, size)) {
+				ret = true;
+			}
+		}
+		return ret;
 	}
 
 	@Override
 	public Line interactWithRay(Vec3 set, Vec3 end) {
-		return line == null ? null : line.interactWithRay(set, end, size);
+		if(line == null){
+			return null;
+		}
+		if (line.getStart().distanceTo(line.getEnd()) < 0.01) {
+			Vec3 ve = MitoMath.getNearPoint(set, end, line.getStart());
+			if (ve.distanceTo(line.getStart()) < size / 1.5) {
+				return new Line(ve, line.getStart());
+			}
+		}
+		Line ret = null;
+		List<Line> list = line.getSegments();
+		for (Line l : list) {
+			Line line2 = MitoMath.getDistanceLine(set, end, l.start, l.end);
+			if (line2.getLength() < size / 1.5 && !(MyUtil.isVecEqual(line2.end, line.getStart()) || MyUtil.isVecEqual(line2.end, line.getEnd()))) {
+				if (ret == null || line2.end.distanceTo(set) < ret.end.distanceTo(set)) {
+					ret = line2;
+				}
+			}
+		}
+		return ret;
 	}
 
 	public void breakBrace(EntityPlayer player) {
@@ -209,11 +236,11 @@ public class Brace extends ExtraObject {
 	@SideOnly(Side.CLIENT)
 	public void particle() {
 		int b0 = (int) (this.size * 3) + 1;
-		Vec3 center = this.line.getPoint(0.5);
+		Vec3 center = this.line.getStart();
 		int div = (int) (this.line.getLength() * 3) + 1;
 		//MyLogger.info(this.line.getLength());
 
-		for (int i1 = 0; i1 < b0; ++i1) {
+		/*for (int i1 = 0; i1 < b0; ++i1) {
 			for (int j1 = 0; j1 < b0; ++j1) {
 				for (int k1 = 0; k1 < div; ++k1) {
 					Vec3 vec = this.line.getPoint((double) k1 / (double) div);
@@ -225,7 +252,7 @@ public class Brace extends ExtraObject {
 					Main.proxy.addDiggingEffect(worldObj, center, d0, d1, d2, this.texture, color);
 				}
 			}
-		}
+		}*/
 	}
 
 	public boolean leftClick(EntityPlayer player, ItemStack itemstack) {
@@ -322,7 +349,22 @@ public class Brace extends ExtraObject {
 		if (line == null) {
 			return null;
 		}
-		return line.getBoundingBox(size);
+		double maxX = Double.MIN_VALUE;
+		double maxY = Double.MIN_VALUE;
+		double maxZ = Double.MIN_VALUE;
+		double minX = Double.MAX_VALUE;
+		double minY = Double.MAX_VALUE;
+		double minZ = Double.MAX_VALUE;
+		List<Vec3> list = line.getLine();
+		for (Vec3 v : list) {
+			maxX = maxX > v.xCoord ? maxX : v.xCoord;
+			maxY = maxY > v.yCoord ? maxY : v.yCoord;
+			maxZ = maxZ > v.zCoord ? maxZ : v.zCoord;
+			minX = minX < v.xCoord ? minX : v.xCoord;
+			minY = minY < v.yCoord ? minY : v.yCoord;
+			minZ = minZ < v.zCoord ? minZ : v.zCoord;
+		}
+		return AxisAlignedBB.getBoundingBox(minX, minY, minZ, maxX, maxY, maxZ).expand(size, size, size);
 	}
 
 	public void setRoll(double roll) {
@@ -354,11 +396,27 @@ public class Brace extends ExtraObject {
 	}
 
 	public double getMinY() {
-		return line == null ? null : line.getMinY();//Math.min(pos.yCoord, end.yCoord);
+		if (line == null) {
+			return pos.yCoord;
+		}
+		double minY = Double.MAX_VALUE;
+		List<Vec3> list = line.getLine();
+		for (Vec3 v : list) {
+			minY = minY < v.yCoord ? minY : v.yCoord;
+		}
+		return minY;
 	}
 
 	public double getMaxY() {
-		return line == null ? null : line.getMaxY();//Math.max(pos.yCoord, end.yCoord);
+		if (line == null) {
+			return pos.yCoord;
+		}
+		double maxY = Double.MIN_VALUE;
+		List<Vec3> list = line.getLine();
+		for (Vec3 v : list) {
+			maxY = maxY > v.yCoord ? maxY : v.yCoord;
+		}
+		return maxY;
 	}
 
 	public Vec3 getPos() {
@@ -367,7 +425,13 @@ public class Brace extends ExtraObject {
 	}
 
 	public void addCollisionBoxesToList(World world, AxisAlignedBB aabb, List collidingBoundingBoxes, Entity entity) {
-		line.addCollisionBoxesToList(world, aabb, collidingBoundingBoxes, entity, size);
+		if (line == null) {
+			return;
+		}
+		List<Line> list = line.getSegments();
+		for (Line l : list) {
+			l.addCollisionBoxesToList(world, aabb, collidingBoundingBoxes, entity, size);
+		}
 	}
 
 	public void rotation(Vec3 cent, double yaw) {
@@ -398,6 +462,10 @@ public class Brace extends ExtraObject {
 
 	public IIcon getIIcon(int i) {
 		return texture.getIcon(i, color);
+	}
+	
+	public BB_Model getModel() {
+		return BB_TypeResister.getFigure(shape).getModel(this);
 	}
 
 }

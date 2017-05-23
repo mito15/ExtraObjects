@@ -56,7 +56,16 @@ public class BB_HighLightHandler {
 				-(player.lastTickPosY + (player.posY - player.lastTickPosY) * partialticks),
 				-(player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialticks));
 		BB_Render render = BB_ResisteredList.getBraceBaseRender(base);
+
+		GL11.glLineWidth(2.0F);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_ONE_MINUS_DST_COLOR, GL11.GL_ZERO);
 		render.drawHighLight(base, partialticks);
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glPopMatrix();
 	}
 
