@@ -26,6 +26,10 @@ public class BB_Polygon implements IDrawBrace, IDrawable {
 		}
 	}
 
+	public BB_Polygon(List<Vertex> line) {
+		this.line = line;
+	}
+
 	public BB_Polygon(double... list) {
 		for (int n = 0; n < list.length / 3; n++) {
 			Vertex v = new Vertex(list[(3 * n)], list[(3 * n + 1)], list[(3 * n + 2)], 0.0D, 0.0D);
@@ -101,14 +105,15 @@ public class BB_Polygon implements IDrawBrace, IDrawable {
 		mat.rpyRotation(roll, 0, 0);
 		ret.planes.add(p.transform(mat));
 		double v = 0.0D;
+		List<Vec3> line = getLineWithRoll(roll);
 		for (LineWithDirection lwd : ls) {
 			Vec3 s = MitoMath.sub_vector(lwd.start, brace.pos);
 			Vec3 e = MitoMath.sub_vector(lwd.end, brace.pos);
 			double usum = 0.0D;
 			double vofst = MitoMath.subAbs(s, e);
-			for (int n1 = 0; n1 < getSize(size); n1++) {
-				Vec3 v1 = getVec3(n1 - 1, size);
-				Vec3 v2 = getVec3(n1, size);
+			for (int n1 = 0; n1 < line.size(); n1++) {
+				Vec3 v1 = line.get(n1 == 0 ? line.size() - 1 : n1 - 1);
+				Vec3 v2 = line.get(n1);
 				Vec3 vs1 = MitoMath.vectorSum(lwd.mat1.transformNormal(MitoMath.rotZ(v1, roll)), s);
 				Vec3 vs2 = MitoMath.vectorSum(lwd.mat1.transformNormal(MitoMath.rotZ(v2, roll)), s);
 				Vec3 ven1 = MitoMath.vectorSum(lwd.mat2.transformNormal(MitoMath.rotZ(v1, roll)), e);
@@ -131,6 +136,15 @@ public class BB_Polygon implements IDrawBrace, IDrawable {
 		return ret;
 	}
 
+	private List<Vec3> getLineWithRoll(double roll) {
+		List<Vec3> ret = new ArrayList<Vec3>();
+		List<Vertex> line = getLine();
+		for(Vertex v : line){
+			ret.add(MitoMath.rotZ(v.pos, roll));
+		}
+		return ret;
+	}
+
 	private BB_Polygon reverse() {
 		Vertex[] ret = new Vertex[this.getLine().size()];
 		int nmax = getLine().size();
@@ -141,22 +155,20 @@ public class BB_Polygon implements IDrawBrace, IDrawable {
 	}
 
 	private BB_Polygon resize(double size) {
-		Vertex[] ret = new Vertex[getSize(size)];
-		for (int n1 = 0; n1 < getSize(size); n1++) {
-			ret[n1] = getVertex(n1, size);
-		}
+		List<Vertex> ret = getLine();
 		return new BB_Polygon(ret);
 	}
 
 	private List<Triangle> getTriangles(double size) {
-		List<Vertex> ret = new ArrayList();
-		for (int n1 = 0; n1 < getSize(size); n1++) {
-			ret.add(getVertex(n1, size));
-		}
+		List<Vertex> ret = getLine();
 		return MyUtil.decomposePolygon(ret);
 	}
 
 	public List<Vertex> getLine() {
+		return getLine(1.0);
+	}
+	
+	public List<Vertex> getLine(double size) {
 		return line;
 	}
 
